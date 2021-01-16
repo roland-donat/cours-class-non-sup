@@ -33,7 +33,7 @@ ANTONI qui avait en charge le cours de classification non supervisées sur l'ann
 
 ## Cours
 
-[a link](https://github.com/roland-donat/cours-class-non-sup/blob/main/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
+[a link](https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
 
 ## Travaux dirigés
 

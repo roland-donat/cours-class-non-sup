@@ -31,6 +31,10 @@ ANTONI qui avait en charge le cours de classification non supervisées sur l'ann
 <!--   - Remise d'un rapport synthétique + code =Python= (/notebook/) -->
 <!--   - Restitution orale  -->
 
+## Cours
+
+[a link](https://github.com/roland-donat/cours-class-non-sup/blob/main/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
+
 ## Travaux dirigés
 
 - Utilisation de Python

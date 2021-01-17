@@ -34,18 +34,19 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-orgb729e27">Crédit</a></li>
-<li><a href="#/slide-org2acf12c">Objectifs de la séance</a></li>
-<li><a href="#/slide-org27b26a6">Présentation générale</a></li>
-<li><a href="#/slide-org6915dfb">Notations</a></li>
+<li><a href="#/slide-org1da46bb">Crédit</a></li>
+<li><a href="#/slide-org473a15f">Objectifs de la séance</a></li>
+<li><a href="#/slide-orge51c32f">Présentation générale</a></li>
+<li><a href="#/slide-org6f54ecc">Notations</a></li>
+<li><a href="#/slide-org061d449">Mesures de ressemblance</a></li>
 </ul>
 </div>
 </div>
 </section>
 
 <section>
-<section id="slide-orgb729e27">
-<h2 id="orgb729e27">Crédit</h2>
+<section id="slide-org1da46bb">
+<h2 id="org1da46bb">Crédit</h2>
 <p>
 Ces slides sont très largement inspirés du cours de classification non supervisées 2019-2020 élaboré
 par Mme. Arlette ANTONI.
@@ -54,8 +55,8 @@ par Mme. Arlette ANTONI.
 </section>
 </section>
 <section>
-<section id="slide-org2acf12c">
-<h2 id="org2acf12c">Objectifs de la séance</h2>
+<section id="slide-org473a15f">
+<h2 id="org473a15f">Objectifs de la séance</h2>
 <ul>
 <li>Définir la notion de classification non supervisée</li>
 <li>Rappeler et généraliser le concept de distance</li>
@@ -68,8 +69,8 @@ par Mme. Arlette ANTONI.
 </section>
 </section>
 <section>
-<section id="slide-org27b26a6">
-<h2 id="org27b26a6">Présentation générale</h2>
+<section id="slide-orge51c32f">
+<h2 id="orge51c32f">Présentation générale</h2>
 
 <div class="figure">
 <p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/vegetables.jpeg" alt="vegetables.jpeg" />
@@ -79,8 +80,8 @@ par Mme. Arlette ANTONI.
 </section>
 </section>
 <section>
-<section id="slide-org1d77abb">
-<h3 id="org1d77abb">Principes et objectifs</h3>
+<section id="slide-org4ee06df">
+<h3 id="org4ee06df">Principes et objectifs</h3>
 <div class="block-default">
 <p>
 <h4>Principes d'une classification</h4>
@@ -119,54 +120,54 @@ numéro) de la classe pour chaque individu</li>
 </section>
 </section>
 <section>
-<section id="slide-orgd1331be">
-<h3 id="orgd1331be">Exemple (1/2)</h3>
+<section id="slide-org65fc924">
+<h3 id="org65fc924">Exemple (1/2)</h3>
 <p>
 Considérons les données suivantes proposant des indicateurs socio-économiques de différents pays :
 </p>
 <style  type="text/css" >
-</style><table id="T_17aa8_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>    </tr></thead><tbody>
+</style><table id="T_470cd_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>    </tr></thead><tbody>
                 <tr>
-                        <th id="T_17aa8_level0_row0" class="row_heading level0 row0" >0</th>
-                        <td id="T_17aa8_row0_col0" class="data row0 col0" >Afghanistan</td>
-                        <td id="T_17aa8_row0_col1" class="data row0 col1" >10.000000</td>
-                        <td id="T_17aa8_row0_col2" class="data row0 col2" >7.580000</td>
-                        <td id="T_17aa8_row0_col3" class="data row0 col3" >1610</td>
+                        <th id="T_470cd_level0_row0" class="row_heading level0 row0" >0</th>
+                        <td id="T_470cd_row0_col0" class="data row0 col0" >Afghanistan</td>
+                        <td id="T_470cd_row0_col1" class="data row0 col1" >10.000000</td>
+                        <td id="T_470cd_row0_col2" class="data row0 col2" >7.580000</td>
+                        <td id="T_470cd_row0_col3" class="data row0 col3" >1610</td>
             </tr>
             <tr>
-                        <th id="T_17aa8_level0_row1" class="row_heading level0 row1" >1</th>
-                        <td id="T_17aa8_row1_col0" class="data row1 col0" >Albania</td>
-                        <td id="T_17aa8_row1_col1" class="data row1 col1" >28.000000</td>
-                        <td id="T_17aa8_row1_col2" class="data row1 col2" >6.550000</td>
-                        <td id="T_17aa8_row1_col3" class="data row1 col3" >9930</td>
+                        <th id="T_470cd_level0_row1" class="row_heading level0 row1" >1</th>
+                        <td id="T_470cd_row1_col0" class="data row1 col0" >Albania</td>
+                        <td id="T_470cd_row1_col1" class="data row1 col1" >28.000000</td>
+                        <td id="T_470cd_row1_col2" class="data row1 col2" >6.550000</td>
+                        <td id="T_470cd_row1_col3" class="data row1 col3" >9930</td>
             </tr>
             <tr>
-                        <th id="T_17aa8_level0_row2" class="row_heading level0 row2" >2</th>
-                        <td id="T_17aa8_row2_col0" class="data row2 col0" >Algeria</td>
-                        <td id="T_17aa8_row2_col1" class="data row2 col1" >38.400000</td>
-                        <td id="T_17aa8_row2_col2" class="data row2 col2" >4.170000</td>
-                        <td id="T_17aa8_row2_col3" class="data row2 col3" >12900</td>
+                        <th id="T_470cd_level0_row2" class="row_heading level0 row2" >2</th>
+                        <td id="T_470cd_row2_col0" class="data row2 col0" >Algeria</td>
+                        <td id="T_470cd_row2_col1" class="data row2 col1" >38.400000</td>
+                        <td id="T_470cd_row2_col2" class="data row2 col2" >4.170000</td>
+                        <td id="T_470cd_row2_col3" class="data row2 col3" >12900</td>
             </tr>
             <tr>
-                        <th id="T_17aa8_level0_row3" class="row_heading level0 row3" >3</th>
-                        <td id="T_17aa8_row3_col0" class="data row3 col0" >Angola</td>
-                        <td id="T_17aa8_row3_col1" class="data row3 col1" >62.300000</td>
-                        <td id="T_17aa8_row3_col2" class="data row3 col2" >2.850000</td>
-                        <td id="T_17aa8_row3_col3" class="data row3 col3" >5900</td>
+                        <th id="T_470cd_level0_row3" class="row_heading level0 row3" >3</th>
+                        <td id="T_470cd_row3_col0" class="data row3 col0" >Angola</td>
+                        <td id="T_470cd_row3_col1" class="data row3 col1" >62.300000</td>
+                        <td id="T_470cd_row3_col2" class="data row3 col2" >2.850000</td>
+                        <td id="T_470cd_row3_col3" class="data row3 col3" >5900</td>
             </tr>
             <tr>
-                        <th id="T_17aa8_level0_row4" class="row_heading level0 row4" >4</th>
-                        <td id="T_17aa8_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
-                        <td id="T_17aa8_row4_col1" class="data row4 col1" >45.500000</td>
-                        <td id="T_17aa8_row4_col2" class="data row4 col2" >6.030000</td>
-                        <td id="T_17aa8_row4_col3" class="data row4 col3" >19100</td>
+                        <th id="T_470cd_level0_row4" class="row_heading level0 row4" >4</th>
+                        <td id="T_470cd_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
+                        <td id="T_470cd_row4_col1" class="data row4 col1" >45.500000</td>
+                        <td id="T_470cd_row4_col2" class="data row4 col2" >6.030000</td>
+                        <td id="T_470cd_row4_col3" class="data row4 col3" >19100</td>
             </tr>
             <tr>
-                        <th id="T_17aa8_level0_row5" class="row_heading level0 row5" >5</th>
-                        <td id="T_17aa8_row5_col0" class="data row5 col0" >Argentina</td>
-                        <td id="T_17aa8_row5_col1" class="data row5 col1" >18.900000</td>
-                        <td id="T_17aa8_row5_col2" class="data row5 col2" >8.100000</td>
-                        <td id="T_17aa8_row5_col3" class="data row5 col3" >18700</td>
+                        <th id="T_470cd_level0_row5" class="row_heading level0 row5" >5</th>
+                        <td id="T_470cd_row5_col0" class="data row5 col0" >Argentina</td>
+                        <td id="T_470cd_row5_col1" class="data row5 col1" >18.900000</td>
+                        <td id="T_470cd_row5_col2" class="data row5 col2" >8.100000</td>
+                        <td id="T_470cd_row5_col3" class="data row5 col3" >18700</td>
             </tr>
     </tbody></table>
 
@@ -186,64 +187,64 @@ des individus</li>
 </section>
 </section>
 <section>
-<section id="slide-orgc02e6f2">
-<h3 id="orgc02e6f2">Exemple (2/2)</h3>
+<section id="slide-org20517c8">
+<h3 id="org20517c8">Exemple (2/2)</h3>
 <p>
 Faire une classification des données revient à ajouter une nouvelle variable qualitative donnant la
 classe de chacun des individus :
 </p>
 
 <style  type="text/css" >
-    #T_070b7_ td.col4 {
+    #T_4511c_ td.col4 {
           color: #7a1d90;
-    }</style><table id="T_070b7_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
+    }</style><table id="T_4511c_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
                 <tr>
-                        <th id="T_070b7_level0_row0" class="row_heading level0 row0" >0</th>
-                        <td id="T_070b7_row0_col0" class="data row0 col0" >Afghanistan</td>
-                        <td id="T_070b7_row0_col1" class="data row0 col1" >10.000000</td>
-                        <td id="T_070b7_row0_col2" class="data row0 col2" >7.580000</td>
-                        <td id="T_070b7_row0_col3" class="data row0 col3" >1610</td>
-                        <td id="T_070b7_row0_col4" class="data row0 col4" >C3</td>
+                        <th id="T_4511c_level0_row0" class="row_heading level0 row0" >0</th>
+                        <td id="T_4511c_row0_col0" class="data row0 col0" >Afghanistan</td>
+                        <td id="T_4511c_row0_col1" class="data row0 col1" >10.000000</td>
+                        <td id="T_4511c_row0_col2" class="data row0 col2" >7.580000</td>
+                        <td id="T_4511c_row0_col3" class="data row0 col3" >1610</td>
+                        <td id="T_4511c_row0_col4" class="data row0 col4" >C3</td>
             </tr>
             <tr>
-                        <th id="T_070b7_level0_row1" class="row_heading level0 row1" >1</th>
-                        <td id="T_070b7_row1_col0" class="data row1 col0" >Albania</td>
-                        <td id="T_070b7_row1_col1" class="data row1 col1" >28.000000</td>
-                        <td id="T_070b7_row1_col2" class="data row1 col2" >6.550000</td>
-                        <td id="T_070b7_row1_col3" class="data row1 col3" >9930</td>
-                        <td id="T_070b7_row1_col4" class="data row1 col4" >C3</td>
+                        <th id="T_4511c_level0_row1" class="row_heading level0 row1" >1</th>
+                        <td id="T_4511c_row1_col0" class="data row1 col0" >Albania</td>
+                        <td id="T_4511c_row1_col1" class="data row1 col1" >28.000000</td>
+                        <td id="T_4511c_row1_col2" class="data row1 col2" >6.550000</td>
+                        <td id="T_4511c_row1_col3" class="data row1 col3" >9930</td>
+                        <td id="T_4511c_row1_col4" class="data row1 col4" >C3</td>
             </tr>
             <tr>
-                        <th id="T_070b7_level0_row2" class="row_heading level0 row2" >2</th>
-                        <td id="T_070b7_row2_col0" class="data row2 col0" >Algeria</td>
-                        <td id="T_070b7_row2_col1" class="data row2 col1" >38.400000</td>
-                        <td id="T_070b7_row2_col2" class="data row2 col2" >4.170000</td>
-                        <td id="T_070b7_row2_col3" class="data row2 col3" >12900</td>
-                        <td id="T_070b7_row2_col4" class="data row2 col4" >C1</td>
+                        <th id="T_4511c_level0_row2" class="row_heading level0 row2" >2</th>
+                        <td id="T_4511c_row2_col0" class="data row2 col0" >Algeria</td>
+                        <td id="T_4511c_row2_col1" class="data row2 col1" >38.400000</td>
+                        <td id="T_4511c_row2_col2" class="data row2 col2" >4.170000</td>
+                        <td id="T_4511c_row2_col3" class="data row2 col3" >12900</td>
+                        <td id="T_4511c_row2_col4" class="data row2 col4" >C1</td>
             </tr>
             <tr>
-                        <th id="T_070b7_level0_row3" class="row_heading level0 row3" >3</th>
-                        <td id="T_070b7_row3_col0" class="data row3 col0" >Angola</td>
-                        <td id="T_070b7_row3_col1" class="data row3 col1" >62.300000</td>
-                        <td id="T_070b7_row3_col2" class="data row3 col2" >2.850000</td>
-                        <td id="T_070b7_row3_col3" class="data row3 col3" >5900</td>
-                        <td id="T_070b7_row3_col4" class="data row3 col4" >C2</td>
+                        <th id="T_4511c_level0_row3" class="row_heading level0 row3" >3</th>
+                        <td id="T_4511c_row3_col0" class="data row3 col0" >Angola</td>
+                        <td id="T_4511c_row3_col1" class="data row3 col1" >62.300000</td>
+                        <td id="T_4511c_row3_col2" class="data row3 col2" >2.850000</td>
+                        <td id="T_4511c_row3_col3" class="data row3 col3" >5900</td>
+                        <td id="T_4511c_row3_col4" class="data row3 col4" >C2</td>
             </tr>
             <tr>
-                        <th id="T_070b7_level0_row4" class="row_heading level0 row4" >4</th>
-                        <td id="T_070b7_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
-                        <td id="T_070b7_row4_col1" class="data row4 col1" >45.500000</td>
-                        <td id="T_070b7_row4_col2" class="data row4 col2" >6.030000</td>
-                        <td id="T_070b7_row4_col3" class="data row4 col3" >19100</td>
-                        <td id="T_070b7_row4_col4" class="data row4 col4" >C2</td>
+                        <th id="T_4511c_level0_row4" class="row_heading level0 row4" >4</th>
+                        <td id="T_4511c_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
+                        <td id="T_4511c_row4_col1" class="data row4 col1" >45.500000</td>
+                        <td id="T_4511c_row4_col2" class="data row4 col2" >6.030000</td>
+                        <td id="T_4511c_row4_col3" class="data row4 col3" >19100</td>
+                        <td id="T_4511c_row4_col4" class="data row4 col4" >C2</td>
             </tr>
             <tr>
-                        <th id="T_070b7_level0_row5" class="row_heading level0 row5" >5</th>
-                        <td id="T_070b7_row5_col0" class="data row5 col0" >Argentina</td>
-                        <td id="T_070b7_row5_col1" class="data row5 col1" >18.900000</td>
-                        <td id="T_070b7_row5_col2" class="data row5 col2" >8.100000</td>
-                        <td id="T_070b7_row5_col3" class="data row5 col3" >18700</td>
-                        <td id="T_070b7_row5_col4" class="data row5 col4" >C3</td>
+                        <th id="T_4511c_level0_row5" class="row_heading level0 row5" >5</th>
+                        <td id="T_4511c_row5_col0" class="data row5 col0" >Argentina</td>
+                        <td id="T_4511c_row5_col1" class="data row5 col1" >18.900000</td>
+                        <td id="T_4511c_row5_col2" class="data row5 col2" >8.100000</td>
+                        <td id="T_4511c_row5_col3" class="data row5 col3" >18700</td>
+                        <td id="T_4511c_row5_col4" class="data row5 col4" >C3</td>
             </tr>
     </tbody></table>
 
@@ -263,8 +264,8 @@ classe de chacun des individus :
 </section>
 </section>
 <section>
-<section id="slide-org55e6e53">
-<h3 id="org55e6e53">Distinction entre classification supervisée et non supervisée</h3>
+<section id="slide-orge446edd">
+<h3 id="orge446edd">Distinction entre classification supervisée et non supervisée</h3>
 <div class="column" style="float:left; width: 45%">
 
 <div class="block-default">
@@ -273,61 +274,65 @@ classe de chacun des individus :
 </p>
 <ul>
 <li>On classe les individus en ayant à disposition des individus déjà classés</li>
-<li>Le nombre de classes/groupes est en général connu</li>
+<li>Le nombre de classes/groupes est connu</li>
 
 </ul>
+
+<p>
+⇒ Aide à la décision
+</p>
 
 </div>
 <p>
  <br>
 </p>
 <style  type="text/css" >
-    #T_501a6_ th {
+    #T_0664e_ th {
           font-size: 16px;
-    }    #T_501a6_ td {
+    }    #T_0664e_ td {
           font-size: 16px;
-    }</style><table id="T_501a6_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
+    }</style><table id="T_0664e_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
                 <tr>
-                                <td id="T_501a6_row0_col0" class="data row0 col0" >Afghanistan</td>
-                        <td id="T_501a6_row0_col1" class="data row0 col1" >10.000000</td>
-                        <td id="T_501a6_row0_col2" class="data row0 col2" >7.580000</td>
-                        <td id="T_501a6_row0_col3" class="data row0 col3" >1610</td>
-                        <td id="T_501a6_row0_col4" class="data row0 col4" >C3</td>
+                                <td id="T_0664e_row0_col0" class="data row0 col0" >Afghanistan</td>
+                        <td id="T_0664e_row0_col1" class="data row0 col1" >10.000000</td>
+                        <td id="T_0664e_row0_col2" class="data row0 col2" >7.580000</td>
+                        <td id="T_0664e_row0_col3" class="data row0 col3" >1610</td>
+                        <td id="T_0664e_row0_col4" class="data row0 col4" >C3</td>
             </tr>
             <tr>
-                                <td id="T_501a6_row1_col0" class="data row1 col0" >Albania</td>
-                        <td id="T_501a6_row1_col1" class="data row1 col1" >28.000000</td>
-                        <td id="T_501a6_row1_col2" class="data row1 col2" >6.550000</td>
-                        <td id="T_501a6_row1_col3" class="data row1 col3" >9930</td>
-                        <td id="T_501a6_row1_col4" class="data row1 col4" >C3</td>
+                                <td id="T_0664e_row1_col0" class="data row1 col0" >Albania</td>
+                        <td id="T_0664e_row1_col1" class="data row1 col1" >28.000000</td>
+                        <td id="T_0664e_row1_col2" class="data row1 col2" >6.550000</td>
+                        <td id="T_0664e_row1_col3" class="data row1 col3" >9930</td>
+                        <td id="T_0664e_row1_col4" class="data row1 col4" >C3</td>
             </tr>
             <tr>
-                                <td id="T_501a6_row2_col0" class="data row2 col0" >Algeria</td>
-                        <td id="T_501a6_row2_col1" class="data row2 col1" >38.400000</td>
-                        <td id="T_501a6_row2_col2" class="data row2 col2" >4.170000</td>
-                        <td id="T_501a6_row2_col3" class="data row2 col3" >12900</td>
-                        <td id="T_501a6_row2_col4" class="data row2 col4" >C1</td>
+                                <td id="T_0664e_row2_col0" class="data row2 col0" >Algeria</td>
+                        <td id="T_0664e_row2_col1" class="data row2 col1" >38.400000</td>
+                        <td id="T_0664e_row2_col2" class="data row2 col2" >4.170000</td>
+                        <td id="T_0664e_row2_col3" class="data row2 col3" >12900</td>
+                        <td id="T_0664e_row2_col4" class="data row2 col4" >C1</td>
             </tr>
             <tr>
-                                <td id="T_501a6_row3_col0" class="data row3 col0" >Angola</td>
-                        <td id="T_501a6_row3_col1" class="data row3 col1" >62.300000</td>
-                        <td id="T_501a6_row3_col2" class="data row3 col2" >2.850000</td>
-                        <td id="T_501a6_row3_col3" class="data row3 col3" >5900</td>
-                        <td id="T_501a6_row3_col4" class="data row3 col4" >C2</td>
+                                <td id="T_0664e_row3_col0" class="data row3 col0" >Angola</td>
+                        <td id="T_0664e_row3_col1" class="data row3 col1" >62.300000</td>
+                        <td id="T_0664e_row3_col2" class="data row3 col2" >2.850000</td>
+                        <td id="T_0664e_row3_col3" class="data row3 col3" >5900</td>
+                        <td id="T_0664e_row3_col4" class="data row3 col4" >C2</td>
             </tr>
             <tr>
-                                <td id="T_501a6_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
-                        <td id="T_501a6_row4_col1" class="data row4 col1" >45.500000</td>
-                        <td id="T_501a6_row4_col2" class="data row4 col2" >6.030000</td>
-                        <td id="T_501a6_row4_col3" class="data row4 col3" >19100</td>
-                        <td id="T_501a6_row4_col4" class="data row4 col4" >?</td>
+                                <td id="T_0664e_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
+                        <td id="T_0664e_row4_col1" class="data row4 col1" >45.500000</td>
+                        <td id="T_0664e_row4_col2" class="data row4 col2" >6.030000</td>
+                        <td id="T_0664e_row4_col3" class="data row4 col3" >19100</td>
+                        <td id="T_0664e_row4_col4" class="data row4 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_501a6_row5_col0" class="data row5 col0" >Argentina</td>
-                        <td id="T_501a6_row5_col1" class="data row5 col1" >18.900000</td>
-                        <td id="T_501a6_row5_col2" class="data row5 col2" >8.100000</td>
-                        <td id="T_501a6_row5_col3" class="data row5 col3" >18700</td>
-                        <td id="T_501a6_row5_col4" class="data row5 col4" >?</td>
+                                <td id="T_0664e_row5_col0" class="data row5 col0" >Argentina</td>
+                        <td id="T_0664e_row5_col1" class="data row5 col1" >18.900000</td>
+                        <td id="T_0664e_row5_col2" class="data row5 col2" >8.100000</td>
+                        <td id="T_0664e_row5_col3" class="data row5 col3" >18700</td>
+                        <td id="T_0664e_row5_col4" class="data row5 col4" >?</td>
             </tr>
     </tbody></table>
 
@@ -345,57 +350,61 @@ classe de chacun des individus :
 
 </ul>
 
+<p>
+⇒ Analyse descriptive
+</p>
+
 </div>
 <p>
  <br>
 </p>
 <style  type="text/css" >
-    #T_186dd_ th {
+    #T_d02c4_ th {
           font-size: 16px;
-    }    #T_186dd_ td {
+    }    #T_d02c4_ td {
           font-size: 16px;
-    }</style><table id="T_186dd_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
+    }</style><table id="T_d02c4_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>        <th class="col_heading level0 col4" >class</th>    </tr></thead><tbody>
                 <tr>
-                                <td id="T_186dd_row0_col0" class="data row0 col0" >Afghanistan</td>
-                        <td id="T_186dd_row0_col1" class="data row0 col1" >10.000000</td>
-                        <td id="T_186dd_row0_col2" class="data row0 col2" >7.580000</td>
-                        <td id="T_186dd_row0_col3" class="data row0 col3" >1610</td>
-                        <td id="T_186dd_row0_col4" class="data row0 col4" >?</td>
+                                <td id="T_d02c4_row0_col0" class="data row0 col0" >Afghanistan</td>
+                        <td id="T_d02c4_row0_col1" class="data row0 col1" >10.000000</td>
+                        <td id="T_d02c4_row0_col2" class="data row0 col2" >7.580000</td>
+                        <td id="T_d02c4_row0_col3" class="data row0 col3" >1610</td>
+                        <td id="T_d02c4_row0_col4" class="data row0 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_186dd_row1_col0" class="data row1 col0" >Albania</td>
-                        <td id="T_186dd_row1_col1" class="data row1 col1" >28.000000</td>
-                        <td id="T_186dd_row1_col2" class="data row1 col2" >6.550000</td>
-                        <td id="T_186dd_row1_col3" class="data row1 col3" >9930</td>
-                        <td id="T_186dd_row1_col4" class="data row1 col4" >?</td>
+                                <td id="T_d02c4_row1_col0" class="data row1 col0" >Albania</td>
+                        <td id="T_d02c4_row1_col1" class="data row1 col1" >28.000000</td>
+                        <td id="T_d02c4_row1_col2" class="data row1 col2" >6.550000</td>
+                        <td id="T_d02c4_row1_col3" class="data row1 col3" >9930</td>
+                        <td id="T_d02c4_row1_col4" class="data row1 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_186dd_row2_col0" class="data row2 col0" >Algeria</td>
-                        <td id="T_186dd_row2_col1" class="data row2 col1" >38.400000</td>
-                        <td id="T_186dd_row2_col2" class="data row2 col2" >4.170000</td>
-                        <td id="T_186dd_row2_col3" class="data row2 col3" >12900</td>
-                        <td id="T_186dd_row2_col4" class="data row2 col4" >?</td>
+                                <td id="T_d02c4_row2_col0" class="data row2 col0" >Algeria</td>
+                        <td id="T_d02c4_row2_col1" class="data row2 col1" >38.400000</td>
+                        <td id="T_d02c4_row2_col2" class="data row2 col2" >4.170000</td>
+                        <td id="T_d02c4_row2_col3" class="data row2 col3" >12900</td>
+                        <td id="T_d02c4_row2_col4" class="data row2 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_186dd_row3_col0" class="data row3 col0" >Angola</td>
-                        <td id="T_186dd_row3_col1" class="data row3 col1" >62.300000</td>
-                        <td id="T_186dd_row3_col2" class="data row3 col2" >2.850000</td>
-                        <td id="T_186dd_row3_col3" class="data row3 col3" >5900</td>
-                        <td id="T_186dd_row3_col4" class="data row3 col4" >?</td>
+                                <td id="T_d02c4_row3_col0" class="data row3 col0" >Angola</td>
+                        <td id="T_d02c4_row3_col1" class="data row3 col1" >62.300000</td>
+                        <td id="T_d02c4_row3_col2" class="data row3 col2" >2.850000</td>
+                        <td id="T_d02c4_row3_col3" class="data row3 col3" >5900</td>
+                        <td id="T_d02c4_row3_col4" class="data row3 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_186dd_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
-                        <td id="T_186dd_row4_col1" class="data row4 col1" >45.500000</td>
-                        <td id="T_186dd_row4_col2" class="data row4 col2" >6.030000</td>
-                        <td id="T_186dd_row4_col3" class="data row4 col3" >19100</td>
-                        <td id="T_186dd_row4_col4" class="data row4 col4" >?</td>
+                                <td id="T_d02c4_row4_col0" class="data row4 col0" >Antigua and Barbuda</td>
+                        <td id="T_d02c4_row4_col1" class="data row4 col1" >45.500000</td>
+                        <td id="T_d02c4_row4_col2" class="data row4 col2" >6.030000</td>
+                        <td id="T_d02c4_row4_col3" class="data row4 col3" >19100</td>
+                        <td id="T_d02c4_row4_col4" class="data row4 col4" >?</td>
             </tr>
             <tr>
-                                <td id="T_186dd_row5_col0" class="data row5 col0" >Argentina</td>
-                        <td id="T_186dd_row5_col1" class="data row5 col1" >18.900000</td>
-                        <td id="T_186dd_row5_col2" class="data row5 col2" >8.100000</td>
-                        <td id="T_186dd_row5_col3" class="data row5 col3" >18700</td>
-                        <td id="T_186dd_row5_col4" class="data row5 col4" >?</td>
+                                <td id="T_d02c4_row5_col0" class="data row5 col0" >Argentina</td>
+                        <td id="T_d02c4_row5_col1" class="data row5 col1" >18.900000</td>
+                        <td id="T_d02c4_row5_col2" class="data row5 col2" >8.100000</td>
+                        <td id="T_d02c4_row5_col3" class="data row5 col3" >18700</td>
+                        <td id="T_d02c4_row5_col4" class="data row5 col4" >?</td>
             </tr>
     </tbody></table>
 
@@ -404,8 +413,8 @@ classe de chacun des individus :
 </section>
 </section>
 <section>
-<section id="slide-org623af67">
-<h3 id="org623af67">Vocabulaire</h3>
+<section id="slide-org04f62fd">
+<h3 id="org04f62fd">Vocabulaire</h3>
 <p>
 La classification non supervisée, <i>clustering</i> ou classification automatique sont les termes les
 plus utilisés par le monde académique.
@@ -426,8 +435,8 @@ En entreprise, on rencontre plutôt les appellations suivantes :
 </section>
 </section>
 <section data-transition="fade">
-<section id="slide-org24a1fd9" data-transition="fade">
-<h3 id="org24a1fd9">La classification automatique : une méthode d'analyse descriptive</h3>
+<section id="slide-orgc425e7f" data-transition="fade">
+<h3 id="orgc425e7f">Classification automatique vs Analyses factorielles</h3>
 
 <div class="figure">
 <p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/classif_acp.png" alt="Classification vs ACP" width="95%" />
@@ -438,8 +447,8 @@ En entreprise, on rencontre plutôt les appellations suivantes :
 </section>
 </section>
 <section data-transition="fade">
-<section id="slide-orgeb9d0f7" data-transition="fade">
-<h3 id="orgeb9d0f7">La classification automatique : une méthode d'analyse descriptive</h3>
+<section id="slide-org44a441c" data-transition="fade">
+<h3 id="org44a441c">Classification automatique vs Analyses factorielles</h3>
 
 <div class="figure">
 <p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/classif_acp_2.png" alt="Classification/ACP" width="95%" />
@@ -450,15 +459,16 @@ En entreprise, on rencontre plutôt les appellations suivantes :
 </section>
 </section>
 <section>
-<section id="slide-orgba29e15">
-<h3 id="orgba29e15">Domaines d'application de la classification non supervisée</h3>
+<section id="slide-org443d348">
+<h3 id="org443d348">Domaines d'application de la classification non supervisée</h3>
 <div class="block-example">
 <p>
 <h4>Marketing</h4>
 </p>
 
 <ul>
-<li>Segmenter les clients afin d'établir des profils de ciblage pour des campagnes promotionnels</li>
+<li>Segmenter les clients par rapport à leurs comportements de consommation</li>
+<li>Analyser les liens entre différents profils clients</li>
 
 </ul>
 
@@ -469,9 +479,11 @@ En entreprise, on rencontre plutôt les appellations suivantes :
 <h4>Sport</h4>
 </p>
 
-<p>
-Élaboration de programmes d'entraînements adaptés aux profils des athlètes
-</p>
+<ul>
+<li>Identifier des groupes d'athlètes en fontion de leurs caractéristiques et objectifs</li>
+<li>Élaborer des programmes d'entraînements adaptés aux différents profils d'athlètes</li>
+
+</ul>
 
 </div>
 
@@ -480,9 +492,11 @@ En entreprise, on rencontre plutôt les appellations suivantes :
 <h4>Traitement naturel du langage</h4>
 </p>
 
-<p>
-Classer des documents selon leurs thématiques communes
-</p>
+<ul>
+<li>Identifier des thématiques dans un ensemble de texte</li>
+<li>Détecter des liens entre thématiques</li>
+
+</ul>
 
 </div>
 
@@ -490,8 +504,8 @@ Classer des documents selon leurs thématiques communes
 </section>
 </section>
 <section>
-<section id="slide-org477ee0c">
-<h3 id="org477ee0c">Grands principes méthodologiques</h3>
+<section id="slide-org72a15d9">
+<h3 id="org72a15d9">Grands principes méthodologiques</h3>
 <div class="block-default">
 <p>
 <h4>Principe général</h4>
@@ -527,16 +541,14 @@ la même la classe s'ils sont proches géométriquement  <br>
 
 </div>
 
-
-
 </section>
 </section>
 <section>
-<section id="slide-org6915dfb">
-<h2 id="org6915dfb">Notations</h2>
+<section id="slide-org6f54ecc">
+<h2 id="org6f54ecc">Notations</h2>
 
 <div class="figure">
-<p><img src="./fig/maths.jpg" alt="Maths" width="80%" />
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/fig/maths.jpg" alt="Maths" width="80%" />
 </p>
 </div>
 
@@ -544,8 +556,8 @@ la même la classe s'ils sont proches géométriquement  <br>
 </section>
 </section>
 <section>
-<section id="slide-org85bac46">
-<h3 id="org85bac46">Représentation matricielle des données (1/3)</h3>
+<section id="slide-orgf76deac">
+<h3 id="orgf76deac">Représentation matricielle des données (1/3)</h3>
 <p>
 Mathématiquement, il est commode de représenter un tableau de données par une matrice de \(N\) lignes et \(D\) colonnes :
 </p>
@@ -579,31 +591,31 @@ représente le \(n\) -ème individu/observation</li>
 </section>
 </section>
 <section data-transition="fade">
-<section id="slide-org38a2b3c" data-transition="fade">
-<h3 id="org38a2b3c">Représentation matricielle des données (2/3)</h3>
+<section id="slide-org99e14c3" data-transition="fade">
+<h3 id="org99e14c3">Représentation matricielle des données (2/3)</h3>
 <p>
 Considérons les données suivantes :
 </p>
 
 <style  type="text/css" >
-</style><table id="T_4b95c_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>    </tr></thead><tbody>
+</style><table id="T_1a697_" ><thead>    <tr>        <th class="col_heading level0 col0" >country</th>        <th class="col_heading level0 col1" >exports</th>        <th class="col_heading level0 col2" >health</th>        <th class="col_heading level0 col3" >income</th>    </tr></thead><tbody>
                 <tr>
-                                <td id="T_4b95c_row0_col0" class="data row0 col0" >Afghanistan</td>
-                        <td id="T_4b95c_row0_col1" class="data row0 col1" >10.000000</td>
-                        <td id="T_4b95c_row0_col2" class="data row0 col2" >7.580000</td>
-                        <td id="T_4b95c_row0_col3" class="data row0 col3" >1610</td>
+                                <td id="T_1a697_row0_col0" class="data row0 col0" >Afghanistan</td>
+                        <td id="T_1a697_row0_col1" class="data row0 col1" >10.000000</td>
+                        <td id="T_1a697_row0_col2" class="data row0 col2" >7.580000</td>
+                        <td id="T_1a697_row0_col3" class="data row0 col3" >1610</td>
             </tr>
             <tr>
-                                <td id="T_4b95c_row1_col0" class="data row1 col0" >Albania</td>
-                        <td id="T_4b95c_row1_col1" class="data row1 col1" >28.000000</td>
-                        <td id="T_4b95c_row1_col2" class="data row1 col2" >6.550000</td>
-                        <td id="T_4b95c_row1_col3" class="data row1 col3" >9930</td>
+                                <td id="T_1a697_row1_col0" class="data row1 col0" >Albania</td>
+                        <td id="T_1a697_row1_col1" class="data row1 col1" >28.000000</td>
+                        <td id="T_1a697_row1_col2" class="data row1 col2" >6.550000</td>
+                        <td id="T_1a697_row1_col3" class="data row1 col3" >9930</td>
             </tr>
             <tr>
-                                <td id="T_4b95c_row2_col0" class="data row2 col0" >Algeria</td>
-                        <td id="T_4b95c_row2_col1" class="data row2 col1" >38.400000</td>
-                        <td id="T_4b95c_row2_col2" class="data row2 col2" >4.170000</td>
-                        <td id="T_4b95c_row2_col3" class="data row2 col3" >12900</td>
+                                <td id="T_1a697_row2_col0" class="data row2 col0" >Algeria</td>
+                        <td id="T_1a697_row2_col1" class="data row2 col1" >38.400000</td>
+                        <td id="T_1a697_row2_col2" class="data row2 col2" >4.170000</td>
+                        <td id="T_1a697_row2_col3" class="data row2 col3" >12900</td>
             </tr>
     </tbody></table>
 
@@ -619,8 +631,8 @@ Considérons les données suivantes :
 </section>
 </section>
 <section data-transition="fade">
-<section id="slide-org70f1476" data-transition="fade">
-<h3 id="org70f1476">Représentation matricielle des données (3/3)</h3>
+<section id="slide-org1a847a8" data-transition="fade">
+<h3 id="org1a847a8">Représentation matricielle des données (3/3)</h3>
 <p>
 Considérons les données suivantes :
 </p>
@@ -668,6 +680,19 @@ etc. (idem pour les variables)</li>
 
 </ul>
 
+</div>
+
+
+
+</section>
+</section>
+<section>
+<section id="slide-org061d449">
+<h2 id="org061d449">Mesures de ressemblance</h2>
+
+<div class="figure">
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/dissimilarty.jpg" alt="Maths" width="80%" />
+</p>
 </div>
 </section>
 </section>

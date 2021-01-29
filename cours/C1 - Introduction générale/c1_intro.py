@@ -6,9 +6,11 @@ import tabulate
 import matplotlib
 import plotly.express as px
 import plotly.io as pio
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, cdist, squareform
 from scipy.stats import chi2
 from sklearn.cluster import KMeans
+
+from c1_util import compute_inertia, plotly_2d_highlight_inertia
 
 COLORS = {
     "primary": "#7a1d90",
@@ -113,20 +115,19 @@ data_3v_20_class_cmap = {class_names[i]: px.colors.qualitative.T10[i]
 data_3v_20_fig = px.scatter(data_3v_20_df, 
                             x=var_x,
                             y=var_y,
-                            text=data_3v_20_df.index,
+                            opacity=0.75,
                             color=var_class,
                             category_orders={var_class: list(data_3v_20_class_cmap.keys())},
                             color_discrete_map=data_3v_20_class_cmap)
 
 data_3v_20_fig.update_traces(
     textposition='top center',
-    marker=dict(size=10))
+    marker=dict(size=8))
 
 data_3v_20_fig.update_layout(
     hovermode=False,
     title_text=f'{var_x} vs {var_y}'
 )
-
 
 def compute_ellipse(variance_x=1, variance_y=1, cov_xy=0, 
                     mean_x=0, mean_y=0,
@@ -156,6 +157,7 @@ def compute_ellipse(variance_x=1, variance_y=1, cov_xy=0,
 
 def compute_class_ellipses(data_df, var_x, var_y, var_class, 
                            conf_alpha=0.95, nb_pts=100):
+    
     data_class_grp =  data_df[[var_x, var_y, var_class]].groupby(var_class) 
     nb_classes = len(data_class_grp)                              
     class_names = list(data_class_grp.groups)                  
@@ -167,7 +169,7 @@ def compute_class_ellipses(data_df, var_x, var_y, var_class,
     
     class_ellipses = {}
     for class_cur in class_names:
-                                                                  
+        
         cov_xy = data_class_cov.loc[(class_cur, var_x), var_y]                               
         variance_x = data_class_cov.loc[(class_cur, var_x), var_x]                               
         variance_y = data_class_cov.loc[(class_cur, var_y), var_y]
@@ -179,7 +181,8 @@ def compute_class_ellipses(data_df, var_x, var_y, var_class,
                                        mean_x, mean_y,
                                        conf_alpha, nb_pts)
         
-        class_ellipses[class_cur] = {"x": ell_x, "y": ell_y}
+        class_ellipses[class_cur] = {"contour": {"x": ell_x, "y": ell_y},
+                                     "center": {"x": mean_x, "y": mean_y}}
     
     return class_ellipses
 
@@ -187,18 +190,30 @@ def compute_class_ellipses(data_df, var_x, var_y, var_class,
 def plotly_add_class_ellipses(fig, data_df, var_x, var_y, 
                               var_class, conf_alpha=0.95, nb_pts=100,
                               class_color_map=None,
-                              ellipse_opacity=0.75):
+                              showlegend=False):
     
     class_ellipses = \
         compute_class_ellipses(data_df, var_x, var_y, var_class, 
                                conf_alpha, nb_pts)
-    import ipdb
-    ipdb.set_trace()
+    
     for class_cur, class_ellipse in class_ellipses.items():
-        fig.add_scatter(mode="lines",
-                        **class_ellipse)
-        
+        fig.add_scatter(
+            name=f"{class_cur} {conf_alpha:.0%} contour",
+            mode="lines",
+            line=dict(color=class_color_map[class_cur]),
+            **class_ellipse["contour"])
+    
+        fig.add_scatter(
+            name=f"{class_cur} center",
+            mode="markers",
+            marker_symbol="x",
+            marker_size=12,
+            line=dict(color=class_color_map[class_cur]),
+            x=[class_ellipse["center"]["x"]],
+            y=[class_ellipse["center"]["y"]])
+    
     return fig
+
 
 data_3v_20_fig = \
     plotly_add_class_ellipses(
@@ -209,8 +224,7 @@ data_3v_20_fig = \
         var_class=var_class,
         conf_alpha=0.95,
         nb_pts=100,
-        class_color_map=data_3v_20_class_cmap,
-        ellipse_opacity=0.5)
+        class_color_map=data_3v_20_class_cmap)
 
 pio.to_html(data_3v_20_fig, include_plotlyjs="cdn",
             full_html=False,
@@ -271,3 +285,98 @@ data_3d_sample_scatter.update_layout(
     hovermode=False,
     title_text='Exportations (%PIB) vs Importations (%PIB)'
 )
+
+data_3d_sample_2_df = data_df[["country", "exports", "imports", "income"]]\
+    .set_index("country")\
+    .head(10)
+
+data_3d_sample_2_euc_dmat = pd.DataFrame(
+    squareform(pdist(data_3d_sample_2_df, metric="euclidean")),
+    index=data_3d_sample_2_df.index,
+    columns=data_3d_sample_2_df.index)
+
+data_3d_sample_2_mah_dmat = pd.DataFrame(
+    squareform(pdist(data_3d_sample_2_df, metric="mahalanobis")),
+    index=data_3d_sample_2_df.index,
+    columns=data_3d_sample_2_df.index)
+
+data_2d_sample_3_df = data_df[["country", "exports", "imports"]]\
+    .set_index("country")
+data_2d_sample_3_weights = 1/len(data_2d_sample_3_df)
+
+# Extract 5 observation from data
+data_2d_sample_3_bis_df = data_2d_sample_3_df.sample(n=5, random_state=56860)
+
+point_ex1 = data_2d_sample_3_df.mean()
+point_ex2 = point_ex1 + [100, -25]
+
+# Compute inertia
+inertia_ex1, _, data_inertia_ex1 = \
+    compute_inertia(data_2d_sample_3_bis_df, 
+                    point=point_ex1, 
+                    weights=data_2d_sample_3_weights)
+
+inertia_ex2, _, data_inertia_ex2 = \
+    compute_inertia(data_2d_sample_3_bis_df, 
+                    point=point_ex2, 
+                    weights=data_2d_sample_3_weights)
+
+inertia_sample_3_fig_ex1 = px.scatter(data_2d_sample_3_df, 
+                                    x=data_2d_sample_3_df.columns[0], 
+                                    y=data_2d_sample_3_df.columns[1])
+
+inertia_sample_3_fig_ex1.update_traces(
+    marker=dict(size=8,
+                color=COLORS["quinary"],
+                opacity=0.25))
+
+ 
+inertia_sample_3_fig_ex1 = \
+    plotly_2d_highlight_inertia(inertia_sample_3_fig_ex1,
+                                data_2d_sample_3_bis_df, 
+                                point=point_ex1,
+                                annote_inertia=False,
+                                inertia_params=dict(
+                                    weights=data_2d_sample_3_weights
+                                ),
+                                inertia_text_props=dict(),
+                                data_marker_props=dict(
+                                    marker_color=COLORS["quinary"]),
+                                point_marker_props=dict(),
+                                line_props=dict(
+                                    line_color=COLORS["primary"]
+                                ))
+
+inertia_sample_3_fig_ex1.update_layout(
+    #hovermode=False,
+    title_text='Inertia distance from point')
+
+inertia_sample_3_fig_ex2 = px.scatter(data_2d_sample_3_df, 
+                                    x=data_2d_sample_3_df.columns[0], 
+                                    y=data_2d_sample_3_df.columns[1])
+
+inertia_sample_3_fig_ex2.update_traces(
+    marker=dict(size=8,
+                color=COLORS["quinary"],
+                opacity=0.25))
+
+ 
+inertia_sample_3_fig_ex2 = \
+    plotly_2d_highlight_inertia(inertia_sample_3_fig_ex2,
+                                data_2d_sample_3_bis_df, 
+                                point=point_ex2,
+                                annote_inertia=False,
+                                inertia_params=dict(
+                                    weights=data_2d_sample_3_weights
+                                ),
+                                inertia_text_props=dict(),
+                                data_marker_props=dict(
+                                    marker_color=COLORS["quinary"]),
+                                point_marker_props=dict(),
+                                line_props=dict(
+                                    line_color=COLORS["primary"]
+                                ))
+
+inertia_sample_3_fig_ex2.update_layout(
+    #hovermode=False,
+    title_text='Inertia distance from point')

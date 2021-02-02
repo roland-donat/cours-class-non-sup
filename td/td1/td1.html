@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TD1: Introduction à la classification non supervisée</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Roland Donat" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+<link rel="stylesheet" type="text/css" href="./ubs_iut_vannes.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">TD1: Introduction à la classification non supervisée</h1>
+<div id="table-of-contents">
+<h2>Table des matières</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org09256db">1. Préambule</a>
+<ul>
+<li><a href="#org8894e42">1.1. Crédit</a></li>
+<li><a href="#orgcb44f4d">1.2. Environnement logiciel</a></li>
+</ul>
+</li>
+<li><a href="#orga8ccabd">2. Introduction</a></li>
+<li><a href="#org2eb50ba">3. Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgd700711">4. Chargement des données et premières analyses</a></li>
+<li><a href="#org83d8842">5. Distance euclidienne</a></li>
+<li><a href="#orgd5c8a56">6. Inertie totale</a></li>
+<li><a href="#orgfe70e97">7. Première classification \(C_{\text{A}}\)</a>
+<ul>
+<li><a href="#orgf37ee0d">7.1. Construction des classes</a></li>
+<li><a href="#org7f03e8a">7.2. Inertie intra-classe</a></li>
+<li><a href="#org182e0fc">7.3. Inertie inter-classe</a></li>
+</ul>
+</li>
+<li><a href="#org0b198e2">8. Seconde classification \(C_{\text{B}}\)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org09256db" class="outline-2">
+<h2 id="org09256db"><span class="section-number-2">1</span> Préambule</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org8894e42" class="outline-3">
+<h3 id="org8894e42"><span class="section-number-3">1.1</span> Crédit</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
+2019-2020. Le TD original était réalisé avec le logiciel <code>R</code> tandis que nous allons utiliser le
+logiciel <code>Python</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcb44f4d" class="outline-3">
+<h3 id="orgcb44f4d"><span class="section-number-3">1.2</span> Environnement logiciel</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Les travaux se dérouleront sous <code>Python</code>. Si vous disposez d'une connexion internet, je vous
+recommande d'utiliser une plateforme de <i>Notebooks</i> en ligne telle que
+<a href="https://deepnote.com"><code>DeepNote</code></a> sinon vous pouvez
+toujours utiliser <code>Python</code> en local en installant la distribution <a href="https://www.anaconda.com/products/individual"><code>Anaconda</code></a>. L'important est de vous
+assurer que vous utilisez bien la version <code>3.8</code> ou plus de <code>Python</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga8ccabd" class="outline-2">
+<h2 id="orga8ccabd"><span class="section-number-2">2</span> Introduction</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+L'objectif de ce TD est de mettre en pratique les principales notions vues en cours en les
+appliquant sur un jeu de données réel.
+</p>
+
+<p>
+Pour ce faire, nous utiliserons une adaptation des données libres <a href="https://archive.ics.uci.edu/ml/datasets/wine">Wine Data Set</a> ne conservant que
+les variables quantitatives pour la mise en oeuvre de méthodes de classification non supervisée.
+</p>
+
+<p>
+Les données correspondent aux résultats d'analyses chimiques sur des vins issus d'une même région
+d'Italie mais produits par trois vignerons différents. L'analyse quantifie la présence des 13
+éléments suivants :  
+</p>
+<ul class="org-ul">
+<li>Alcohol</li>
+<li>Malic acid</li>
+<li>Ash</li>
+<li>Alcalinity of ash</li>
+<li>Magnesium</li>
+<li>Total phenols</li>
+<li>Flavanoids</li>
+<li>Nonflavanoid phenols</li>
+<li>Proanthocyanins</li>
+<li>Color intensity</li>
+<li>Hue</li>
+<li>OD280/OD315 of diluted wines</li>
+<li>Proline</li>
+</ul>
+
+<p>
+Les données retravaillées à utiliser dans ce TD sont <a href="https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv">disponibles à ici</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2eb50ba" class="outline-2">
+<h2 id="org2eb50ba"><span class="section-number-2">3</span> Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
+</p>
+<ul class="org-ul">
+<li><code>pandas</code>, pour la manipulation des données ;</li>
+<li><code>plotly</code>, pour les représentations graphiques ;</li>
+<li><code>numpy</code>, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
+nombres aléatoires ;</li>
+<li><code>scipy</code>, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
+distances ;</li>
+</ul>
+
+<p>
+Ces modules ne sont pas forcément installés dans votre environnement local ou distant de type
+<code>Deepnote</code>. Vous pouvez donc utiliser la commande <code>!pip install &lt;nom_module&gt;</code> pour les installer :
+</p>
+<div class="org-src-container">
+<pre class="src src-python">!pip install pandas
+!pip install plotly
+!pip install scipy
+</pre>
+</div>
+
+
+<p>
+Rappel : code d'import des modules :
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd
+<span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np
+<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px
+<span style="color: #F0DFAF; font-weight: bold;">from</span> scipy.spatial.distance <span style="color: #F0DFAF; font-weight: bold;">import</span> pdist, cdist, squareform
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgd700711" class="outline-2">
+<h2 id="orgd700711"><span class="section-number-2">4</span> Chargement des données et premières analyses</h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li>Chargez les données dans votre environnement à l'aide de la fonction <code>pd.read_csv</code>.</li>
+<li>Faites une rapide analyse exploratoire de vos données :
+<ul class="org-ul">
+<li>de manière macroscopique avec les méthodes <code>.head</code>, <code>.describe</code> et <code>.info</code></li>
+<li>de manière visuelle en représentant la distribution de chaque variable en utilisant la fonction
+<code>px.box</code>. 
+Que constatez vous ?</li>
+</ul></li>
+<li>Centrez et réduisez les données. Aide : utilisez les méthodes <code>.mean</code> et <code>.std</code> des <code>DataFrame</code>.</li>
+<li>Calculez la matrice des corrélations linéaires avec la méthode <code>.corr</code> des <code>DataFrame</code>. Quelles
+sont les caractéristiques remarquables de cette matrice ?</li>
+<li>Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org83d8842" class="outline-2">
+<h2 id="org83d8842"><span class="section-number-2">5</span> Distance euclidienne</h2>
+<div class="outline-text-2" id="text-5">
+<ol class="org-ol">
+<li>Calculez la distance euclidienne entre les deux premiers individus. Aide :
+utilisez la méthode <code>sum</code> des <code>DataFrame</code>.</li>
+<li>Calculez la distance euclidienne entre le premier individu et le troisième, puis entre le
+deuxième et le troisième. Que constatez vous ?</li>
+<li>Calculez la matrice des distances euclidiennes. Aide : utilisez les fonctions <code>pdist</code> et
+<code>squareform</code> du package <code>scipy.spatial.distance</code>. Quelle sera la taille de cette matrice, quelles
+seront ses propriétés remarquables ?</li>
+<li>Vérifiez que les distances calculées au point 1 grâce à la matrice des distances calculée au
+point 3.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd5c8a56" class="outline-2">
+<h2 id="orgd5c8a56"><span class="section-number-2">6</span> Inertie totale</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
+pour chaque observation. Par ailleurs, la distance utilisée sera la distance euclidienne.
+</p>
+
+<ol class="org-ol">
+<li>Calculer le centre de gravité du nuage d'observations.</li>
+<li>Calculer les distances au carré entre les observations et le centre de gravité du nuage.</li>
+<li>En déduire l'inertie totale des données.</li>
+<li>Calculer la somme des variance empirique de chaque variable. Aide : utilisez la méthode <code>.var</code> des
+<code>DataFrame</code> ? Quels calculs fait exactement la méthode <code>.var</code> ? Aurait t-on pu prévoir le résultat
+dans ce cas ?</li>
+<li>Comparez l'inertie totale avec la somme des variances des variables.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgfe70e97" class="outline-2">
+<h2 id="orgfe70e97"><span class="section-number-2">7</span> Première classification \(C_{\text{A}}\)</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgf37ee0d" class="outline-3">
+<h3 id="orgf37ee0d"><span class="section-number-3">7.1</span> Construction des classes</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Nous allons nous donner une première classification \(C_{\text{A}}\) totalement arbitraire consistant à affecter :
+</p>
+<ul class="org-ul">
+<li>la classe \(c_{1}\) aux individus d'indices 0-49 ;</li>
+<li>la classe \(c_{2}\) aux individus d'indices 50-99 ;</li>
+<li>la classe \(c_{3}\) aux individus d'indices 100-176.</li>
+</ul>
+
+<p>
+<b>Rappel :</b> N'oubliez pas que <code>Python</code> indexe les listes, vecteurs, tableaux en commençant à 0 !
+</p>
+
+<ol class="org-ol">
+<li>Ajoutez une nouvelle variable <code>cls</code> contenant la classe de chaque individu suivant le schéma
+décrit précédemment.</li>
+<li>Visualiser le nuage d'individus sur les variables <code>OD280</code> et <code>Alcohol</code> en faisant apparaître
+votre classification. Aide : utilisez la fonction <code>px.scatter</code> en utilisant l'option <code>color</code> pour
+colorer les individus en fonction de leur classe.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org7f03e8a" class="outline-3">
+<h3 id="org7f03e8a"><span class="section-number-3">7.2</span> Inertie intra-classe</h3>
+<div class="outline-text-3" id="text-7-2">
+<ol class="org-ol">
+<li>Calculez le centre de gravité de chaque classe. Aide : utilisez la méthode <code>groupby</code> des
+<code>DataFrame</code> afin de regrouper les données sur la variable de classe et réaliser des traitements
+sur chaque groupe.</li>
+<li>Calculez l'inertie interne de chaque classe.</li>
+<li>En déduire l'inertie intra-classe de la classification.</li>
+<li>En déduire l'inertie inter-classe de la classification.</li>
+<li>Calculez le % d'inertie expliquée par la classification.</li>
+<li>Calculez la somme des variances empiriques corrigées des variables au sein de chaque classe.</li>
+<li>Comparez les inerties internes et le résultat de la question 6.</li>
+<li>Comment calculer l'inertie intra-classe de la classification à partir de la question 6.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org182e0fc" class="outline-3">
+<h3 id="org182e0fc"><span class="section-number-3">7.3</span> Inertie inter-classe</h3>
+<div class="outline-text-3" id="text-7-3">
+<ol class="org-ol">
+<li>Calculez le carré des distances entre le centre de gravité des classes et le centre de gravité
+des données.</li>
+<li>En déduire l'inertie inter-classe de la classification.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0b198e2" class="outline-2">
+<h2 id="org0b198e2"><span class="section-number-2">8</span> Seconde classification \(C_{\text{B}}\)</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Reprendre les questions de la partie précédente en construisant une classification \(C_{\text{B}}\) au
+hasard. Pour ce faire, utilisez la fonction <code>np.ramdom.choice</code> pour affecter les classes aux
+individus. N'hésitez pas à fixer la graine du générateur aléatoire avec la fonction <code>np.random.seed</code>
+afin de reproduire le "même hasard" d'une exécution à l'autre de votre script. 
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

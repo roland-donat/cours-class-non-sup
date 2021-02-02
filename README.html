@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TD1: Introduction à la classification non supervisée</title>
+<title>Cours de classification non supervisée</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Roland Donat" />
 <style type="text/css">
@@ -245,133 +245,197 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
-
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
-</script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
-<h1 class="title">TD1: Introduction à la classification non supervisée</h1>
+<h1 class="title">Cours de classification non supervisée</h1>
 <div id="table-of-contents">
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee622ab">1. Préambule</a>
+<li><a href="#orgce26fd3">1. Introduction</a></li>
+<li><a href="#org31fb12d">2. Objectifs Pédagogiques</a></li>
+<li><a href="#org3602f5b">3. Crédit</a></li>
+<li><a href="#org272e33a">4. Organisation pratique</a></li>
+<li><a href="#orgea00983">5. Cours</a>
 <ul>
-<li><a href="#orgc72abea">1.1. Crédit</a></li>
-<li><a href="#org6d36274">1.2. Environnement logiciel</a></li>
+<li><a href="#org1de7706">5.1. Cours 1 : introduction générale</a></li>
 </ul>
 </li>
-<li><a href="#org35f59ce">2. Introduction</a></li>
-<li><a href="#org1b87e04">3. Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org368e84e">4. Chargement des données et premières analyses</a></li>
-<li><a href="#org93e2829">5. Distance euclidienne</a></li>
-<li><a href="#orgd14913e">6. Inertie totale</a></li>
-<li><a href="#org893617e">7. Première classification \(C_{\text{A}}\)</a>
+<li><a href="#org085557a">6. Travaux dirigés</a>
 <ul>
-<li><a href="#org25f4d5d">7.1. Construction des classes</a></li>
-<li><a href="#org764f80a">7.2. Inertie intra-classe</a></li>
-<li><a href="#org59b6eac">7.3. Inertie inter-classe</a></li>
+<li><a href="#orgdf56f59">6.1. TD1 : distance et inertie</a></li>
 </ul>
 </li>
-<li><a href="#org0a9c253">8. Seconde classification \(C_{\text{B}}\)</a></li>
+<li><a href="#org0712235">7. Évaluation du cours</a></li>
+<li><a href="#orgec73fa2">8. Bibliographie</a>
+<ul>
+<li><a href="#org91cea5e">8.1. L'environnement <code>Python</code></a></li>
+<li><a href="#org592b3ba">8.2. Principaux modules <code>Python</code> utilisés</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgee622ab" class="outline-2">
-<h2 id="orgee622ab"><span class="section-number-2">1</span> Préambule</h2>
+<div id="outline-container-orgce26fd3" class="outline-2">
+<h2 id="orgce26fd3"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-orgc72abea" class="outline-3">
-<h3 id="orgc72abea"><span class="section-number-3">1.1</span> Crédit</h3>
-<div class="outline-text-3" id="text-1-1">
 <p>
-Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
-2019-2020. Le TD original était réalisé avec le logiciel <code>R</code> tandis que nous allons utiliser le
-logiciel <code>Python</code>.
+Ce site présente l'ensemble des ressources pédagogiques relatives au cours de classification non
+supervisée pour la promotion de STID2 à l'IUT de Vannes.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6d36274" class="outline-3">
-<h3 id="org6d36274"><span class="section-number-3">1.2</span> Environnement logiciel</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-Les travaux se dérouleront sous <code>Python</code>. Si vous disposez d'une connexion internet, je vous
-recommande d'utiliser une plateforme de <i>Notebooks</i> en ligne telle que
-<a href="https://deepnote.com"><code>DeepNote</code></a> sinon vous pouvez
-toujours utiliser <code>Python</code> en local en installant la distribution <a href="https://www.anaconda.com/products/individual"><code>Anaconda</code></a>. L'important est de vous
-assurer que vous utilisez bien la version <code>3.8</code> ou plus de <code>Python</code>.
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org35f59ce" class="outline-2">
-<h2 id="org35f59ce"><span class="section-number-2">2</span> Introduction</h2>
+<div id="outline-container-org31fb12d" class="outline-2">
+<h2 id="org31fb12d"><span class="section-number-2">2</span> Objectifs Pédagogiques</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-L'objectif de ce TD est de mettre en pratique les principales notions vues en cours en les
-appliquant sur un jeu de données réel.
-</p>
-
-<p>
-Pour ce faire, nous utiliserons une adaptation des données libres <a href="https://archive.ics.uci.edu/ml/datasets/wine">Wine Data Set</a> ne conservant que
-les variables quantitatives pour la mise en oeuvre de méthodes de classification non supervisée.
-</p>
-
-<p>
-Les données correspondent aux résultats d'analyses chimiques sur des vins issus d'une même région
-d'Italie mais produits par trois vignerons différents. L'analyse quantifie la présence des 13
-éléments suivants :  
+Les principaux objectifs pédagogiques du cours sont :
 </p>
 <ul class="org-ul">
-<li>Alcohol</li>
-<li>Malic acid</li>
-<li>Ash</li>
-<li>Alcalinity of ash</li>
-<li>Magnesium</li>
-<li>Total phenols</li>
-<li>Flavanoids</li>
-<li>Nonflavanoid phenols</li>
-<li>Proanthocyanins</li>
-<li>Color intensity</li>
-<li>Hue</li>
-<li>OD280/OD315 of diluted wines</li>
-<li>Proline</li>
+<li>Comprendre la problématique de classification non supervisée.</li>
+<li>Replacer cette problématique dans le contexte méthodologique de l'analyse de données.</li>
+<li>Introduire la notion d'inertie et son utilisation.</li>
+<li>Présenter différentes approches de classification non supervisée pour l'analyse des données
+quantitatives, à savoir les méthodes de partitionnement et les méthodes de construction d'arbres hiérarchiques
+le modèle de mélange gaussien.</li>
+<li>Savoir mettre en oeuvre ces méthodes avec la langage <code>Python</code>.</li>
 </ul>
+</div>
+</div>
 
+<div id="outline-container-org3602f5b" class="outline-2">
+<h2 id="org3602f5b"><span class="section-number-2">3</span> Crédit</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-Les données retravaillées à utiliser dans ce TD sont <a href="https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv">disponibles à ici</a>.
+Les cours et TD proposés s'inspirent largement des supports pédagogiques élaborées par Mme. Arlette
+ANTONI qui avait en charge le cours de classification non supervisée sur l'année 2019-2020. Vous
+pouvez consulter ces ressources pédagogiques en vous rendant dans <a href="https://moodle.univ-ubs.fr/course/view.php?id=3596">l'espace <i>Clustering</i> sur Moodle</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org1b87e04" class="outline-2">
-<h2 id="org1b87e04"><span class="section-number-2">3</span> Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-org272e33a" class="outline-2">
+<h2 id="org272e33a"><span class="section-number-2">4</span> Organisation pratique</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
+Compte tenu du contexte sanitaire actuel, les cours et TD sont prévus pour se tenir en 100%
+distanciel. Mais nous ne sommes pas à l'abri de changements de dernières minutes, restez donc sur
+vos gardes&#x2026;
+</p>
+
+<p>
+Pour suivre les cours, les TD et avoir de passionnants débats sur la classification non supervisée, merci de
+faire une demande d'inscription à l'équipe Teams <a href="https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&amp;tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529">STID2 - Classification non
+supervisée</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgea00983" class="outline-2">
+<h2 id="orgea00983"><span class="section-number-2">5</span> Cours</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
+donc requise)
+</p>
+</div>
+
+<div id="outline-container-org1de7706" class="outline-3">
+<h3 id="org1de7706"><span class="section-number-3">5.1</span> Cours 1 : introduction générale</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li><a href="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html">Slides HTML</a></li>
+<li>Scripts <code>Python</code> : à venir</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org085557a" class="outline-2">
+<h2 id="org085557a"><span class="section-number-2">6</span> Travaux dirigés</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgdf56f59" class="outline-3">
+<h3 id="orgdf56f59"><span class="section-number-3">6.1</span> TD1 : distance et inertie</h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li>Sujet de TD</li>
+<li>Scripts <code>Python</code> : à venir</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0712235" class="outline-2">
+<h2 id="org0712235"><span class="section-number-2">7</span> Évaluation du cours</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+L'objectif est d'évaluer votre compréhension des notions et méthodes abordées en cours et
+en TD. Pour ce faire, nous vérifierons votre aptitude à mettre en oeuvre les traitements
+informatiques adéquats face à une problématique de classification non supervisée. Les évaluations se
+présenteront sous la forme de quiz sur la plateforme Moodle. 
+</p>
+
+<p>
+Planning des évaluations (à venir)
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgec73fa2" class="outline-2">
+<h2 id="orgec73fa2"><span class="section-number-2">8</span> Bibliographie</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+L'élaboration de ce cours s'est appuyée sur de nombreuses références. Voici mes principales sources
+d'inspiration :
+</p>
+<ul class="org-ul">
+<li><a href="http://www2.agroparistech.fr/IMG/pdf/ClassificationNonSupervisee-AgroParisTech.pdf">Cours de classification non supervisée</a> de E. Lebarbier, T. Mary-Huard (Agro ParisTech).</li>
+<li><a href="https://www.math.univ-toulouse.fr/~besse/Wikistat/pdf/st-m-explo-classif.pdf">Cours de classification non supervisée</a> de Philippe Besse (INSA de Toulouse).</li>
+<li><a href="http://www.math.u-bordeaux.fr/~mchave100p/wordpress/wp-content/uploads/2013/10/cours_classif_quanti.pdf">Cours de classification automatique de données quantitatives</a> de Marie Chavent (Université de Bordeaux).</li>
+<li><a href="https://www.youtube.com/watch?v=SE_4dLh5vXY">Série de vidéos sur la classification non supervisée</a> de François Husson (Agrocampus Rennes).</li>
+</ul>
+</div>
+
+<div id="outline-container-org91cea5e" class="outline-3">
+<h3 id="org91cea5e"><span class="section-number-3">8.1</span> L'environnement <code>Python</code></h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+Les exemples du cours et les travaux dirigés utilisent le logiciel <code>Python</code>. Si vous pensez ne pas
+être à l'aise avec <code>Python</code>, je vous encourage vivement à faire une petite mise à niveau.
+</p>
+
+<p>
+Il existe énormément de très bon didacticiels sur internet qui traitent de l'apprentissage de ce
+langage en statistiques. À titre indicatif, je vous ai mis à disposition une série de TD sur
+<code>Python</code> dans l'<a href="https://teams.microsoft.com/_#/school/files/G%C3%A9n%C3%A9ral?threadId=19%3A541fb9397ced490aab1776de0de9202f%40thread.tacv2&amp;ctx=channel&amp;context=Python%2520-%2520les%2520bases&amp;rootfolder=%252Fsites%252FSTID2-Classificationnonsupervise%252FSupports%2520de%2520cours%252FPython%2520-%2520les%2520bases">équipe Teams du cours</a>. Ces TD reprennent la base de la base sur le langage
+<code>Python</code>. Autrement dit, si vous avez déjà programmé, vous risquez de vous ennuyer. Vous pouvez
+toujours jeter un oeil aux TD6, TD7 et TD8 qui portent sur le traitement des données.
+</p>
+
+<p>
+Par ailleurs, si vous disposez d'une connexion internet fiable, je vous recommande d'utiliser une
+plateforme de <i>Notebooks</i> en ligne telle que <a href="https://deepnote.com"><code>DeepNote</code></a>. L'inscription est gratuite et évite de
+devoir gérer l'installation de l'environnement <code>Python</code> sur votre poste. 
+Sinon vous pouvez bien évidement utiliser <code>Python</code> en local en installant la distribution
+<a href="https://www.anaconda.com/products/individual"><code>Anaconda</code></a>. 
+</p>
+
+<p>
+<b>L'important est de vous assurer que vous utilisez bien la version <code>3.8</code> ou supérieure de <code>Python</code>.</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org592b3ba" class="outline-3">
+<h3 id="org592b3ba"><span class="section-number-3">8.2</span> Principaux modules <code>Python</code> utilisés</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+Dans ce cours, nous utiliserons principalement les modules <code>Python</code> suivants :
 </p>
 <ul class="org-ul">
 <li><code>pandas</code>, pour la manipulation des données ;</li>
@@ -380,22 +444,24 @@ Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 nombres aléatoires ;</li>
 <li><code>scipy</code>, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
 distances ;</li>
+<li><code>sklearn</code>, pour avoir accès aux algorithmes de classification.</li>
 </ul>
 
 <p>
-Ces modules ne sont pas forcément installés dans votre environnement local ou distant de type
-<code>Deepnote</code>. Vous pouvez donc utiliser la commande <code>!pip install &lt;nom_module&gt;</code> pour les installer :
+Ces modules ne seront pas forcément installés par défaut dans votre environnement logiciel. Si vous
+utilisez un <i>notebook</i> (local ou distant de type <code>Deepnote</code>), vous pouvez utiliser la commande <code>!pip
+install &lt;nom_module&gt;</code> pour les installer : 
 </p>
 <div class="org-src-container">
 <pre class="src src-python">!pip install pandas
 !pip install plotly
 !pip install scipy
+!pip install sklearn
 </pre>
 </div>
 
-
 <p>
-Rappel : code d'import des modules :
+Vous pourrez ainsi les importer dans vos scripts de la manière suivante :
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd
@@ -405,135 +471,6 @@ Rappel : code d'import des modules :
 </pre>
 </div>
 </div>
-</div>
-
-
-<div id="outline-container-org368e84e" class="outline-2">
-<h2 id="org368e84e"><span class="section-number-2">4</span> Chargement des données et premières analyses</h2>
-<div class="outline-text-2" id="text-4">
-<ol class="org-ol">
-<li>Chargez les données dans votre environnement à l'aide de la fonction <code>pd.read_csv</code>.</li>
-<li>Faites une rapide analyse exploratoire de vos données :
-<ul class="org-ul">
-<li>de manière macroscopique avec les méthodes <code>.head</code>, <code>.describe</code> et <code>.info</code></li>
-<li>de manière visuelle en représentant la distribution de chaque variable en utilisant la fonction
-<code>px.box</code>. 
-Que constatez vous ?</li>
-</ul></li>
-<li>Centrez et réduisez les données. Aide : utilisez les méthodes <code>.mean</code> et <code>.std</code> des <code>DataFrame</code>.</li>
-<li>Calculez la matrice des corrélations linéaires avec la méthode <code>.corr</code> des <code>DataFrame</code>. Quelles
-sont les caractéristiques remarquables de cette matrice ?</li>
-<li>Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org93e2829" class="outline-2">
-<h2 id="org93e2829"><span class="section-number-2">5</span> Distance euclidienne</h2>
-<div class="outline-text-2" id="text-5">
-<ol class="org-ol">
-<li>Calculez la distance euclidienne entre les deux premiers individus. Aide :
-utilisez la méthode <code>sum</code> des <code>DataFrame</code>.</li>
-<li>Calculez la distance euclidienne entre le premier individu et le troisième, puis entre le
-deuxième et le troisième. Que constatez vous ?</li>
-<li>Calculez la matrice des distances euclidiennes. Aide : utilisez les fonctions <code>pdist</code> et
-<code>squareform</code> du package <code>scipy.spatial.distance</code>. Quelle sera la taille de cette matrice, quelles
-seront ses propriétés remarquables ?</li>
-<li>Vérifiez que les distances calculées au point 1 grâce à la matrice des distances calculée au
-point 3.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgd14913e" class="outline-2">
-<h2 id="orgd14913e"><span class="section-number-2">6</span> Inertie totale</h2>
-<div class="outline-text-2" id="text-6">
-<p>
-<b>Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
-pour chaque observation. Par ailleurs, la distance utilisée sera la distance euclidienne.</b> 
-</p>
-
-<ol class="org-ol">
-<li>Calculer le centre de gravité du nuage d'observations.</li>
-<li>Calculer les distances au carré entre les observations et le centre de gravité du nuage.</li>
-<li>En déduire l'inertie totale des données.</li>
-<li>Calculer la somme des variance empirique de chaque variable. Aide : utilisez la méthode <code>.var</code> des
-<code>DataFrame</code> ? Quels calculs fait exactement la méthode <code>.var</code> ? Aurait t-on pu prévoir le résultat
-dans ce cas ?</li>
-<li>Comparez l'inertie totale avec la somme des variances des variables.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org893617e" class="outline-2">
-<h2 id="org893617e"><span class="section-number-2">7</span> Première classification \(C_{\text{A}}\)</h2>
-<div class="outline-text-2" id="text-7">
-</div>
-<div id="outline-container-org25f4d5d" class="outline-3">
-<h3 id="org25f4d5d"><span class="section-number-3">7.1</span> Construction des classes</h3>
-<div class="outline-text-3" id="text-7-1">
-<p>
-Nous allons nous donner une première classification \(C_{\text{A}}\) totalement arbitraire consistant à affecter :
-</p>
-<ul class="org-ul">
-<li>la classe \(c_{1}\) aux individus d'indices 0-49 ;</li>
-<li>la classe \(c_{2}\) aux individus d'indices 50-99 ;</li>
-<li>la classe \(c_{3}\) aux individus d'indices 100-176.</li>
-</ul>
-
-<p>
-<b>Rappel :</b> N'oubliez pas que <code>Python</code> indexe les listes, vecteurs, tableaux en commençant à 0 !
-</p>
-
-<ol class="org-ol">
-<li>Ajoutez une nouvelle variable <code>cls_CA</code> contenant la classe de chaque individu suivant le schéma
-décrit précédemment.</li>
-<li>Visualiser le nuage d'individus sur les variables <code>OD280</code> et <code>Alcohol</code> en faisant apparaître
-votre classification. Aide : utilisez la fonction <code>px.scatter</code> en utilisant l'option <code>color</code> pour
-colorer les individus en fonction de leur classe.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org764f80a" class="outline-3">
-<h3 id="org764f80a"><span class="section-number-3">7.2</span> Inertie intra-classe</h3>
-<div class="outline-text-3" id="text-7-2">
-<ol class="org-ol">
-<li>Calculez le centre de gravité de chaque classe. Aide : utilisez la méthode <code>groupby</code> des
-<code>DataFrame</code> afin de regrouper les données sur la variable de classe et réaliser des traitements
-sur chaque groupe.</li>
-<li>Calculez l'inertie interne de chaque classe.</li>
-<li>En déduire l'inertie intra-classe de la classification.</li>
-<li>En déduire l'inertie inter-classe de la classification.</li>
-<li>Calculez le % d'inertie expliquée par la classification.</li>
-<li>Calculez la somme des variances empiriques corrigées des variables au sein de chaque classe.</li>
-<li>Comparez les inerties internes et le résultat de la question 6.</li>
-<li>Comment calculer l'inertie intra-classe de la classification à partir de la question 6.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org59b6eac" class="outline-3">
-<h3 id="org59b6eac"><span class="section-number-3">7.3</span> Inertie inter-classe</h3>
-<div class="outline-text-3" id="text-7-3">
-<ol class="org-ol">
-<li>Calculez le carré des distances entre le centre de gravité des classes et le centre de gravité
-des données.</li>
-<li>En déduire l'inertie inter-classe de la classification.</li>
-</ol>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org0a9c253" class="outline-2">
-<h2 id="org0a9c253"><span class="section-number-2">8</span> Seconde classification \(C_{\text{B}}\)</h2>
-<div class="outline-text-2" id="text-8">
-<p>
-Reprendre les questions de la partie précédente en construisant une classification \(C_{\text{B}}\) au
-hasard. Pour ce faire, utilisez la fonction <code>np.ramdom.choice</code> pour affecter les classes aux
-individus. N'hésitez pas à fixer la graine du générateur aléatoire avec la fonction <code>np.random.seed</code>
-afin de reproduire le "même hasard" d'une exécution à l'autre de votre script. 
-</p>
 </div>
 </div>
 </div>

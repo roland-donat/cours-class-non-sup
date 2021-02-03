@@ -1,22 +1,22 @@
 
 # Table des matières
 
-1.  [Introduction](#org26dbbbc)
-2.  [Objectifs Pédagogiques](#org67a380b)
-3.  [Crédit](#orgda976bb)
-4.  [Organisation pratique](#orga2971cf)
-5.  [Cours](#orge3bbcba)
-    1.  [Cours 1 : introduction générale](#org3f59b7c)
-6.  [Travaux dirigés](#org07cc8d2)
-    1.  [TD1 : distance et inertie](#org4d2c7ee)
-7.  [Évaluation du cours](#org249bc8f)
-8.  [Références](#orgf45e682)
-    1.  [L'environnement `Python`](#org09c9a2b)
-    2.  [Principaux modules `Python` utilisés](#org115ae25)
+1.  [Introduction](#org7ffb777)
+2.  [Objectifs Pédagogiques](#orgef85acb)
+3.  [Crédit](#org6eb5686)
+4.  [Organisation pratique](#org7e2e7f7)
+5.  [Cours](#orgdac92c1)
+    1.  [Cours 1 : introduction générale](#org82483bd)
+6.  [Travaux dirigés](#orgc0500d8)
+    1.  [TD1 : distance et inertie](#org8cdbab3)
+7.  [Évaluation du cours](#org8b7b6c3)
+8.  [Références](#org3af4966)
+    1.  [L'environnement `Python`](#orgf1373f9)
+    2.  [Principaux modules `Python` utilisés](#orgc770e73)
 
 
 
-<a id="org26dbbbc"></a>
+<a id="org7ffb777"></a>
 
 # Introduction
 
@@ -24,7 +24,7 @@ Ce site présente l'ensemble des ressources pédagogiques relatives au cours de 
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
 
 
-<a id="org67a380b"></a>
+<a id="orgef85acb"></a>
 
 # Objectifs Pédagogiques
 
@@ -39,7 +39,7 @@ Les principaux objectifs pédagogiques du cours sont :
 -   Savoir mettre en oeuvre ces méthodes avec la langage `Python`.
 
 
-<a id="orgda976bb"></a>
+<a id="org6eb5686"></a>
 
 # Crédit
 
@@ -48,7 +48,7 @@ ANTONI qui avait en charge le cours de classification non supervisée sur l'ann�
 pouvez consulter ces ressources pédagogiques en vous rendant dans [l'espace *Clustering* sur Moodle](https://moodle.univ-ubs.fr/course/view.php?id=3596).
 
 
-<a id="orga2971cf"></a>
+<a id="org7e2e7f7"></a>
 
 # Organisation pratique
 
@@ -61,7 +61,7 @@ faire une demande d'inscription à l'équipe Teams [STID2 - Classification non
 supervisée](https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529).
 
 
-<a id="orge3bbcba"></a>
+<a id="orgdac92c1"></a>
 
 # Cours
 
@@ -71,7 +71,7 @@ donc requise).
 **Note : Il est recommandé d'utiliser le navigateur `Firefox` pour visualiser les slides de cours.**
 
 
-<a id="org3f59b7c"></a>
+<a id="org82483bd"></a>
 
 ## Cours 1 : introduction générale
 
@@ -79,12 +79,12 @@ donc requise).
 -   Scripts `Python` : à venir
 
 
-<a id="org07cc8d2"></a>
+<a id="orgc0500d8"></a>
 
 # Travaux dirigés
 
 
-<a id="org4d2c7ee"></a>
+<a id="org8cdbab3"></a>
 
 ## TD1 : distance et inertie
 
@@ -92,7 +92,7 @@ donc requise).
 -   Scripts `Python` : à venir
 
 
-<a id="org249bc8f"></a>
+<a id="org8b7b6c3"></a>
 
 # Évaluation du cours
 
@@ -104,7 +104,7 @@ présenteront sous la forme de quiz sur la plateforme Moodle.
 Planning des évaluations (à venir)
 
 
-<a id="orgf45e682"></a>
+<a id="org3af4966"></a>
 
 # Références
 
@@ -119,7 +119,7 @@ d'inspiration :
     *clustering* et visualiser les résultats.
 
 
-<a id="org09c9a2b"></a>
+<a id="orgf1373f9"></a>
 
 ## L'environnement `Python`
 
@@ -141,7 +141,7 @@ Sinon vous pouvez bien évidement utiliser `Python` en local en installant la di
 **L'important est de vous assurer que vous utilisez bien la version `3.8` ou supérieure de `Python`.**
 
 
-<a id="org115ae25"></a>
+<a id="orgc770e73"></a>
 
 ## Principaux modules `Python` utilisés
 

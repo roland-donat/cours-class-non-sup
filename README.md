@@ -1,22 +1,22 @@
 
 # Table des matières
 
-1.  [Introduction](#orgb5d1ffa)
-2.  [Objectifs Pédagogiques](#org39a384c)
-3.  [Crédit](#org3226cc2)
-4.  [Organisation pratique](#org53e52a7)
-5.  [Cours](#org762bf6f)
-    1.  [Cours 1 : introduction générale](#org4bc8bc4)
-6.  [Travaux dirigés](#org0b3aa89)
-    1.  [TD1 : distance et inertie](#org9ae3112)
-7.  [Évaluation du cours](#orgd5d1443)
-8.  [Bibliographie](#org4949b42)
-    1.  [L'environnement `Python`](#org9989fb1)
-    2.  [Principaux modules `Python` utilisés](#orgf4db8c8)
+1.  [Introduction](#org26dbbbc)
+2.  [Objectifs Pédagogiques](#org67a380b)
+3.  [Crédit](#orgda976bb)
+4.  [Organisation pratique](#orga2971cf)
+5.  [Cours](#orge3bbcba)
+    1.  [Cours 1 : introduction générale](#org3f59b7c)
+6.  [Travaux dirigés](#org07cc8d2)
+    1.  [TD1 : distance et inertie](#org4d2c7ee)
+7.  [Évaluation du cours](#org249bc8f)
+8.  [Références](#orgf45e682)
+    1.  [L'environnement `Python`](#org09c9a2b)
+    2.  [Principaux modules `Python` utilisés](#org115ae25)
 
 
 
-<a id="orgb5d1ffa"></a>
+<a id="org26dbbbc"></a>
 
 # Introduction
 
@@ -24,7 +24,7 @@ Ce site présente l'ensemble des ressources pédagogiques relatives au cours de 
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
 
 
-<a id="org39a384c"></a>
+<a id="org67a380b"></a>
 
 # Objectifs Pédagogiques
 
@@ -39,7 +39,7 @@ Les principaux objectifs pédagogiques du cours sont :
 -   Savoir mettre en oeuvre ces méthodes avec la langage `Python`.
 
 
-<a id="org3226cc2"></a>
+<a id="orgda976bb"></a>
 
 # Crédit
 
@@ -48,7 +48,7 @@ ANTONI qui avait en charge le cours de classification non supervisée sur l'ann�
 pouvez consulter ces ressources pédagogiques en vous rendant dans [l'espace *Clustering* sur Moodle](https://moodle.univ-ubs.fr/course/view.php?id=3596).
 
 
-<a id="org53e52a7"></a>
+<a id="orga2971cf"></a>
 
 # Organisation pratique
 
@@ -61,15 +61,17 @@ faire une demande d'inscription à l'équipe Teams [STID2 - Classification non
 supervisée](https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529).
 
 
-<a id="org762bf6f"></a>
+<a id="orge3bbcba"></a>
 
 # Cours
 
 Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
-donc requise)
+donc requise).
+
+**Note : Il est recommandé d'utiliser le navigateur `Firefox` pour visualiser les slides de cours.**
 
 
-<a id="org4bc8bc4"></a>
+<a id="org3f59b7c"></a>
 
 ## Cours 1 : introduction générale
 
@@ -77,12 +79,12 @@ donc requise)
 -   Scripts `Python` : à venir
 
 
-<a id="org0b3aa89"></a>
+<a id="org07cc8d2"></a>
 
 # Travaux dirigés
 
 
-<a id="org9ae3112"></a>
+<a id="org4d2c7ee"></a>
 
 ## TD1 : distance et inertie
 
@@ -90,7 +92,7 @@ donc requise)
 -   Scripts `Python` : à venir
 
 
-<a id="orgd5d1443"></a>
+<a id="org249bc8f"></a>
 
 # Évaluation du cours
 
@@ -102,9 +104,9 @@ présenteront sous la forme de quiz sur la plateforme Moodle.
 Planning des évaluations (à venir)
 
 
-<a id="org4949b42"></a>
+<a id="orgf45e682"></a>
 
-# Bibliographie
+# Références
 
 L'élaboration de ce cours s'est appuyée sur de nombreuses références. Voici mes principales sources
 d'inspiration :
@@ -113,9 +115,11 @@ d'inspiration :
 -   [Cours de classification non supervisée](https://www.math.univ-toulouse.fr/~besse/Wikistat/pdf/st-m-explo-classif.pdf) de Philippe Besse (INSA de Toulouse).
 -   [Cours de classification automatique de données quantitatives](http://www.math.u-bordeaux.fr/~mchave100p/wordpress/wp-content/uploads/2013/10/cours_classif_quanti.pdf) de Marie Chavent (Université de Bordeaux).
 -   [Série de vidéos sur la classification non supervisée](https://www.youtube.com/watch?v=SE_4dLh5vXY) de François Husson (Agrocampus Rennes).
+-   [Plateforme `EduClust`](https://educlust.dbvis.de) de l'Universität Konstanz qui permet de expérimenter certains algorithmes de
+    *clustering* et visualiser les résultats.
 
 
-<a id="org9989fb1"></a>
+<a id="org09c9a2b"></a>
 
 ## L'environnement `Python`
 
@@ -137,7 +141,7 @@ Sinon vous pouvez bien évidement utiliser `Python` en local en installant la di
 **L'important est de vous assurer que vous utilisez bien la version `3.8` ou supérieure de `Python`.**
 
 
-<a id="orgf4db8c8"></a>
+<a id="org115ae25"></a>
 
 ## Principaux modules `Python` utilisés
 

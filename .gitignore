@@ -1,3 +1,13 @@
+*.bbl
+*.tex
+*.pdf
+*.js
+_minted*
+ressources/
+
+
+# Github generated .gitignore
+# ---------------------------
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

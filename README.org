@@ -1,0 +1,387 @@
+# -*- coding: utf-8 -*-
+#+TITLE: Cours de classification non supervisée
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+# #+DATE: 
+
+# ==============================================
+# Document Configuration
+# ======================
+# Orgmode
+:CONFIG:
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:t toc:t \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+DRAWERS: CONFIG OPTIONS CACHE MACROS
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+:END:
+
+# LaTeX
+# -----
+# Class parameters
+:CONFIG:
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+:END:
+# Packages
+:CONFIG:
+#+LATEX_HEADER: \usepackage[french]{babel}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{minted}
+:END:
+# Layout
+:CONFIG:
+# Figures path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+# Colors
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+# Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+# Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+# Geometry
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+# References
+#+LATEX: \renewcommand*{\refname}{}*
+:END:
+# LaTeX Compilator
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+:END:
+
+# HTML
+# ----
+:CONFIG:
+# Org HTML Macros
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+
+# HTML options
+# ------------
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes.css" />
+# #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./ubs_iut_vannes.css" />
+:END:
+
+# Publishing
+# ----------
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+	
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+	 :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+	 ("td-attach"
+	 :base-directory "./td/"
+	 :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("cours-attach"
+	 :base-directory "./cours/"
+	 :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ("projet-attach"
+	 :base-directory "./projet/"
+	 :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+	 
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+	 ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+:END:
+
+# ==============================================
+# Document starts here
+# ====================
+
+#+LATEX: \clearpage
+
+* Pilotage                                                         :noexport:
+** 2021-02-03 Mail - [Classification non supervisée] Infos démarrage 
+
+Bonjour à toutes et à tous,
+
+Je suis ravi de débuter notre cours de classification non supervisée la semaine
+prochaine. Comme vous avez pu le constater, l'horaire de notre cours les mardis à
+8h va mettre à l'épreuve notre mental, mais la bonne nouvelle, c'est qu'on ne peut pas faire la fête
+la veille de toute façon. 
+
+Par ailleurs, compte tenu du contexte sanitaire actuel, les cours et TD sont prévus pour se tenir
+entièrement à distance. Mais nous ne sommes pas à l'abri de changements de dernières minutes, restez
+donc sur vos gardes...
+
+Pour suivre les cours, les TD et avoir de passionnants débats sur les statistiques et l'analyse de
+données (on s'amuse comme on peut en ces temps difficiles), merci de
+faire une demande d'inscription à l'équipe Teams [[https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529][STID2 - Classification non supervisée]].
+
+Enfin, vous trouverez l'ensemble des ressources pédagogiques du cours sur la page Github
+suivante : https://roland-donat.github.io/cours-class-non-sup/README.html
+
+Merci de prendre le temps de parcourir attentivement cette page qui vous donnera diverses
+informations utiles sur le cours. Il est à noter que son contenu évoluera au fil de l'eau dans 
+les prochaines semaines.
+
+Sur ce, il ne me reste plus qu'à vous souhaitez une bonne semaine et à mardi prochain 8h !
+
+Bien à vous,
+
+Roland Donat.
+
+
+* Introduction
+
+Ce site présente l'ensemble des ressources pédagogiques relatives au cours de classification non
+supervisée pour la promotion de STID2 à l'IUT de Vannes.
+
+* Objectifs Pédagogiques
+
+Les principaux objectifs pédagogiques du cours sont :
+- Comprendre la problématique de classification non supervisée.
+- Replacer cette problématique dans le contexte méthodologique de l'analyse de données.
+- Introduire la notion d'inertie et son utilisation.
+- Présenter différentes approches de classification non supervisée pour l'analyse des données
+  quantitatives, à savoir les méthodes de partitionnement et les méthodes de construction d'arbres hiérarchiques
+  le modèle de mélange gaussien.
+- Savoir mettre en oeuvre ces méthodes avec la langage =Python=.
+
+* Crédit
+
+Les cours et TD proposés s'inspirent largement des supports pédagogiques élaborées par Mme. Arlette
+ANTONI qui avait en charge le cours de classification non supervisée sur l'année 2019-2020. Vous
+pouvez consulter ces ressources pédagogiques en vous rendant dans [[https://moodle.univ-ubs.fr/course/view.php?id=3596][l'espace /Clustering/ sur Moodle]].
+
+* Organisation pratique
+
+Compte tenu du contexte sanitaire actuel, les cours et TD sont prévus pour se tenir en 100%
+distanciel. Mais nous ne sommes pas à l'abri de changements de dernières minutes, restez donc sur
+vos gardes...
+
+Pour suivre les cours, les TD et avoir de passionnants débats sur la classification non supervisée, merci de
+faire une demande d'inscription à l'équipe Teams [[https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529][STID2 - Classification non
+supervisée]].
+
+* Cours
+
+Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
+donc requise).
+
+*Note : Il est recommandé d'utiliser le navigateur =Firefox= pour visualiser les slides de cours.*
+
+** Cours 1 : introduction générale
+
+- [[https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html][Slides HTML]]
+- Scripts =Python= : à venir
+
+* Travaux dirigés
+
+** TD1 : distance et inertie 
+
+- Sujet de TD
+- Scripts =Python= : à venir
+
+* Évaluation du cours
+
+L'objectif est d'évaluer votre compréhension des notions et méthodes abordées en cours et
+en TD. Pour ce faire, nous vérifierons votre aptitude à mettre en oeuvre les traitements
+informatiques adéquats face à une problématique de classification non supervisée. Les évaluations se
+présenteront sous la forme de quiz sur la plateforme Moodle. 
+
+Planning des évaluations (à venir)
+
+
+* Références
+
+L'élaboration de ce cours s'est appuyée sur de nombreuses références. Voici mes principales sources
+d'inspiration :
+- [[http://www2.agroparistech.fr/IMG/pdf/ClassificationNonSupervisee-AgroParisTech.pdf][Cours de classification non supervisée]] de E. Lebarbier, T. Mary-Huard (Agro ParisTech).
+- [[https://www.math.univ-toulouse.fr/~besse/Wikistat/pdf/st-m-explo-classif.pdf][Cours de classification non supervisée]] de Philippe Besse (INSA de Toulouse).
+- [[http://www.math.u-bordeaux.fr/~mchave100p/wordpress/wp-content/uploads/2013/10/cours_classif_quanti.pdf][Cours de classification automatique de données quantitatives]] de Marie Chavent (Université de Bordeaux).
+- [[https://www.youtube.com/watch?v=SE_4dLh5vXY][Série de vidéos sur la classification non supervisée]] de François Husson (Agrocampus Rennes).
+- [[https://educlust.dbvis.de][Plateforme =EduClust=]] de l'Universität Konstanz qui permet de expérimenter certains algorithmes de
+  /clustering/ et visualiser les résultats.
+
+** L'environnement =Python=
+Les exemples du cours et les travaux dirigés utilisent le logiciel =Python=. Si vous pensez ne pas
+être à l'aise avec =Python=, je vous encourage vivement à faire une petite mise à niveau.
+
+Il existe énormément de très bon didacticiels sur internet qui traitent de l'apprentissage de ce
+langage en statistiques. À titre indicatif, je vous ai mis à disposition une série de TD sur
+=Python= dans l'[[https://teams.microsoft.com/_#/school/files/G%C3%A9n%C3%A9ral?threadId=19%3A541fb9397ced490aab1776de0de9202f%40thread.tacv2&ctx=channel&context=Python%2520-%2520les%2520bases&rootfolder=%252Fsites%252FSTID2-Classificationnonsupervise%252FSupports%2520de%2520cours%252FPython%2520-%2520les%2520bases][équipe Teams du cours]]. Ces TD reprennent la base de la base sur le langage
+=Python=. Autrement dit, si vous avez déjà programmé, vous risquez de vous ennuyer. Vous pouvez
+toujours jeter un oeil aux TD6, TD7 et TD8 qui portent sur le traitement des données.
+
+Par ailleurs, si vous disposez d'une connexion internet fiable, je vous recommande d'utiliser une
+plateforme de /Notebooks/ en ligne telle que [[https://deepnote.com][=DeepNote=]]. L'inscription est gratuite et évite de
+devoir gérer l'installation de l'environnement =Python= sur votre poste. 
+Sinon vous pouvez bien évidement utiliser =Python= en local en installant la distribution
+[[https://www.anaconda.com/products/individual][=Anaconda=]]. 
+
+*L'important est de vous assurer que vous utilisez bien la version =3.8= ou supérieure de =Python=.*
+
+** Principaux modules =Python= utilisés
+
+Dans ce cours, nous utiliserons principalement les modules =Python= suivants :
+- =pandas=, pour la manipulation des données ;
+- =plotly=, pour les représentations graphiques ;
+- =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
+  nombres aléatoires ;
+- =scipy=, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
+  distances ;
+- =sklearn=, pour avoir accès aux algorithmes de classification.
+
+Ces modules ne seront pas forcément installés par défaut dans votre environnement logiciel. Si vous
+utilisez un /notebook/ (local ou distant de type =Deepnote=), vous pouvez utiliser la commande =!pip
+install <nom_module>= pour les installer : 
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :results silent :exports code
+!pip install pandas
+!pip install plotly
+!pip install scipy
+!pip install sklearn
+#+END_SRC
+ 
+Vous pourrez ainsi les importer dans vos scripts de la manière suivante :
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :session :tangle td1.py :results silent :exports code
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from scipy.spatial.distance import pdist, cdist, squareform
+#+END_SRC
+
+

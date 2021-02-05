@@ -1,22 +1,20 @@
 
 # Table des matières
 
-1.  [Introduction](#orga2fd91b)
-2.  [Objectifs Pédagogiques](#org8056f85)
-3.  [Crédit](#orgf217d55)
-4.  [Organisation pratique](#orgdd90a97)
-5.  [Cours](#org4f608c2)
-    1.  [Cours 1 : introduction générale](#org1355b44)
-6.  [Travaux dirigés](#orga9a022b)
-    1.  [TD1 : distance et inertie](#org19e05d5)
-7.  [Évaluation du cours](#org07ed835)
-8.  [Références](#org4b2d890)
-    1.  [L'environnement `Python`](#orgf5beb15)
-    2.  [Principaux modules `Python` utilisés](#org380aea1)
+1.  [Introduction](#org0a5597e)
+2.  [Objectifs Pédagogiques](#org113a01d)
+3.  [Crédit](#orge499408)
+4.  [Organisation pratique](#orge3cfb54)
+5.  [Cours](#orga0774a6)
+    1.  [Semaine 1 : Introduction et notions fondamentales](#org3db7a1c)
+6.  [Évaluation du cours](#orgdf45336)
+7.  [Références](#org20be58c)
+    1.  [L'environnement `Python`](#orgfa84dfb)
+    2.  [Principaux modules `Python` utilisés](#orgda2794d)
 
 
 
-<a id="orga2fd91b"></a>
+<a id="org0a5597e"></a>
 
 # Introduction
 
@@ -24,7 +22,7 @@ Ce site présente l'ensemble des ressources pédagogiques relatives au cours de 
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
 
 
-<a id="org8056f85"></a>
+<a id="org113a01d"></a>
 
 # Objectifs Pédagogiques
 
@@ -39,7 +37,7 @@ Les principaux objectifs pédagogiques du cours sont :
 -   Savoir mettre en oeuvre ces méthodes avec la langage `Python`.
 
 
-<a id="orgf217d55"></a>
+<a id="orge499408"></a>
 
 # Crédit
 
@@ -48,7 +46,7 @@ ANTONI qui avait en charge le cours de classification non supervisée sur l'ann�
 pouvez consulter ces ressources pédagogiques en vous rendant dans [l'espace *Clustering* sur Moodle](https://moodle.univ-ubs.fr/course/view.php?id=3596).
 
 
-<a id="orgdd90a97"></a>
+<a id="orge3cfb54"></a>
 
 # Organisation pratique
 
@@ -61,7 +59,7 @@ faire une demande d'inscription à l'équipe Teams [STID2 - Classification non
 supervisée](https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529).
 
 
-<a id="org4f608c2"></a>
+<a id="orga0774a6"></a>
 
 # Cours
 
@@ -71,31 +69,25 @@ donc requise).
 **Note : Il est recommandé d'utiliser le navigateur `Firefox` pour visualiser les slides de cours.**
 
 
-<a id="org1355b44"></a>
+<a id="org3db7a1c"></a>
 
-## Cours 1 : introduction générale
+## Semaine 1 : Introduction et notions fondamentales
 
--   [Slides HTML](https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
+**Cours :**
+
+-   [Slides du cours HTML](https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
 -   [Scripts `Python` du cours](https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale)
 
 Note : pour reproduire les exemples du cours, n'oubliez pas de télécharger le module [`clust_util.py`](https://github.com/roland-donat/cours-class-non-sup/tree/main/python)
 en le plaçant dans le même répertoire que les scripts.
 
-
-<a id="orga9a022b"></a>
-
-# Travaux dirigés
-
-
-<a id="org19e05d5"></a>
-
-## TD1 : distance et inertie
+**TD :**
 
 -   [Sujet du TD](https://roland-donat.github.io/cours-class-non-sup/td/td1/td1.html)
 -   Scripts `Python` : à venir
 
 
-<a id="org07ed835"></a>
+<a id="orgdf45336"></a>
 
 # Évaluation du cours
 
@@ -107,7 +99,7 @@ présenteront sous la forme de quiz sur la plateforme Moodle.
 Planning des évaluations (à venir)
 
 
-<a id="org4b2d890"></a>
+<a id="org20be58c"></a>
 
 # Références
 
@@ -122,7 +114,7 @@ d'inspiration :
     *clustering* et visualiser les résultats.
 
 
-<a id="orgf5beb15"></a>
+<a id="orgfa84dfb"></a>
 
 ## L'environnement `Python`
 
@@ -144,7 +136,7 @@ Sinon vous pouvez bien évidement utiliser `Python` en local en installant la di
 **L'important est de vous assurer que vous utilisez bien la version `3.8` ou supérieure de `Python`.**
 
 
-<a id="org380aea1"></a>
+<a id="orgda2794d"></a>
 
 ## Principaux modules `Python` utilisés
 

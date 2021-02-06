@@ -40,7 +40,7 @@ COLORS = {
 }
 
 # Indique si l'on souhaite afficher les graphiques dans le navigateur web
-show_plots = True
+show_plots = False
 
 
 # Traitements

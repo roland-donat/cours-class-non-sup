@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Classification non supervisée - Clustering  <br> <br> <font size="10">Méthodes de partitionnement</font></title>
+<meta name="author" content="(Roland Donat)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/white.css" id="theme"/>
+
+<link rel="stylesheet" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_reveal.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg"><h1 class="title">Classification non supervisée - Clustering  <br> <br> <font size="10">Méthodes de partitionnement</font></h1><h2 class="author">Roland Donat</h2><h2 class="date"> <br>STID2 - Année universitaire 2020-2021</h2>
+</section>
+<section id="table-of-contents"><div id="table-of-contents">
+<h2>Table des matières</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-org1ed2068">Préambule</a></li>
+<li><a href="#/slide-orgc47fb7e">Généralités</a></li>
+<li><a href="#/slide-orgecb7831">Méthode des moyennes mobiles (k-Means)</a></li>
+<li><a href="#/slide-orgd9a208a">Résumé de la séance</a></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<section id="slide-org1ed2068">
+<h2 id="org1ed2068">Préambule</h2>
+<div class="block-definition">
+<p>
+<h4>Objectifs de la séance</h4>
+</p>
+
+<ul>
+<li>Rappeler la problématique de partitionnement des données</li>
+<li>Présenter la méthode des centres mobiles</li>
+<li>Donner un aperçu de la méthode du mélange gaussien</li>
+
+</ul>
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc47fb7e">
+<h2 id="orgc47fb7e">Généralités</h2>
+
+<div class="figure">
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/vegetables.jpeg" alt="Légumes en vrac" width="80%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga9cca39">
+<h3 id="orga9cca39">Rappels</h3>
+<div class="block-definition">
+<p>
+<h4>Qu'est ce qu'une classification non supervisée</h4>
+</p>
+
+<ul>
+<li>C'est rechercher des regroupements "naturels" entre des individus</li>
+<li>Le nombre de groupes n'est pas connu <i>a priori</i></li>
+<li>Aucune connaissance sur les individus n'est disponible <i>a priori</i></li>
+<li>Il s'agit d'une méthode de statistique exploratoire permettant de comprendre les données</li>
+
+</ul>
+
+</div>
+
+<div class="block-definition">
+<p>
+<h4>Principes générals de classification non supervisée</h4>
+</p>
+
+<ul>
+<li>Construire des groupes ayant une inertie intra-classe faible, i.e. une similarité intra-classe forte</li>
+
+</ul>
+
+<p>
+<b>ou de manière équivalente :</b>
+</p>
+
+<ul>
+<li>Construire des groupes ayant une inertie inter-classe forte, i.e. une similarité inter-classe faible</li>
+
+</ul>
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org8620f11">
+<h3 id="org8620f11">Qu'est qu'une partition</h3>
+<div class="block-definition">
+<p>
+<h4>Partition d'un ensemble d'individus</h4>
+</p>
+
+<ul>
+<li>Soit \(\boldsymbol{X}\) un tableau de données contenant \(N\) individus \(\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}\).</li>
+<li>Les ensembles d'indices \(C_{1}, \ldots, C_{k}, \ldots, C_{K} \subseteq \{1, 2, \ldots, N\}\)
+forment une <b>partition</b>, notée \(C\), des données \(\boldsymbol{X}\) en \(K\) classes 
+si : 
+<ul>
+<li>Pour tout \(k\), \(C_{k} \neq \varnothing\), i.e. aucune classe n'est vide</li>
+<li>\(\bigcup_{k=1}^{K} C_{k} = \{1, \ldots, N \}\), i.e. la réunion des classes contient les indidces
+de tous les individus du jeu de données \(\boldsymbol{X}\)</li>
+<li>Pour tout \(k_{1}, k_{2}\), \(C_{k_{1}} \cap C_{k_{2}} = \varnothing\) si \(k_{1} \neq k_{2}\), i.e. les classes
+sont deux à deux disjointes</li>
+
+</ul></li>
+
+</ul>
+
+</div>
+
+
+<div class="block-example">
+<p>
+<h4>Exemples</h4>
+</p>
+
+<ul>
+<li>Considérons un jeu de données à 5 individus \(\boldsymbol{X} = \{\boldsymbol{x}_{1}, \boldsymbol{x}_{2}, \boldsymbol{x}_{3}, \boldsymbol{x}_{4}, \boldsymbol{x}_{5}\}\)</li>
+<li>L'ensemble \(C_{1} = \{1, 2, 3, 4, 5\}\) est une partition à une classe, 
+i.e. \(K = 1\)</li>
+<li>Les ensembles  
+\(C_{1} = \{1, 3, 5\}\) et 
+\(C_{2} = \{2, 4\}\)
+forment une partition à deux classes, i.e. \(K = 2\)</li>
+<li>Les ensembles 
+\(C_{1} = \{4, 5\}\),
+\(C_{2} = \{1\}\),
+\(C_{3} = \{3\}\) et
+\(C_{4} = \{2\}\)
+forment une partition à quatre classes, i.e. \(K = 4\)</li>
+
+</ul>
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org11533b3">
+<h3 id="org11533b3">Résumé statistique d'une partition</h3>
+<div class="block-definition">
+<p>
+<h4>Résumé statistique d'une classe</h4>
+</p>
+
+<ul>
+<li>Soit \(\boldsymbol{X}\) un tableau de données contenant \(N\) individus
+\(\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}\) définis dans \(\mathbb{R}^{D}\)</li>
+
+<li>Considérons une partition à \(K\) classes, notée \(C = \{C_{1},\ldots,C_{K}\}\)</li>
+
+<li>Chaque classe \(C_{k}\) peut, entre autres, être caractérisée par :
+<ul>
+<li>son effectif : \(N_{k} = \text{Card}(C_{k})\)</li>
+<li>son centre (point moyen, centre de gravité) : 
+\[
+    \boldsymbol{\mu}_{k} = \frac{1}{N_{k}}\sum_{n \in C_{k}} \boldsymbol{x}_{n} =
+    \left(\frac{1}{N_{k}}\sum_{n \in C_{k}} x_{n, 1}, \ldots, \frac{1}{N_{k}}\sum_{n \in C_{k}} x_{n, D}\right)
+    \]</li>
+<li>la dispersion autour de son centre caractérisée par la matrice de variance-covariance empirique de la classe :
+\[
+    \boldsymbol{W}_{k} = \frac{1}{N_{k} - 1}\sum_{n \in C_{k}} (\boldsymbol{x}_{n} -
+    \boldsymbol{\mu}_{k})(\boldsymbol{x}_{n} - \boldsymbol{\mu}_{k})^{T}
+    \]</li>
+<li>son inertie de classe (cas équipondéré) : \(I_{\boldsymbol{\mu}_{k}}(C_{k}) = \sum_{n \in C_{k}}
+    d(\boldsymbol{x}_{n}, \boldsymbol{\mu}_{k})^{2}\)</li>
+
+</ul></li>
+
+</ul>
+
+</div>
+
+</section>
+<section id="slide-org1bed7e9">
+<h4 id="org1bed7e9">Résumé statistique d'une partition</h4>
+<p>
+<div class="slidesubtitle">Exemple (1/2)</div>
+</p>
+
+<div class="column" style="float:left; width: 45%">
+
+<style  type="text/css" >
+    #T_ab0ff_ th {
+          font-size: 13px;
+    }    #T_ab0ff_ td {
+          font-size: 13px;
+    }</style><table id="T_ab0ff_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >exports</th>        <th class="col_heading level0 col1" >health</th>        <th class="col_heading level0 col2" >income</th>        <th class="col_heading level0 col3" >cls</th>    </tr>    <tr>        <th class="index_name level0" >country</th>        <th class="blank" ></th>        <th class="blank" ></th>        <th class="blank" ></th>        <th class="blank" ></th>    </tr></thead><tbody>
+                <tr>
+                        <th id="T_ab0ff_level0_row0" class="row_heading level0 row0" >Samoa</th>
+                        <td id="T_ab0ff_row0_col0" class="data row0 col0" >29.20</td>
+                        <td id="T_ab0ff_row0_col1" class="data row0 col1" >6.47</td>
+                        <td id="T_ab0ff_row0_col2" class="data row0 col2" >5400</td>
+                        <td id="T_ab0ff_row0_col3" class="data row0 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row1" class="row_heading level0 row1" >Iraq</th>
+                        <td id="T_ab0ff_row1_col0" class="data row1 col0" >39.40</td>
+                        <td id="T_ab0ff_row1_col1" class="data row1 col1" >8.41</td>
+                        <td id="T_ab0ff_row1_col2" class="data row1 col2" >12700</td>
+                        <td id="T_ab0ff_row1_col3" class="data row1 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row2" class="row_heading level0 row2" >Netherlands</th>
+                        <td id="T_ab0ff_row2_col0" class="data row2 col0" >72.00</td>
+                        <td id="T_ab0ff_row2_col1" class="data row2 col1" >11.90</td>
+                        <td id="T_ab0ff_row2_col2" class="data row2 col2" >45500</td>
+                        <td id="T_ab0ff_row2_col3" class="data row2 col3" >c1</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row3" class="row_heading level0 row3" >Paraguay</th>
+                        <td id="T_ab0ff_row3_col0" class="data row3 col0" >55.10</td>
+                        <td id="T_ab0ff_row3_col1" class="data row3 col1" >5.87</td>
+                        <td id="T_ab0ff_row3_col2" class="data row3 col2" >7290</td>
+                        <td id="T_ab0ff_row3_col3" class="data row3 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row4" class="row_heading level0 row4" >Oman</th>
+                        <td id="T_ab0ff_row4_col0" class="data row4 col0" >65.70</td>
+                        <td id="T_ab0ff_row4_col1" class="data row4 col1" >2.77</td>
+                        <td id="T_ab0ff_row4_col2" class="data row4 col2" >45300</td>
+                        <td id="T_ab0ff_row4_col3" class="data row4 col3" >c1</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row5" class="row_heading level0 row5" >Suriname</th>
+                        <td id="T_ab0ff_row5_col0" class="data row5 col0" >52.50</td>
+                        <td id="T_ab0ff_row5_col1" class="data row5 col1" >7.01</td>
+                        <td id="T_ab0ff_row5_col2" class="data row5 col2" >14200</td>
+                        <td id="T_ab0ff_row5_col3" class="data row5 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row6" class="row_heading level0 row6" >Mauritius</th>
+                        <td id="T_ab0ff_row6_col0" class="data row6 col0" >51.20</td>
+                        <td id="T_ab0ff_row6_col1" class="data row6 col1" >6.00</td>
+                        <td id="T_ab0ff_row6_col2" class="data row6 col2" >15900</td>
+                        <td id="T_ab0ff_row6_col3" class="data row6 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row7" class="row_heading level0 row7" >Central African Republic</th>
+                        <td id="T_ab0ff_row7_col0" class="data row7 col0" >11.80</td>
+                        <td id="T_ab0ff_row7_col1" class="data row7 col1" >3.98</td>
+                        <td id="T_ab0ff_row7_col2" class="data row7 col2" >888</td>
+                        <td id="T_ab0ff_row7_col3" class="data row7 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row8" class="row_heading level0 row8" >Rwanda</th>
+                        <td id="T_ab0ff_row8_col0" class="data row8 col0" >12.00</td>
+                        <td id="T_ab0ff_row8_col1" class="data row8 col1" >10.50</td>
+                        <td id="T_ab0ff_row8_col2" class="data row8 col2" >1350</td>
+                        <td id="T_ab0ff_row8_col3" class="data row8 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row9" class="row_heading level0 row9" >Afghanistan</th>
+                        <td id="T_ab0ff_row9_col0" class="data row9 col0" >10.00</td>
+                        <td id="T_ab0ff_row9_col1" class="data row9 col1" >7.58</td>
+                        <td id="T_ab0ff_row9_col2" class="data row9 col2" >1610</td>
+                        <td id="T_ab0ff_row9_col3" class="data row9 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row10" class="row_heading level0 row10" >Switzerland</th>
+                        <td id="T_ab0ff_row10_col0" class="data row10 col0" >64.00</td>
+                        <td id="T_ab0ff_row10_col1" class="data row10 col1" >11.50</td>
+                        <td id="T_ab0ff_row10_col2" class="data row10 col2" >55500</td>
+                        <td id="T_ab0ff_row10_col3" class="data row10 col3" >c1</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row11" class="row_heading level0 row11" >Mauritania</th>
+                        <td id="T_ab0ff_row11_col0" class="data row11 col0" >50.70</td>
+                        <td id="T_ab0ff_row11_col1" class="data row11 col1" >4.41</td>
+                        <td id="T_ab0ff_row11_col2" class="data row11 col2" >3320</td>
+                        <td id="T_ab0ff_row11_col3" class="data row11 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row12" class="row_heading level0 row12" >Ireland</th>
+                        <td id="T_ab0ff_row12_col0" class="data row12 col0" >103.00</td>
+                        <td id="T_ab0ff_row12_col1" class="data row12 col1" >9.19</td>
+                        <td id="T_ab0ff_row12_col2" class="data row12 col2" >45700</td>
+                        <td id="T_ab0ff_row12_col3" class="data row12 col3" >c1</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row13" class="row_heading level0 row13" >Congo, Rep.</th>
+                        <td id="T_ab0ff_row13_col0" class="data row13 col0" >85.10</td>
+                        <td id="T_ab0ff_row13_col1" class="data row13 col1" >2.46</td>
+                        <td id="T_ab0ff_row13_col2" class="data row13 col2" >5190</td>
+                        <td id="T_ab0ff_row13_col3" class="data row13 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row14" class="row_heading level0 row14" >Chad</th>
+                        <td id="T_ab0ff_row14_col0" class="data row14 col0" >36.80</td>
+                        <td id="T_ab0ff_row14_col1" class="data row14 col1" >4.53</td>
+                        <td id="T_ab0ff_row14_col2" class="data row14 col2" >1930</td>
+                        <td id="T_ab0ff_row14_col3" class="data row14 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row15" class="row_heading level0 row15" >Ecuador</th>
+                        <td id="T_ab0ff_row15_col0" class="data row15 col0" >27.90</td>
+                        <td id="T_ab0ff_row15_col1" class="data row15 col1" >8.06</td>
+                        <td id="T_ab0ff_row15_col2" class="data row15 col2" >9350</td>
+                        <td id="T_ab0ff_row15_col3" class="data row15 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row16" class="row_heading level0 row16" >Guinea-Bissau</th>
+                        <td id="T_ab0ff_row16_col0" class="data row16 col0" >14.90</td>
+                        <td id="T_ab0ff_row16_col1" class="data row16 col1" >8.50</td>
+                        <td id="T_ab0ff_row16_col2" class="data row16 col2" >1390</td>
+                        <td id="T_ab0ff_row16_col3" class="data row16 col3" >c2</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row17" class="row_heading level0 row17" >Thailand</th>
+                        <td id="T_ab0ff_row17_col0" class="data row17 col0" >66.50</td>
+                        <td id="T_ab0ff_row17_col1" class="data row17 col1" >3.88</td>
+                        <td id="T_ab0ff_row17_col2" class="data row17 col2" >13500</td>
+                        <td id="T_ab0ff_row17_col3" class="data row17 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row18" class="row_heading level0 row18" >Mongolia</th>
+                        <td id="T_ab0ff_row18_col0" class="data row18 col0" >46.70</td>
+                        <td id="T_ab0ff_row18_col1" class="data row18 col1" >5.44</td>
+                        <td id="T_ab0ff_row18_col2" class="data row18 col2" >7710</td>
+                        <td id="T_ab0ff_row18_col3" class="data row18 col3" >c3</td>
+            </tr>
+            <tr>
+                        <th id="T_ab0ff_level0_row19" class="row_heading level0 row19" >Lao</th>
+                        <td id="T_ab0ff_row19_col0" class="data row19 col0" >35.40</td>
+                        <td id="T_ab0ff_row19_col1" class="data row19 col1" >4.47</td>
+                        <td id="T_ab0ff_row19_col2" class="data row19 col2" >3980</td>
+                        <td id="T_ab0ff_row19_col3" class="data row19 col3" >c2</td>
+            </tr>
+    </tbody></table>
+
+</div>
+
+<div class="column" style="float:right; width: 50%">
+
+<ul>
+<li>Effectifs dans chaque classe :</li>
+
+</ul>
+<style  type="text/css" >
+    #T_207ea_ th {
+          font-size: 14px;
+    }    #T_207ea_ td {
+          font-size: 14px;
+    }</style><table id="T_207ea_" ><thead>    <tr>        <th class="index_name level0" >cls</th>        <th class="col_heading level0 col0" >c1</th>        <th class="col_heading level0 col1" >c2</th>        <th class="col_heading level0 col2" >c3</th>    </tr></thead><tbody>
+                <tr>
+                        <th id="T_207ea_level0_row0" class="row_heading level0 row0" >Effectif</th>
+                        <td id="T_207ea_row0_col0" class="data row0 col0" >4</td>
+                        <td id="T_207ea_row0_col1" class="data row0 col1" >7</td>
+                        <td id="T_207ea_row0_col2" class="data row0 col2" >9</td>
+            </tr>
+    </tbody></table>
+
+
+<ul>
+<li>Centres de gravité des classes :</li>
+
+</ul>
+<style  type="text/css" >
+    #T_e6fde_ th {
+          font-size: 14px;
+    }    #T_e6fde_ td {
+          font-size: 14px;
+    }</style><table id="T_e6fde_" ><thead>    <tr>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >exports</th>        <th class="col_heading level0 col1" >health</th>        <th class="col_heading level0 col2" >income</th>    </tr>    <tr>        <th class="index_name level0" >cls</th>        <th class="blank" ></th>        <th class="blank" ></th>        <th class="blank" ></th>    </tr></thead><tbody>
+                <tr>
+                        <th id="T_e6fde_level0_row0" class="row_heading level0 row0" >c1</th>
+                        <td id="T_e6fde_row0_col0" class="data row0 col0" >76.17</td>
+                        <td id="T_e6fde_row0_col1" class="data row0 col1" >8.84</td>
+                        <td id="T_e6fde_row0_col2" class="data row0 col2" >48000.00</td>
+            </tr>
+            <tr>
+                        <th id="T_e6fde_level0_row1" class="row_heading level0 row1" >c2</th>
+                        <td id="T_e6fde_row1_col0" class="data row1 col0" >24.51</td>
+                        <td id="T_e6fde_row1_col1" class="data row1 col1" >6.28</td>
+                        <td id="T_e6fde_row1_col2" class="data row1 col2" >2066.86</td>
+            </tr>
+            <tr>
+                        <th id="T_e6fde_level0_row2" class="row_heading level0 row2" >c3</th>
+                        <td id="T_e6fde_row2_col0" class="data row2 col0" >50.40</td>
+                        <td id="T_e6fde_row2_col1" class="data row2 col1" >5.96</td>
+                        <td id="T_e6fde_row2_col2" class="data row2 col2" >10137.78</td>
+            </tr>
+    </tbody></table>
+
+
+<ul>
+<li>Matrices de variances des classes :</li>
+
+</ul>
+<style  type="text/css" >
+    #T_d06fe_ th {
+          font-size: 14px;
+    }    #T_d06fe_ td {
+          font-size: 14px;
+    }</style><table id="T_d06fe_" ><thead>    <tr>        <th class="blank" ></th>        <th class="blank level0" ></th>        <th class="col_heading level0 col0" >exports</th>        <th class="col_heading level0 col1" >health</th>        <th class="col_heading level0 col2" >income</th>    </tr>    <tr>        <th class="index_name level0" >cls</th>        <th class="index_name level1" ></th>        <th class="blank" ></th>        <th class="blank" ></th>        <th class="blank" ></th>    </tr></thead><tbody>
+                <tr>
+                        <th id="T_d06fe_level0_row0" class="row_heading level0 row0" rowspan="3">c1</th>
+                        <th id="T_d06fe_level1_row0" class="row_heading level1 row0" >exports</th>
+                        <td id="T_d06fe_row0_col0" class="data row0 col0" >331.66</td>
+                        <td id="T_d06fe_row0_col1" class="data row0 col1" >9.27</td>
+                        <td id="T_d06fe_row0_col2" class="data row0 col2" >-38096.67</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row1" class="row_heading level1 row1" >health</th>
+                        <td id="T_d06fe_row1_col0" class="data row1 col0" >9.27</td>
+                        <td id="T_d06fe_row1_col1" class="data row1 col1" >17.80</td>
+                        <td id="T_d06fe_row1_col2" class="data row1 col2" >9294.67</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row2" class="row_heading level1 row2" >income</th>
+                        <td id="T_d06fe_row2_col0" class="data row2 col0" >-38096.67</td>
+                        <td id="T_d06fe_row2_col1" class="data row2 col1" >9294.67</td>
+                        <td id="T_d06fe_row2_col2" class="data row2 col2" >25026666.67</td>
+            </tr>
+            <tr>
+                        <th id="T_d06fe_level0_row3" class="row_heading level0 row3" rowspan="3">c2</th>
+                        <th id="T_d06fe_level1_row3" class="row_heading level1 row3" >exports</th>
+                        <td id="T_d06fe_row3_col0" class="data row3 col0" >262.75</td>
+                        <td id="T_d06fe_row3_col1" class="data row3 col1" >-25.66</td>
+                        <td id="T_d06fe_row3_col2" class="data row3 col2" >14842.79</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row4" class="row_heading level1 row4" >health</th>
+                        <td id="T_d06fe_row4_col0" class="data row4 col0" >-25.66</td>
+                        <td id="T_d06fe_row4_col1" class="data row4 col1" >6.59</td>
+                        <td id="T_d06fe_row4_col2" class="data row4 col2" >-1329.49</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row5" class="row_heading level1 row5" >income</th>
+                        <td id="T_d06fe_row5_col0" class="data row5 col0" >14842.79</td>
+                        <td id="T_d06fe_row5_col1" class="data row5 col1" >-1329.49</td>
+                        <td id="T_d06fe_row5_col2" class="data row5 col2" >1303275.81</td>
+            </tr>
+            <tr>
+                        <th id="T_d06fe_level0_row6" class="row_heading level0 row6" rowspan="3">c3</th>
+                        <th id="T_d06fe_level1_row6" class="row_heading level1 row6" >exports</th>
+                        <td id="T_d06fe_row6_col0" class="data row6 col0" >322.60</td>
+                        <td id="T_d06fe_row6_col1" class="data row6 col1" >-29.53</td>
+                        <td id="T_d06fe_row6_col2" class="data row6 col2" >-2354.50</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row7" class="row_heading level1 row7" >health</th>
+                        <td id="T_d06fe_row7_col0" class="data row7 col0" >-29.53</td>
+                        <td id="T_d06fe_row7_col1" class="data row7 col1" >3.58</td>
+                        <td id="T_d06fe_row7_col2" class="data row7 col2" >2318.15</td>
+            </tr>
+            <tr>
+                                <th id="T_d06fe_level1_row8" class="row_heading level1 row8" >income</th>
+                        <td id="T_d06fe_row8_col0" class="data row8 col0" >-2354.50</td>
+                        <td id="T_d06fe_row8_col1" class="data row8 col1" >2318.15</td>
+                        <td id="T_d06fe_row8_col2" class="data row8 col2" >16140744.44</td>
+            </tr>
+    </tbody></table>
+
+</div>
+
+</section>
+<section id="slide-orgf24fb66">
+<h4 id="orgf24fb66">Résumé statistique d'une partition</h4>
+<p>
+<div class="slidesubtitle">Exemple (2/2)</div>
+</p>
+
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>                <div id="b9317979-1f89-4475-a896-8d8af9d0e1fb" class="plotly-graph-div" style="height:600px; width:1000px;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("b9317979-1f89-4475-a896-8d8af9d0e1fb")) {                    Plotly.newPlot(                        "b9317979-1f89-4475-a896-8d8af9d0e1fb",                        [{"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}", "legendgroup": "c1", "marker": {"color": "#4C78A8", "size": 9}, "mode": "markers+text", "name": "c1 data", "text": ["Samoa", "Iraq", "Netherlands", "Paraguay", "Oman", "Suriname", "Mauritius", "Central African Republic", "Rwanda", "Afghanistan", "Switzerland", "Mauritania", "Ireland", "Congo, Rep.", "Chad", "Ecuador", "Guinea-Bissau", "Thailand", "Mongolia", "Lao"], "textfont": {"color": "#4C78A8", "size": 9}, "textposition": "top center", "type": "scatter", "x": [72.0, 65.7, 64.0, 103.0], "y": [11.9, 2.77, 11.5, 9.19]}, {"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}<br>Inertia = 75081048.37", "legendgroup": "c1", "marker": {"color": "rgba(76, 120, 168, 0.5)", "line": {"color": "#4C78A8", "width": 2}, "size": 12, "symbol": "circle-x"}, "mode": "markers", "name": "c1 center", "type": "scatter", "x": [76.175], "y": [8.84]}, {"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}", "legendgroup": "c2", "marker": {"color": "#F58518", "size": 9}, "mode": "markers+text", "name": "c2 data", "text": ["Samoa", "Iraq", "Netherlands", "Paraguay", "Oman", "Suriname", "Mauritius", "Central African Republic", "Rwanda", "Afghanistan", "Switzerland", "Mauritania", "Ireland", "Congo, Rep.", "Chad", "Ecuador", "Guinea-Bissau", "Thailand", "Mongolia", "Lao"], "textfont": {"color": "#F58518", "size": 9}, "textposition": "top center", "type": "scatter", "x": [11.8, 12.0, 10.0, 50.7, 36.8, 14.9, 35.4], "y": [3.98, 10.5, 7.58, 4.41, 4.53, 8.5, 4.47]}, {"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}<br>Inertia = 7821270.90", "legendgroup": "c2", "marker": {"color": "rgba(245, 133, 24, 0.5)", "line": {"color": "#F58518", "width": 2}, "size": 12, "symbol": "circle-x"}, "mode": "markers", "name": "c2 center", "type": "scatter", "x": [24.514285714285712], "y": [6.281428571428571]}, {"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}", "legendgroup": "c3", "marker": {"color": "#E45756", "size": 9}, "mode": "markers+text", "name": "c3 data", "text": ["Samoa", "Iraq", "Netherlands", "Paraguay", "Oman", "Suriname", "Mauritius", "Central African Republic", "Rwanda", "Afghanistan", "Switzerland", "Mauritania", "Ireland", "Congo, Rep.", "Chad", "Ecuador", "Guinea-Bissau", "Thailand", "Mongolia", "Lao"], "textfont": {"color": "#E45756", "size": 9}, "textposition": "top center", "type": "scatter", "x": [29.2, 39.4, 55.1, 52.5, 51.2, 85.1, 27.9, 66.5, 46.7], "y": [6.47, 8.41, 5.87, 7.01, 6.0, 2.46, 8.06, 3.88, 5.44]}, {"hovertemplate": "exports = %{x:.2f}<br>health = %{y:.2f}<br>Inertia = 129128565.01", "legendgroup": "c3", "marker": {"color": "rgba(228, 87, 86, 0.5)", "line": {"color": "#E45756", "width": 2}, "size": 12, "symbol": "circle-x"}, "mode": "markers", "name": "c3 center", "type": "scatter", "x": [50.4], "y": [5.955555555555555]}, {"legendgroup": "c1", "line": {"color": "#4C78A8", "dash": "dash"}, "mode": "lines", "name": "c1 95% contour", "type": "scatter", "x": [120.75092153532154, 120.6420026021839, 120.35403074391874, 119.88816552156143, 119.2462828099382, 118.43096724418021, 117.44550181231025, 116.29385463580857, 114.98066299138823, 113.51121463831852, 111.89142652648461, 110.12782097091873, 108.22749938873955, 106.19811370425187, 104.04783553734805, 101.78532329927896, 99.4196873282877, 96.96045320549295, 94.4175233987359, 91.80113738883709, 89.12183043882126, 86.39039117213142, 83.61781813065006, 80.81527548745287, 77.99404809262401, 75.16549603314785, 72.34100888984807, 69.53195987556559, 66.7496600392446, 64.00531272033056, 61.30996843687647, 58.6744803890068, 56.10946075691126, 53.625237969340574, 51.23181511466939, 48.93882966198973, 46.75551465442465, 44.69066153092215, 42.752584726233565, 40.94908819161921, 39.287433971091154, 37.77431295972492, 36.41581796178667, 35.217419157160755, 34.18394207486601, 33.31954816235354, 32.627718028826585, 32.11123743005574, 31.77218605112362, 31.61192913226712, 31.63111197153681, 31.829657326409396, 32.206765724816165, 32.76091868433479, 33.48988482658211, 34.39072886218737, 35.45982341016647, 36.692863604104964, 38.084884426335705, 39.63028070031264, 41.32282966067847, 43.15571601014438, 45.121559362286916, 47.21244395975914, 49.419950548251755, 51.73519027785855, 54.14884049533789, 56.651182283146724, 59.232139594091514, 61.8813198240139, 64.58805565913966, 67.34144802958623, 70.13040999607053, 72.94371139310027, 75.77002404888687, 78.59796739989481, 81.41615431635462, 84.21323695421523, 86.9779524489069, 89.69916826692155, 92.3659270325962, 94.96749064959744, 97.49338353944519, 99.93343482297023, 102.27781927485469, 104.51709688634676, 106.64225087684396, 108.64472400128645, 110.51645300716254, 112.24990110238065, 113.83808830327102, 115.27461954051644, 116.55371040983927, 117.67021046375592, 118.619623950611, 119.3981279173825, 120.00258760336438, 120.43056906274144, 120.68034896523018, 120.75092153532154], "y": [10.15549777630128, 9.503161925766001, 8.848155756214531, 8.19311674631131, 7.540682506957278, 6.893480160561719, 6.254115762547527, 5.625163807685829, 5.009156863514178, 4.408575372580942, 3.8258376645786125, 3.2632902185836734, 2.7231982146135296, 2.207736412546062, 1.718980395129167, 1.258898210341588, 0.8293424467583268, 0.4320427738303021, 0.06859897711595231, -0.2595254834905756, -0.5510093665959079, -0.8046789694801983, -1.0195128541837342, -1.1946459604770983, -1.3293730891533855, -1.4231517416165147, -1.4756043043316112, -1.4865195693414233, -1.455853584726233, -1.383729831582718, -1.2704387268091555, -1.116436453699082, -0.9223431250521674, -0.688940286198843, -0.4171677679930941, -0.10811990244531522, 0.23695888376644803, 0.6166790801635305, 1.029511687534912, 1.473794374677417, 1.9477381720167148, 2.4494346751564393, 2.9768637293490965, 3.527901563946256, 4.100329344073357, 4.691842105094655, 5.300058033892252, 5.922528059586909, 6.556745715082069, 7.200157229722216, 7.850171812425989, 8.504172083887427, 9.159524615838684, 9.813590534936177, 10.463736148572199, 11.107343549825472, 11.741821158848378, 12.364614158244297, 12.97321478041557, 13.565172405458513, 14.138103428944833, 14.689700859855378, 15.217743610018761, 15.720105437649458, 16.194763508973086, 16.63980654346403, 17.053442509897565, 17.434005842227094, 17.779964146230782, 18.08992436992224, 18.362638412879193, 18.597008151903367, 18.792089862775057, 18.947098020297453, 19.061408461329382, 19.13456089806996, 19.16626077147513, 19.156380437342968, 19.104959680291813, 19.012205553561685, 18.87849154528392, 18.704356074576346, 18.490500323519456, 18.23778541374371, 17.94722893899662, 17.620000867651893, 17.25741883165973, 16.860942820908, 16.432169304358265, 15.972824801628718, 15.484758930909086, 14.969936961200943, 14.430431898873099, 13.868416140396588, 13.286152724870853, 12.68598622156396, 12.070333289159692, 11.441672944725994, 10.802536581588136, 10.155497776301281]}, {"legendgroup": "c2", "line": {"color": "#F58518", "dash": "dash"}, "mode": "lines", "name": "c2 95% contour", "type": "scatter", "x": [-15.159505215830244, -15.110454021443473, -14.90184798544589, -14.534527090718264, -14.009970408860042, -13.330290144490071, -12.498223130144034, -11.517119806015842, -10.39093072891746, -9.12419066478094, -7.72200032875655, -6.19000584643311, -4.534376018883037, -2.7617774830776476, -0.8793478676930171, 1.1053329476015037, 3.184273353643448, 5.349102191166747, 7.591102458505546, 9.901246411883289, 12.270231916950646, 14.688519905197376, 17.146372784414492, 19.63389364854124, 22.141066129012778, 24.65779472714114, 27.173945465125346, 29.679386692003256, 32.164029880234104, 34.61787024863821, 37.03102704811968, 39.393783347955676, 41.696625162446836, 43.93027976037991, 46.085753003043465, 48.15436556045016, 50.12778785993521, 51.998073626405734, 53.75769187918582, 55.39955725661785, 56.91705854631304, 58.304085306170414, 59.55505246897048, 60.664922831469724, 61.62922733744016, 62.44408307298154, 63.10620890164508, 63.612938676411936, 63.96223197532624, 64.15268231755417, 64.1835228267858, 64.05462931917546, 63.76652080338611, 63.320357390724745, 62.717935623783546, 61.96168124239699, 61.05463941604363, 60.00046248202344, 58.80339523878453, 57.46825785361802, 56.000426453545536, 54.405811477553236, 52.69083387734001, 50.86239926241127, 48.92787009362671, 46.89503603716905, 44.77208259830746, 42.56755816125714, 40.29033956785287, 37.94959637364019, 35.554753925311445, 33.11545540816138, 30.641523016383335, 28.142918402559964, 25.629702565604177, 23.11199533866759, 20.599934640143967, 18.103635651850094, 15.633150088758624, 13.198425724289702, 10.809266334138224, 8.475292219929376, 6.205901471659526, 4.01023212490459, 1.8971253651761444, -0.12491007241228047, -2.047732164818264, -3.8635983861237904, -5.565196883954332, -7.14567592172774, -8.598671468179077, -9.918332823068532, -11.099346175886225, -12.136956002691662, -13.026984214930202, -13.76584698312108, -14.350569167673818, -14.778796298725247, -15.04880405675874, -15.159505215830244], "y": [10.216337038365976, 10.519208276844164, 10.805015472146582, 11.07260777957162, 11.320907699342312, 11.548915415317651, 11.755712820899308, 11.940467215922858, 12.10243465964746, 12.240962966342629, 12.35549433141001, 12.445567577465606, 12.510820011338346, 12.550988884507458, 12.565912451098047, 12.555530619174633, 12.51988519271017, 12.459119703256196, 12.373478831991942, 12.263307424479578, 12.129049102092843, 11.971244475710353, 11.79052896886639, 11.587630259124602, 11.363365347977282, 11.11863727106872, 10.854431461989375, 10.571811784282616, 10.271916247641718, 9.955952425546466, 9.625192592790981, 9.280968602482142, 8.924666523137216, 8.557721057475122, 8.18160976537497, 7.797847114263906, 7.407978380891322, 7.013573429044763, 6.616220388262553, 6.217519258996635, 5.819075469975489, 5.422493413709247, 5.02936998616733, 4.641288156641983, 4.259810593689645, 3.88647337281619, 3.5227797912430354, 3.1701943146597893, 2.830136680337806, 2.503976180349281, 2.193026147911347, 1.8985386690567587, 1.6216995409253396, 1.363623496977433, 1.1253497183556824, 0.9078376494693554, 0.7119631346503255, 0.5385148914370808, 0.38819133468756295, 0.26159776430904014, 0.15924392792901632, 0.08154196832144311, 0.02880476385323849, 0.0012446686335296775, -0.001027342561399358, 0.02199787885564053, 0.07022761844461378, 0.14346767206657862, 0.24142312787522346, 0.3636995538227721, 0.509804585898638, 0.6791499107055099, 0.8710536343897699, 1.084743028387364, 1.3193576409290078, 1.5739527617757538, 1.8475032262337185, 2.1389075431304603, 2.44699233013118, 2.7705170385352207, 3.108178948527876, 3.4586184147732744, 3.8204243412262637, 4.192139863118171, 4.572268213237012, 4.959278748880799, 5.351613115215438, 5.747691520219676, 6.145919095949965, 6.544692320510789, 6.942405474871352, 7.3374571085294304, 7.728256487987295, 8.113230002074081, 8.490827498322552, 8.859528524886008, 9.217848452861208, 9.564344454364972, 9.897621312292856, 10.216337038365975]}, {"legendgroup": "c3", "line": {"color": "#E45756", "dash": "dash"}, "mode": "lines", "name": "c3 95% contour", "type": "scatter", "x": [6.436174563869955, 6.511460684913658, 6.763470463592739, 7.19118914547375, 7.792894458385383, 8.566163547400691, 9.507882730818729, 10.614260037861762, 11.880840477603321, 13.302523977644242, 14.873585920304194, 16.5877001936366, 18.43796466444871, 20.416928970755865, 22.516624521759706, 24.728596584550797, 27.043938328334022, 29.45332668909262, 31.947059910276415, 34.51509660835131, 37.147096205906706, 39.8324605695111, 42.56037668465488, 45.319860195943356, 48.09979963721909, 50.889001173514345, 53.67623367467378, 56.450273939151565, 59.19995188588287, 61.91419553225791, 64.5820755770881, 67.19284940904458, 69.73600436336238, 72.2013000526312, 74.57880960122105, 76.858959617307, 79.03256874153894, 81.09088461713544, 83.02561913253523, 84.82898179469726, 86.49371109866664, 88.01310376709212, 89.38104174195811, 90.59201681984504, 91.64115283152032, 92.524225276551, 93.2376783338758, 93.77863917984176, 94.14492955605087, 94.33507454043809, 94.34830848626171, 94.18457810509284, 93.84454268138873, 93.32957141778732, 92.64173792181118, 91.78381185618213, 90.75924778636673, 89.57217127026064, 88.22736224602299, 86.73023578495238, 85.08682028690613, 83.30373320606158, 81.38815440476382, 79.3477972427541, 77.19087751819244, 74.92608038553831, 72.56252538349884, 70.10972971386528, 67.57756991910027, 64.97624211298732, 62.316220924479154, 59.60821732006407, 56.86313547448402, 54.092028863471604, 51.306055755304534, 48.516434280397625, 45.73439725985077, 42.97114697484309, 40.23781005900029, 37.54539269536831, 34.90473629839854, 32.326473859398305, 29.820987131227888, 27.398364824645654, 25.06836198463076, 22.840360710259933, 20.723332376305976, 18.72580150867771, 16.855811459163007, 15.120892017689904, 13.52802909252027, 12.08363658046266, 10.793530540373837, 9.662905773942299, 8.696314908055541, 7.897650062978265, 7.2701271801578, 6.816273072762982, 6.537915251099307, 6.436174563869955], "y": [9.990257077760624, 10.12626402594574, 10.24547700314616, 10.347415980778177, 10.431670486557593, 10.497901257326737, 10.545841605147459, 10.575298491159332, 10.586153302879012, 10.57836233181084, 10.551956949445536, 10.507043480938266, 10.443802776974783, 10.362489485549535, 10.26343102658807, 10.147026273542561, 10.013743947269191, 9.864120728654695, 9.698759097591854, 9.518324907005596, 9.323544701698289, 9.115202792810251, 8.89413809967559, 8.661240771790158, 8.417448604493684, 8.163743262798949, 7.901146328573236, 7.63071518698872, 7.353538768805578, 7.070733165632141, 6.783437135817914, 6.492807519075615, 6.2000145782959555, 5.906237287312007, 5.612658583587702, 5.32046060494616, 5.030819929517919, 4.744902838076051, 4.463860617835143, 4.188824926624001, 3.920903236099001, 3.6611743723465926, 3.4106841718314267, 3.1704412701820193, 2.9414130407710797, 2.7245216994443573, 2.5206405910829295, 2.3305906729515993, 2.1551372089937475, 1.994986688383527, 1.850783980743305, 1.7231097394813029, 1.612478063705253, 1.519334428126748, 1.4440538892917933, 1.3869395753604827, 1.3482214655168754, 1.328055463923996, 1.3265227719527939, 1.3436295612128841, 1.3793069487016512, 1.433411274171788, 1.5057246786004113, 1.5959559814304534, 1.7037418530519925, 1.828648277802361, 1.9701723015940362, 2.127744057133226, 2.300729058574346, 2.488430756370571, 2.6900933420330233, 2.904904791504788, 3.132000134895207, 3.370464939408333, 3.6193389914410634, 3.8776201630244, 4.144268447039111, 4.418210144957319, 4.698342190247527, 4.983536590034204, 5.272644967126998, 5.56450318413036, 5.85793603101395, 6.151761957268667, 6.4447978295935116, 6.735863695955821, 7.02378753684163, 7.307409984564623, 7.585588991630592, 7.857204429359636, 8.121162598248986, 8.376400631914922, 8.621890776880544, 8.856644530976297, 9.079716623689302, 9.290208822434114, 9.487273549418301, 9.67011729453906, 9.838003810568349, 9.990257077760624]}],                        {"template": {"data": {"bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "bar"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "barpolar"}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "choropleth": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "choropleth"}], "contour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "contour"}], "contourcarpet": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "contourcarpet"}], "heatmap": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmap"}], "heatmapgl": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmapgl"}], "histogram": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "histogram"}], "histogram2d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2d"}], "histogram2dcontour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2dcontour"}], "mesh3d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "mesh3d"}], "parcoords": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "parcoords"}], "pie": [{"automargin": true, "type": "pie"}], "scatter": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter"}], "scatter3d": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter3d"}], "scattercarpet": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattercarpet"}], "scattergeo": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergeo"}], "scattergl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergl"}], "scattermapbox": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattermapbox"}], "scatterpolar": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolar"}], "scatterpolargl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolargl"}], "scatterternary": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterternary"}], "surface": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "surface"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}]}, "layout": {"annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "autotypenumbers": "strict", "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]], "sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}, "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "geo": {"bgcolor": "white", "lakecolor": "white", "landcolor": "#E5ECF6", "showlakes": true, "showland": true, "subunitcolor": "white"}, "hoverlabel": {"align": "left"}, "hovermode": "closest", "mapbox": {"style": "light"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "ternary": {"aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "title": {"x": 0.05}, "xaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}, "yaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}}}, "title": {"text": "Partition sur le nuage exports vs health avec dispertion empirique"}, "xaxis": {"title": {"text": "exports"}}, "yaxis": {"title": {"text": "health"}}},                        {"displayModeBar": false, "responsive": true}                    )                };                            </script>        </div>
+
+
+
+</section>
+</section>
+<section>
+<section id="slide-nb-part">
+<h3 id="nb-part">Formalisation du problème de partitionnement</h3>
+<p>
+<div class="slidesubtitle">Un problème complexe...</div>
+</p>
+
+<div class="block-example">
+<p>
+<h4>Nombre de partitions possibles</h4>
+</p>
+
+<ul>
+<li>Dans la suite, nous noterons \(\mathcal{C}_{K}(\boldsymbol{X})\) l'ensemble de toutes les partitions
+possibles de \(\boldsymbol{X}\) en \(K\) classes</li>
+<li>Le nombre de partitions à \(K\) classes possibles pour un jeu de données \(\boldsymbol{X}\) contenant
+\(N\) individus est donnée par
+\[
+  S(N, K) = \frac{1}{K!} \sum_{j=0}^{K} (-1)^{K-j} \binom{K}{j} j^{N} =
+  \text{Card}(\mathcal{C}_{K}(\boldsymbol{X}))
+  \]</li>
+<li>L'ordre de grandeur est donc \(\text{Card}(\mathcal{C}_{K}(\boldsymbol{X})) \simeq \frac{K^{N}}{K!}\)</li>
+<li>Pour \(N=19\) et \(K=4\), il existe plus de \(10^{10}\) possibilités !</li>
+
+</ul>
+
+</div>
+
+</section>
+<section id="slide-org1d57608">
+<h4 id="org1d57608">Formalisation du problème de partitionnement</h4>
+<p>
+<div class="slidesubtitle">Qualité d'une partition)</div>
+</p>
+
+<div class="block-definition">
+<p>
+<h4>Critère de qualité d'une partition</h4>
+</p>
+<ul>
+<li>Soit \(\boldsymbol{X}\) un ensemble d'individus</li>
+<li>On définit un critère de qualité sur une partition \(C = \{C_{1}, \ldots, C_{K}\} \in
+  \mathcal{C}_{K}(\boldsymbol{X})\) comme étant une fonction de la forme : 
+\[
+  Q : \mathcal{C}_{K}(\boldsymbol{X}) \rightarrow \mathbb{R}^{+}
+  \]</li>
+<li>Plusieurs critères de qualité \(Q\) peuvent être définis mais tous partagent en général le point
+commun de mesurer l'homogénéité des classes</li>
+<li>Rappel : \(\mathcal{C}_{K}(\boldsymbol{X})\) est l'ensemble de toutes les partitions
+possibles de \(\boldsymbol{X}\) en \(K\) classes</li>
+
+</ul>
+
+</div>
+
+<div class="block-example">
+<p>
+<h4>Exemples de critère de qualité</h4>
+</p>
+
+<ul>
+<li>Inertie intra-classe : \(Q(C) = \sum_{k=1}^{K} \sum_{i \in C_{k}} d(\boldsymbol{x}_{i},
+  \boldsymbol{\mu}_{k})^{2}\) (cas équipondéré)</li>
+<li>Vraisemblance de la partition construite eu égard aux individus observés (critère probabiliste)</li>
+
+</ul>
+
+</div>
+
+</section>
+<section id="slide-orge68e9bc">
+<h4 id="orge68e9bc">Formalisation du problème de partitionnement</h4>
+<p>
+<div class="slidesubtitle">Problème d'optimisation</div>
+</p>
+
+<div class="block-definition">
+<p>
+<h4>Le partitionnement comme problème d'optimisation</h4>
+</p>
+<ul>
+<li>Soit \(\boldsymbol{X}\) un ensemble d'individus</li>
+<li>Soit \(Q\) un critère de qualité de partitionnement en \(K\) classes</li>
+<li>Résoudre le problème de partitionnement des données \(\boldsymbol{X}\) en \(K\) classes revient à
+trouver la partition optimale \(C^{*} \in \mathcal{C}_{K}(\boldsymbol{X})\) qui maximise le critère
+de qualité \(Q\)</li>
+<li>Il s'agit donc d'un problème d'optimisation classique que l'on peut écrire
+formellement :
+\[
+  C^{*}_{K} = \arg\max_{C \in \mathcal{C}_{K}(\boldsymbol{X})} Q(C)
+  \]</li>
+
+</ul>
+
+</div>
+
+<div class="block-alert">
+<p>
+<h4>Problème combinatoire</h4>
+</p>
+<ul>
+<li>La formulation du problème d'optimisation relatif au partitionnement d'individus est simple</li>
+<li>Sa résolution exacte est toutefois inenvisageable en pratique de par la <a href="#/slide-nb-part">combinatoire des
+solutions à explorer</a></li>
+<li>Les méthodes de partitionnement ne cherchent donc pas à trouver la meilleur partition au sens du
+critère choisi (<b>i.e. l'optimum global</b>) mais plutôt à limiter l'exploration des partitions tout en assurant de
+trouver une "bonne" partition pour ce critère (<b>i.e. un optimum local</b>)</li>
+
+</ul>
+
+</div>
+
+
+</section>
+<section id="slide-org4631ea6">
+<h4 id="org4631ea6">Formalisation du problème de partitionnement</h4>
+<p>
+<div class="slidesubtitle">Résolution itérative</div>
+</p>
+
+<div class="block-definition">
+<p>
+<h4>Principe général des algorithmes de partitionnement</h4>
+</p>
+<ul>
+<li>Soit \(\boldsymbol{X}\) un ensemble d'individus</li>
+<li>Soit \(Q\) un critère de qualité de partitionnement en \(K\) classes</li>
+<li>Les algorithmes de partitionnement reposent sur le schéma itératif général suivant :
+<ul>
+<li>Initialisation (\(t=0\)): on part d'une partition initiale \(C^{(0)}\) (choisi arbitrairement)</li>
+<li>À l'étape \(t + 1\), on cherche la partition \(C^{(t+1)} = f(C^{(t)})\) telle que \(Q(C^{(t+1)}) \ge
+    Q(C^{(t)})\)</li>
+<li>On arrête l'algorithme dès que le critère de qualité a convergé, i.e. qu'il ne varie plus
+suffisamment d'une itération à l'autre</li>
+
+</ul></li>
+<li>La plupart des méthodes utilisées aujourd'hui reposent sur ce schéma et ne diffèrent donc qu'au
+niveau de la fonction \(f\) permettant d'améliorer la classification des individus à partir d'une
+partition donnée</li>
+
+</ul>
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgecb7831">
+<h2 id="orgecb7831">Méthode des moyennes mobiles (k-Means)</h2>
+
+<div class="figure">
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/fig/vegetables.jpeg" alt="Légumes en vrac" width="80%" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org59c3e0f">
+<h3 id="org59c3e0f">Principe général</h3>
+<div class="block-example">
+<p>
+<h4>Principe de la méthode</h4>
+</p>
+
+<ul>
+<li>Objectif : on cherche à partitionner un ensemble d'individus \(\boldsymbol{X}\) dans
+\(\mathbb{R}^{D}\) en \(K\) classes \(C_{1}, \dots, C_{K}\)</li>
+<li>Procédure :
+<ul>
+<li><span class="underline">Initialisation</span> : On commence par affecter (arbitrairement ou aléatoirement) une classe à chaque individu</li>
+<li><span class="underline">Étape de calcul des centres</span> : On calcule les centres des classes \(\boldsymbol{\mu}_{1}, \ldots,
+    \boldsymbol{\mu}_{K}\) sur la base de la partition de \(\boldsymbol{X}\) courante</li>
+<li><span class="underline">Étape d'affectation des classes</span> : On met à jour la classe de chaque individu
+\(\boldsymbol{x}_{n}\) en choisissant celle dont le centre est le plus proche au
+sens d'une distance donnée (par exemple la distance euclidienne)</li>
+<li><span class="underline">Critère d'arrêt de la procédure</span> : On retourne à l'étape de calcul des centres tant que la
+partition change d'une itération à l'autre</li>
+
+</ul></li>
+
+</ul>
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org0b11599">
+<h3 id="org0b11599">Caractéristiques</h3>
+<div class="block-example">
+<p>
+<h4>Paramètres de la méthode</h4>
+</p>
+
+<p>
+La méthode des centres mobiles nécessite de choisir :
+</p>
+<ul>
+<li>Le nombre de classes \(K\) à construire</li>
+<li>Une première partition des individus pour initialiser la méthode</li>
+<li>Une distance pour évaluer la proximité entre les individus et le centre des classes</li>
+
+</ul>
+
+</div>
+
+<div class="block-alert">
+<p>
+<h4>À avoir en têtePropriétés</h4>
+</p>
+
+<p>
+Le partition construite par la méthode dépend de deux éléments :
+</p>
+<ol>
+<li>La partition initiale</li>
+<li>La distance</li>
+
+</ol>
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org50c1edf">
+<h3 id="org50c1edf">Algorithme des centres mobiles</h3>
+<p>
+<b>Entrée :</b> \(\boldsymbol{X} = \{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}\) un ensemble d'individus dans \(\mathbb{R}^{D}\)
+</p>
+
+<p>
+<b>Paramètres :</b>
+</p>
+<ul>
+<li>\(K\) : Nombre de classe à construire</li>
+<li>\(C^{(0)} = \{C^{(0)}_{1}, \ldots, C^{(0)}_{K}\}\) : Une première partition des individus</li>
+<li>\(d\) : Une distance définie sur \(\mathbb{R}^{D}\)</li>
+
+</ul>
+
+<p>
+<b>Sortie :</b> Une partition \(C^{*} = \{C^{*}_{1}, \ldots, C^{*}_{K}\}\) des individus
+</p>
+
+<p>
+<b>Itération \((t)\) :</b>
+</p>
+<ul>
+<li>Calcul des centres des classes :
+\(\displaystyle \boldsymbol{\mu}^{(t)}_{k} = \frac{1}{\left|C^{(t-1)}_{k}\right|} \sum_{i \in C^{(t-1)}_{k}}
+  \boldsymbol{x}_{i}, ~\forall k = 1, \ldots, K\)</li>
+<li>Affectation de la classe de chaque individu \(n \in \{1, \ldots, N\}\) : $\left\{
+\begin{array}{l}
+k<sup>*</sup> = argmin<sub>k &isin; {1, \ldots, K}</sub> d(\boldsymbol{x}<sub>n</sub>, \boldsymbol{\mu}<sup>(t)</sup><sub>k</sub>) <br />
+C<sup>(t)</sup><sub>k<sup>*</sup></sub> &larr; C<sup>(t)</sup><sub>k<sup>*</sup></sub> &cup; \{n\} 
+\end{array} \right.</li>
+
+</ul>
+
+<p>
+<b>Critère d'arrêt :</b> <a href="#/slide-kmeans-remarques">Plusieurs choix possibles</a>
+</p>
+
+
+</section>
+<section id="slide-kmeans-remarques">
+<h4 id="kmeans-remarques">Algorithme des centres mobiles</h4>
+<p>
+<div class="slidesubtitle">Quelques remarques</div>
+</p>
+
+<div class="block-example">
+<p>
+<h4>Plusieurs critères d'arrêt possibles</h4>
+</p>
+
+<ol>
+<li>Après un nombre fixé d'itérations \(T\), i.e. si \(t > T\)</li>
+<li>Dès que la partition n'évolue plus d'une itération à l'autre, i.e. si pour tout \(k \in \{1, \ldots, K\}\),
+\(C^{(t)}_{k} = C^{(t-1)}_{k}\)</li>
+<li>Si l'inertie intra-classe descend sous un certain seuil \(\epsilon\), i.e. si
+\(I_{\text{W}}(C^{(t)}) < \epsilon\)</li>
+<li>Si l'inertie intra-classe ne décroît pas suffisamment entre deux itérations, i.e. i \(\epsilon\), i.e. si
+\(I_{\text{W}}(C^{(t)}) - I_{\text{W}}(C^{(t-1)}) < \epsilon\)</li>
+
+</ol>
+
+</div>
+
+<div class="block-example">
+<p>
+<h4>Convergence de l'algorithme et complexité</h4>
+</p>
+
+<ul>
+<li>La méthode des centres mobiles converge vers une partition qui <b>optimise localement l'inertie
+intra-classe</b></li>
+<li>La vitesse de convergence de l'algorithme est de l'ordre \(\mathcal{O}(T K N D)\), \(T\) étant le
+nombre maximal d'itérations autorisé</li>
+<li>Il s'agit donc d'un algorithme de complexité polynomial - donc plutôt rapide</li>
+
+</ul>
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgd9a208a">
+<h2 id="orgd9a208a">Résumé de la séance</h2>
+<div class="block-definition">
+<p>
+<h4>Points clés</h4>
+</p>
+
+<ul>
+<li>Formalisation de la problématique de classification non supervisée pour le traitement des <b>données
+quantitatives</b></li>
+<li>Définition des notions de classe, partition et hiérarchie</li>
+<li>Définition de la notion de distance et calcul pratique</li>
+<li>Introduction du concept d'inertie et étude de ses propriétés dans le cadre de la classification</li>
+<li>Application de l'inertie pour évaluer la qualité d'une classification</li>
+
+</ul>
+
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controlsLayout: 'edges', slideNumber:"c/t", center: false, transition: 'fade',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

@@ -340,7 +340,7 @@ def plotly_2d_clust(
         cls_cmap=None,
         between_inertia_color="#777777",
         show_cls_center=False,
-        show_cls_ellipse=True,
+        show_cls_ellipse=False,
         show_within_inertia_line=False,
         show_between_inertia_line=False,
         data_marker_props={},

@@ -555,9 +555,12 @@ def kmeans_algo(data_df, nb_cls=3,
     if cls_init is None:
         if not(random_seed is None):
             np.random.seed(random_seed)
-        cls_values.append(np.random.choice(nb_cls, nb_data))
-    else:
-        cls_values.append(np.array(cls_init))
+        cls_init = np.random.choice(nb_cls, nb_data)
+        # On s'assure qu'il y ait au moins un individu affecté
+        # à chaque classe
+        cls_init[:nb_cls] = np.arange(nb_cls)
+
+    cls_values.append(np.array(cls_init))
 
     # Calcul du centres des classes
     cls_centers = []

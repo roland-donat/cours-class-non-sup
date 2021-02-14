@@ -421,7 +421,7 @@ print(I_T/data_var_sum)
 Nous allons nous donner une première partition $C_{\text{A}}$ totalement arbitraire consistant à affecter :
 - la classe $c_{1}$ aux individus d'indices 0-49 ;
 - la classe $c_{2}$ aux individus d'indices 50-99 ;
-- la classe $c_{3}$ aux individus d'indices 100-177.
+- la classe $c_{3}$ aux individus d'indices 101-177.
 
 *Rappel :* N'oubliez pas que =Python= indexe les listes, vecteurs, tableaux en commençant à 0 !
 

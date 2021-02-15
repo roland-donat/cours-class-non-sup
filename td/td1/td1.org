@@ -282,16 +282,15 @@ Dans ce TD, nous utiliserons les modules =Python= suivants :
 - =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
   nombres aléatoires ;
 - =scipy=, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
-  distances ;
-# - =sklearn=, pour faire du /machine learning/.
+  distances.
 
-Ces modules ne sont pas forcément installés dans votre environnement local ou distant de type
-=Deepnote=. Vous pouvez donc utiliser la commande =!pip install <nom_module>= pour les installer :
+Ces modules ne sont pas forcément installés dans votre environnement local ou en ligne. Vous pouvez
+donc utiliser la commande =!pip install <nom_module>= pour les installer : 
 #+attr_latex: :options bgcolor=almostwhite, frame=lines
 #+BEGIN_SRC python :results silent :exports code
-!pip install pandas
-!pip install plotly
-!pip install scipy
+!pip install pandas=='1.1.5'
+!pip install plotly=='4.14.3'
+!pip install scipy=="1.5.4"
 #+END_SRC
  
 
@@ -300,8 +299,17 @@ Rappel : code d'import des modules :
 #+BEGIN_SRC python :session :tangle td1.py :results silent :exports both
 import pandas as pd
 import numpy as np
+import plotly as pl
 import plotly.express as px
-from scipy.spatial.distance import pdist, cdist, squareform
+import scipy as sc
+import scipy.spatial.distance as scd
+import sklearn as sk
+
+# Vérification des versions des librairies utilisées
+{"plotly": plotly.__version__, 
+ "pandas": pd.__version__, 
+ "numpy": np.__version__, 
+ "scipy": sc.__version__}
 #+END_SRC
 
 

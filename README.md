@@ -1,20 +1,21 @@
 
 # Table des matières
 
-1.  [Introduction](#org0a5597e)
-2.  [Objectifs Pédagogiques](#org113a01d)
-3.  [Crédit](#orge499408)
-4.  [Organisation pratique](#orge3cfb54)
-5.  [Cours](#orga0774a6)
-    1.  [Semaine 1 : Introduction et notions fondamentales](#org3db7a1c)
-6.  [Évaluation du cours](#orgdf45336)
-7.  [Références](#org20be58c)
-    1.  [L'environnement `Python`](#orgfa84dfb)
-    2.  [Principaux modules `Python` utilisés](#orgda2794d)
+-   [Introduction](#orga9a78da)
+-   [Objectifs Pédagogiques](#org606e3af)
+-   [Crédit](#orgd8ae8ea)
+-   [Organisation pratique](#orgff0ecf2)
+-   [Cours](#orgc53ba08)
+    -   [Semaine 1 : Introduction et notions fondamentales](#org1cfa92c)
+    -   [Semaine 2 : Méthodes de partitionnement](#orgc2227da)
+-   [Évaluation du cours](#org8de3448)
+-   [Références](#org6c7de19)
+    -   [L'environnement `Python`](#orgb32cce7)
+    -   [Principaux modules `Python` utilisés](#orgf4ce919)
 
 
 
-<a id="org0a5597e"></a>
+<a id="orga9a78da"></a>
 
 # Introduction
 
@@ -22,7 +23,7 @@ Ce site présente l'ensemble des ressources pédagogiques relatives au cours de 
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
 
 
-<a id="org113a01d"></a>
+<a id="org606e3af"></a>
 
 # Objectifs Pédagogiques
 
@@ -37,7 +38,7 @@ Les principaux objectifs pédagogiques du cours sont :
 -   Savoir mettre en oeuvre ces méthodes avec la langage `Python`.
 
 
-<a id="orge499408"></a>
+<a id="orgd8ae8ea"></a>
 
 # Crédit
 
@@ -46,7 +47,7 @@ ANTONI qui avait en charge le cours de classification non supervisée sur l'ann�
 pouvez consulter ces ressources pédagogiques en vous rendant dans [l'espace *Clustering* sur Moodle](https://moodle.univ-ubs.fr/course/view.php?id=3596).
 
 
-<a id="orge3cfb54"></a>
+<a id="orgff0ecf2"></a>
 
 # Organisation pratique
 
@@ -59,17 +60,20 @@ faire une demande d'inscription à l'équipe Teams [STID2 - Classification non
 supervisée](https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529).
 
 
-<a id="orga0774a6"></a>
+<a id="orgc53ba08"></a>
 
 # Cours
 
 Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
 donc requise).
 
-**Note : Il est recommandé d'utiliser le navigateur `Firefox` pour visualiser les slides de cours.**
+**Note 1 : Il est recommandé d'utiliser le navigateur `Firefox` pour visualiser les slides de cours.**
+
+**Note 2 : Pour reproduire les exemples du cours, n'oubliez pas de télécharger le module
+[`clust_util.py`](https://github.com/roland-donat/cours-class-non-sup/tree/main/python) en le plaçant dans le même répertoire que les scripts.**
 
 
-<a id="org3db7a1c"></a>
+<a id="org1cfa92c"></a>
 
 ## Semaine 1 : Introduction et notions fondamentales
 
@@ -78,16 +82,28 @@ donc requise).
 -   [Slides du cours HTML](https://roland-donat.github.io/cours-class-non-sup/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale/c1_intro.html)
 -   [Scripts `Python` du cours](https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/C1%20-%20Introduction%20g%C3%A9n%C3%A9rale)
 
-Note : pour reproduire les exemples du cours, n'oubliez pas de télécharger le module [`clust_util.py`](https://github.com/roland-donat/cours-class-non-sup/tree/main/python)
-en le plaçant dans le même répertoire que les scripts.
-
 **TD :**
 
 -   [Sujet du TD](https://roland-donat.github.io/cours-class-non-sup/td/td1/td1.html)
--   Scripts `Python` : à venir
+-   [Notebook de la séance](https://colab.research.google.com/drive/1OxeIT0Kj5nimaCdbpbwHqgiEuXo-HQvn?usp=sharing) (sur Google Colab)
 
 
-<a id="orgdf45336"></a>
+<a id="orgc2227da"></a>
+
+## Semaine 2 : Méthodes de partitionnement
+
+**Cours :**
+
+-   [Slides du cours HTML](https://roland-donat.github.io/cours-class-non-sup/cours/C2%20-%20Méthodes%20de%20partitionnement/c2_meth_part.html)
+-   [Scripts `Python` du cours](https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/C2%20-%20Méthodes%20de%20partitionnement)
+
+**TD :**
+
+-   [Sujet du TD](https://roland-donat.github.io/cours-class-non-sup/td/td2/td2.html)
+-   Notebook de la séance (sur Google Colab) [à venir]
+
+
+<a id="org8de3448"></a>
 
 # Évaluation du cours
 
@@ -99,7 +115,7 @@ présenteront sous la forme de quiz sur la plateforme Moodle.
 Planning des évaluations (à venir)
 
 
-<a id="org20be58c"></a>
+<a id="org6c7de19"></a>
 
 # Références
 
@@ -114,7 +130,7 @@ d'inspiration :
     *clustering* et visualiser les résultats.
 
 
-<a id="orgfa84dfb"></a>
+<a id="orgb32cce7"></a>
 
 ## L'environnement `Python`
 
@@ -136,7 +152,7 @@ Sinon vous pouvez bien évidement utiliser `Python` en local en installant la di
 **L'important est de vous assurer que vous utilisez bien la version `3.8` ou supérieure de `Python`.**
 
 
-<a id="orgda2794d"></a>
+<a id="orgf4ce919"></a>
 
 ## Principaux modules `Python` utilisés
 

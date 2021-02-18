@@ -275,39 +275,45 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org33c874d">Préambule</a>
+<li><a href="#orgf7db553">Préambule</a>
 <ul>
-<li><a href="#orgacc69cf">Crédit</a></li>
-<li><a href="#org738b70a">Environnement logiciel</a></li>
+<li><a href="#orgae17956">Crédit</a></li>
+<li><a href="#org65c4970">Environnement logiciel</a></li>
 </ul>
 </li>
-<li><a href="#org30fba4d">Introduction</a></li>
-<li><a href="#org91428b2">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orgade8d40">Exercice 1 : Données <code>Wine</code></a>
+<li><a href="#orgb63d3ef">Introduction</a></li>
+<li><a href="#org77698e5">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orge748ab5">Exercice 1 : Données <code>Wine</code> centrées-réduites</a>
 <ul>
-<li><a href="#org51717e2">Préparation des données</a></li>
-<li><a href="#org02f15f2">Moyennes mobiles</a></li>
-<li><a href="#orgc6c0817">Mélange gaussien</a></li>
+<li><a href="#orge2ecfca">Préparation des données</a></li>
+<li><a href="#orgdaa2269">Moyennes mobiles</a></li>
+<li><a href="#org0cc00e2">Mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#orgbda0b98">Exercice 2 : Données synthétiques</a>
+<li><a href="#org2a60d1d">Exercice 1 bis : Données <code>Wine</code> (ACP)</a>
 <ul>
-<li><a href="#orgc42f962">Données circulaires</a></li>
-<li><a href="#org64df79a">Données elliptiques</a></li>
+<li><a href="#orgd32ccdb">Préparation des données</a></li>
+<li><a href="#org7e875e6">Application des moyennes mobiles et du mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#orgfb23c1b">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#org72f6492">Exercice 2 : Données synthétiques</a>
+<ul>
+<li><a href="#orge1bd32c">Données circulaires</a></li>
+<li><a href="#org6e4f07a">Données elliptiques</a></li>
+</ul>
+</li>
+<li><a href="#org62343eb">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org33c874d" class="outline-2">
-<h2 id="org33c874d">Préambule</h2>
-<div class="outline-text-2" id="text-org33c874d">
+<div id="outline-container-orgf7db553" class="outline-2">
+<h2 id="orgf7db553">Préambule</h2>
+<div class="outline-text-2" id="text-orgf7db553">
 </div>
-<div id="outline-container-orgacc69cf" class="outline-3">
-<h3 id="orgacc69cf">Crédit</h3>
-<div class="outline-text-3" id="text-orgacc69cf">
+<div id="outline-container-orgae17956" class="outline-3">
+<h3 id="orgae17956">Crédit</h3>
+<div class="outline-text-3" id="text-orgae17956">
 <p>
 Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
 2019-2020. Le TD original était réalisé avec le logiciel <code>R</code> tandis que nous allons utiliser le
@@ -316,9 +322,9 @@ logiciel <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-org738b70a" class="outline-3">
-<h3 id="org738b70a">Environnement logiciel</h3>
-<div class="outline-text-3" id="text-org738b70a">
+<div id="outline-container-org65c4970" class="outline-3">
+<h3 id="org65c4970">Environnement logiciel</h3>
+<div class="outline-text-3" id="text-org65c4970">
 <p>
 Les travaux se dérouleront sous <code>Python</code>. Si vous disposez d'une connexion internet, je vous
 recommande d'utiliser une plateforme de <i>Notebooks</i> en ligne telle que
@@ -330,9 +336,9 @@ assurer que vous utilisez bien la version <code>3.8</code> ou plus de <code>Pyth
 </div>
 </div>
 
-<div id="outline-container-org30fba4d" class="outline-2">
-<h2 id="org30fba4d">Introduction</h2>
-<div class="outline-text-2" id="text-org30fba4d">
+<div id="outline-container-orgb63d3ef" class="outline-2">
+<h2 id="orgb63d3ef">Introduction</h2>
+<div class="outline-text-2" id="text-orgb63d3ef">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -349,9 +355,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org91428b2" class="outline-2">
-<h2 id="org91428b2">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org91428b2">
+<div id="outline-container-org77698e5" class="outline-2">
+<h2 id="org77698e5">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org77698e5">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -386,11 +392,10 @@ Rappel : code d'import des modules :
 <span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul num&#233;rique</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly <span style="color: #F0DFAF; font-weight: bold;">as</span> pl <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly pour utiliser les visualisations de haut niveau</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> scipy <span style="color: #F0DFAF; font-weight: bold;">as</span> sc <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> scipy.spatial.distance <span style="color: #F0DFAF; font-weight: bold;">as</span> scd <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package scipy pour le calcul de distance</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn <span style="color: #F0DFAF; font-weight: bold;">as</span> sk <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.cluster <span style="color: #F0DFAF; font-weight: bold;">as</span> skc <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; au clustering</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.mixture <span style="color: #F0DFAF; font-weight: bold;">as</span> skm <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; au mod&#232;les de m&#233;lange</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.decomposition <span style="color: #F0DFAF; font-weight: bold;">as</span> skd   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; aux m&#233;thodes factorielles</span>
 
 <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">V&#233;rification des versions des librairies utilis&#233;es</span>
 {<span style="color: #CC9393;">"plotly"</span>: pl.__version__, 
@@ -404,29 +409,29 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-orgade8d40" class="outline-2">
-<h2 id="orgade8d40">Exercice 1 : Données <code>Wine</code></h2>
-<div class="outline-text-2" id="text-orgade8d40">
+<div id="outline-container-orge748ab5" class="outline-2">
+<h2 id="orge748ab5">Exercice 1 : Données <code>Wine</code> centrées-réduites</h2>
+<div class="outline-text-2" id="text-orge748ab5">
 <p>
 Nous allons reprendre les données des analyses chimiques sur différents vins. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-org51717e2" class="outline-3">
-<h3 id="org51717e2">Préparation des données</h3>
-<div class="outline-text-3" id="text-org51717e2">
+<div id="outline-container-orge2ecfca" class="outline-3">
+<h3 id="orge2ecfca">Préparation des données</h3>
+<div class="outline-text-3" id="text-orge2ecfca">
 <ol class="org-ol">
 <li>Chargez les données dans votre environnement.</li>
 
-<li>Centrez et réduisez les données.</li>
+<li>Créez le <code>DataFrame</code> <code>data_wine_df</code> correspondant aux données centrées et réduites.</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-org02f15f2" class="outline-3">
-<h3 id="org02f15f2">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org02f15f2">
+<div id="outline-container-orgdaa2269" class="outline-3">
+<h3 id="orgdaa2269">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orgdaa2269">
 <ol class="org-ol">
 <li>Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
 utilisant les paramètres par défaut. On notera <code>km_1</code> ce premier "modèle" de <i>clustering</i>.
@@ -437,9 +442,9 @@ utilisant les paramètres par défaut. On notera <code>km_1</code> ce premier "m
 etc.).</li>
 </ul></li>
 
-<li>Représenter graphiquement la partition obtenue avec le modèle <code>km_1</code> sur les variables <code>Alcohol</code>, <code>Magnesium</code>, <code>Total_Phenols</code> et <code>Hue</code> à l'aide d'un diagramme en paires.</li>
+<li>Représentez graphiquement la partition obtenue avec le modèle <code>km_1</code> sur les variables <code>Alcohol</code>, <code>Magnesium</code>, <code>Total_Phenols</code> et <code>Hue</code> à l'aide d'un diagramme en paires.</li>
 
-<li>Créer une fonction <code>eval_partition</code> ayant les caractéristiques suivantes :
+<li>Créez une fonction <code>eval_partition</code> ayant les caractéristiques suivantes :
 <ul class="org-ul">
 <li>Entrées :
 <ul class="org-ul">
@@ -474,9 +479,9 @@ données ?</li>
 </div>
 </div>
 
-<div id="outline-container-orgc6c0817" class="outline-3">
-<h3 id="orgc6c0817">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-orgc6c0817">
+<div id="outline-container-org0cc00e2" class="outline-3">
+<h3 id="org0cc00e2">Mélange gaussien</h3>
+<div class="outline-text-3" id="text-org0cc00e2">
 <ol class="org-ol">
 <li>Appliquez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
 défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
@@ -491,9 +496,44 @@ défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la
 </div>
 </div>
 
-<div id="outline-container-orgbda0b98" class="outline-2">
-<h2 id="orgbda0b98">Exercice 2 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-orgbda0b98">
+
+<div id="outline-container-org2a60d1d" class="outline-2">
+<h2 id="org2a60d1d">Exercice 1 bis : Données <code>Wine</code> (ACP)</h2>
+<div class="outline-text-2" id="text-org2a60d1d">
+</div>
+<div id="outline-container-orgd32ccdb" class="outline-3">
+<h3 id="orgd32ccdb">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgd32ccdb">
+<ol class="org-ol">
+<li>Chargez les données dans votre environnement.</li>
+
+<li>Créez le <code>DataFrame</code> <code>data_wine_df</code> correspondant aux données centrées et réduites.</li>
+
+<li>Faites une ACP sur les données <code>data_wine_df</code> en analysant rapidement le résultat obtenu. Aide :
+utilisez la classe <code>PCA</code> du <i>package</i> <code>sklearn.decomposition</code> (ou <code>skd</code> pour nous).</li>
+
+<li>Créez deux <code>DataFrame</code> <code>data_wine_acp_2d_df</code> et <code>data_wine_acp_3d_df</code> correspondant aux données
+<code>Wine</code> projetées respectivement sur les deux premiers axes et trois premiers axes de l'ACP.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org7e875e6" class="outline-3">
+<h3 id="org7e875e6">Application des moyennes mobiles et du mélange gaussien</h3>
+<div class="outline-text-3" id="text-org7e875e6">
+<ul class="org-ul">
+<li>Reprenez les questions de l'exercice 1 sur les données <code>data_wine_acp_2d_df</code> et
+<code>data_wine_acp_3d_df</code>.</li>
+<li>Vous pourrez ainsi visualiser les données en deux ou trois dimensions à l'aide des fonction
+<code>px.scatter</code> et <code>px.scatter_3d</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72f6492" class="outline-2">
+<h2 id="org72f6492">Exercice 2 : Données synthétiques</h2>
+<div class="outline-text-2" id="text-org72f6492">
 <p>
 Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
 utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
@@ -506,9 +546,9 @@ maîtrise le partitionnement <i>a priori</i>.
 </p>
 </div>
 
-<div id="outline-container-orgc42f962" class="outline-3">
-<h3 id="orgc42f962">Données circulaires</h3>
-<div class="outline-text-3" id="text-orgc42f962">
+<div id="outline-container-orge1bd32c" class="outline-3">
+<h3 id="orge1bd32c">Données circulaires</h3>
+<div class="outline-text-3" id="text-orge1bd32c">
 <ol class="org-ol">
 <li>Chargez les données <code>data_circ.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv</a>. Le séparateur utilisé
@@ -527,9 +567,9 @@ des groupes.</li>
 </div>
 
 
-<div id="outline-container-org64df79a" class="outline-3">
-<h3 id="org64df79a">Données elliptiques</h3>
-<div class="outline-text-3" id="text-org64df79a">
+<div id="outline-container-org6e4f07a" class="outline-3">
+<h3 id="org6e4f07a">Données elliptiques</h3>
+<div class="outline-text-3" id="text-org6e4f07a">
 <ol class="org-ol">
 <li>Chargez les données <code>data_ellipse.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv</a>. Le séparateur utilisé
@@ -552,9 +592,9 @@ des groupes.</li>
 </div>
 
 
-<div id="outline-container-orgfb23c1b" class="outline-2">
-<h2 id="orgfb23c1b">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orgfb23c1b">
+<div id="outline-container-org62343eb" class="outline-2">
+<h2 id="org62343eb">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-org62343eb">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

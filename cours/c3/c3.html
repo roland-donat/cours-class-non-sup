@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
-<title>Classification non supervisée - Clustering  <br> <br> <font size="10">Méthodes agglomératives</font></title>
+<title>Classification non supervisée - Clustering  <br> <br> <font size="10">Classification hiérarchique</font></title>
 <meta name="author" content="(Roland Donat)"/>
 <style type="text/css">
 .underline { text-decoration: underline; }
@@ -28,23 +28,25 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide" data-background="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg"><h1 class="title">Classification non supervisée - Clustering  <br> <br> <font size="10">Méthodes agglomératives</font></h1><h2 class="author">Roland Donat</h2><h2 class="date"> <br>STID2 - Année universitaire 2020-2021</h2>
+<section id="sec-title-slide" data-background="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg"><h1 class="title">Classification non supervisée - Clustering  <br> <br> <font size="10">Classification hiérarchique</font></h1><h2 class="author">Roland Donat</h2><h2 class="date"> <br>STID2 - Année universitaire 2020-2021</h2>
 </section>
 <section id="table-of-contents"><div id="table-of-contents">
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-orgc048d9a">Objectifs de la séance</a></li>
-<li><a href="#/slide-orgf61d936">Généralités</a></li>
-<li><a href="#/slide-org111dc07">Résumé de la séance</a></li>
+<li><a href="#/slide-org82aabef">Objectifs de la séance</a></li>
+<li><a href="#/slide-org36c230b">Généralités</a></li>
+<li><a href="#/slide-org81ef637">Classification Ascendante Hiérarchique</a></li>
+<li><a href="#/slide-org3b801f8">Résumé de la séance</a></li>
 </ul>
 </div>
 </div>
 </section>
 
+
 <section>
-<section id="slide-orgc048d9a">
-<h2 id="orgc048d9a">Objectifs de la séance</h2>
+<section id="slide-org82aabef">
+<h2 id="org82aabef">Objectifs de la séance</h2>
 <ol>
 <li>Rappeler la problématique de partitionnement des données</li>
 <li>Présenter la méthode des centres mobiles (k-<i>Means</i>)</li>
@@ -57,19 +59,19 @@
 </section>
 </section>
 <section>
-<section id="slide-orgf61d936">
-<h2 id="orgf61d936">Généralités</h2>
+<section id="slide-org36c230b">
+<h2 id="org36c230b">Généralités</h2>
 
 <div class="figure">
-<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/classification_dino.jpg" alt="Classification dinosaures" width="70%" />
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/classification_dino.jpg" alt="Classification dinosaures" width="95%" />
 </p>
 </div>
 
 </section>
 </section>
 <section>
-<section id="slide-org7c8d9cf">
-<h3 id="org7c8d9cf">Rappels</h3>
+<section id="slide-org2795214">
+<h3 id="org2795214">Rappels et objectifs</h3>
 <div class="block-definition">
 <p>
 <h4>Qu'est ce qu'une classification non supervisée</h4>
@@ -87,24 +89,55 @@
 
 <div class="block-definition">
 <p>
-<h4>Objectifs de la classification non supervisée</h4>
+<h4>Objectifs des méthodes hiérarchiques</h4>
 </p>
 
 <ul>
-<li>Construire des groupes homogènes</li>
-<li>Les individus au sein d'un groupe doivent être aussi semblables que possible au sens d'un ou plusieurs critères donnés</li>
-<li>Les individus de groupes distincts doivent être aussi différents que possible au sens des mêmes critères</li>
+<li>Mettre en évidence des relations hiérarchiques entre individus ou groupes d'individus</li>
+<li>Construction d'une structure arborescente représentant un emboîtement de partitions</li>
+<li>Chaque niveau de la hiérarchie correspond à une partition particulière des individus</li>
 
 </ul>
 
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3527fd3">
+<h3 id="org3527fd3">Approches possibles</h3>
+<div class="block-example">
+<p>
+<h4>Approches possibles</h4>
+</p>
+
+<p>
+Une hiérarchie peut être obtenue par deux types de méthodes :
+</p>
+<ul>
+<li>la classification ascendante (“agglomérative”),</li>
+<li>la classification descendante (“divisive” en anglais)</li>
+
+</ul>
+
+<p>
+<b>Mais au fait, qu'est ce qu'une hiérarchie ?</b>
+</p>
+
+</div>
+
+
+<div class="figure">
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/hierarchical_clust_agglo_vs_div.png" alt="Agglo vs divisive" width="80%" />
+</p>
 </div>
 
 
 </section>
 </section>
 <section>
-<section id="slide-org5d8a00b">
-<h3 id="org5d8a00b">Notion de hiérarchie</h3>
+<section id="slide-orgac5332a">
+<h3 id="orgac5332a">Notion de hiérarchie</h3>
 <div class="block-definition">
 <p>
 <h4>Hiérarchie sur un ensemble d'individus</h4>
@@ -129,7 +162,6 @@ dans l'autre</li>
 
 </div>
 
-
 <div class="block-example">
 <p>
 <h4>Exemples</h4>
@@ -146,18 +178,68 @@ dans l'autre</li>
 
 </div>
 
+
 </section>
 </section>
 <section>
-<section id="slide-org78aee36">
-<h3 id="org78aee36">Représentation graphique : dendrogramme</h3>
+<section id="slide-org81ef637">
+<h2 id="org81ef637">Classification Ascendante Hiérarchique</h2>
+
+<div class="figure">
+<p><img src="https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/pencils.jpg" alt="Classification dinosaures" width="95%" />
+</p>
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org89bc729">
+<h3 id="org89bc729">Principe général</h3>
 <p>
-<div class="slidesubtitle">Exemple de représentation graphique</div>
+<div class="slidesubtitle">Principe</div>
 </p>
 
-<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>                <div id="4ee7ef49-21f0-41ae-8766-70a478286322" class="plotly-graph-div" style="height:600px; width:1000px;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("4ee7ef49-21f0-41ae-8766-70a478286322")) {                    Plotly.newPlot(                        "4ee7ef49-21f0-41ae-8766-70a478286322",                        [{"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [15.0, 15.0, 25.0, 25.0], "xaxis": "x", "y": [0.0, 134.31556946236725, 134.31556946236725, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [5.0, 5.0, 20.0, 20.0], "xaxis": "x", "y": [0.0, 318.5516929416637, 318.5516929416637, 134.31556946236725], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [35.0, 35.0, 45.0, 45.0], "xaxis": "x", "y": [0.0, 716.9796461546172, 716.9796461546172, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [12.5, 12.5, 40.0, 40.0], "xaxis": "x", "y": [318.5516929416637, 1283.459047019421, 1283.459047019421, 716.9796461546172], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [55.0, 55.0, 65.0, 65.0], "xaxis": "x", "y": [0.0, 431.2575149490151, 431.2575149490151, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [85.0, 85.0, 95.0, 95.0], "xaxis": "x", "y": [0.0, 252.46086572972055, 252.46086572972055, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [75.0, 75.0, 90.0, 90.0], "xaxis": "x", "y": [0.0, 517.8742117541672, 517.8742117541672, 252.46086572972055], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [60.0, 60.0, 82.5, 82.5], "xaxis": "x", "y": [431.2575149490151, 1418.2044989351853, 1418.2044989351853, 517.8742117541672], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [26.25, 26.25, 71.25, 71.25], "xaxis": "x", "y": [1283.459047019421, 2583.2227095045446, 2583.2227095045446, 1418.2044989351853], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [115.0, 115.0, 125.0, 125.0], "xaxis": "x", "y": [0.0, 283.30825861594644, 283.30825861594644, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [105.0, 105.0, 120.0, 120.0], "xaxis": "x", "y": [0.0, 497.9003676439695, 497.9003676439695, 283.30825861594644], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [135.0, 135.0, 145.0, 145.0], "xaxis": "x", "y": [0.0, 548.0684259287339, 548.0684259287339, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [112.5, 112.5, 140.0, 140.0], "xaxis": "x", "y": [497.9003676439695, 895.77825526187, 895.77825526187, 548.0684259287339], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [165.0, 165.0, 175.0, 175.0], "xaxis": "x", "y": [0.0, 155.1992274465308, 155.1992274465308, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [155.0, 155.0, 170.0, 170.0], "xaxis": "x", "y": [0.0, 350.72490216692626, 350.72490216692626, 155.1992274465308], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [195.0, 195.0, 205.0, 205.0], "xaxis": "x", "y": [0.0, 84.07496297947445, 84.07496297947445, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [225.0, 225.0, 235.0, 235.0], "xaxis": "x", "y": [0.0, 49.6150743222259, 49.6150743222259, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [215.0, 215.0, 230.0, 230.0], "xaxis": "x", "y": [0.0, 97.05811248937412, 97.05811248937412, 49.6150743222259], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [245.0, 245.0, 255.0, 255.0], "xaxis": "x", "y": [0.0, 187.68109334719892, 187.68109334719892, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [222.5, 222.5, 250.0, 250.0], "xaxis": "x", "y": [97.05811248937412, 235.46960759299702, 235.46960759299702, 187.68109334719892], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [200.0, 200.0, 236.25, 236.25], "xaxis": "x", "y": [84.07496297947445, 294.7612164108433, 294.7612164108433, 235.46960759299702], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [185.0, 185.0, 218.125, 218.125], "xaxis": "x", "y": [0.0, 431.5649064741015, 431.5649064741015, 294.7612164108433], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [162.5, 162.5, 201.5625, 201.5625], "xaxis": "x", "y": [350.72490216692626, 905.2469276390835, 905.2469276390835, 431.5649064741015], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [126.25, 126.25, 182.03125, 182.03125], "xaxis": "x", "y": [895.77825526187, 2181.6830324086955, 2181.6830324086955, 905.2469276390835], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [265.0, 265.0, 275.0, 275.0], "xaxis": "x", "y": [0.0, 266.08097789958606, 266.08097789958606, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [285.0, 285.0, 295.0, 295.0], "xaxis": "x", "y": [0.0, 357.12999271973786, 357.12999271973786, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [270.0, 270.0, 290.0, 290.0], "xaxis": "x", "y": [266.08097789958606, 964.6356566082346, 964.6356566082346, 357.12999271973786], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [305.0, 305.0, 315.0, 315.0], "xaxis": "x", "y": [0.0, 1664.9552394283758, 1664.9552394283758, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [280.0, 280.0, 310.0, 310.0], "xaxis": "x", "y": [964.6356566082346, 3262.237546255637, 3262.237546255637, 1664.9552394283758], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [154.140625, 154.140625, 295.0, 295.0], "xaxis": "x", "y": [2181.6830324086955, 3681.3578902899403, 3681.3578902899403, 3262.237546255637], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [48.75, 48.75, 224.5703125, 224.5703125], "xaxis": "x", "y": [2583.2227095045446, 7355.651822809451, 7355.651822809451, 3681.3578902899403], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [355.0, 355.0, 365.0, 365.0], "xaxis": "x", "y": [0.0, 672.4585945498801, 672.4585945498801, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [345.0, 345.0, 360.0, 360.0], "xaxis": "x", "y": [0.0, 1500.039105156929, 1500.039105156929, 672.4585945498801], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [335.0, 335.0, 352.5, 352.5], "xaxis": "x", "y": [0.0, 2607.766719589772, 2607.766719589772, 1500.039105156929], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [325.0, 325.0, 343.75, 343.75], "xaxis": "x", "y": [0.0, 5948.190960495552, 5948.190960495552, 2607.766719589772], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [375.0, 375.0, 385.0, 385.0], "xaxis": "x", "y": [0.0, 2193.61278428988, 2193.61278428988, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [405.0, 405.0, 415.0, 415.0], "xaxis": "x", "y": [0.0, 1758.4363284179499, 1758.4363284179499, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [395.0, 395.0, 410.0, 410.0], "xaxis": "x", "y": [0.0, 3414.28837461044, 3414.28837461044, 1758.4363284179499], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [380.0, 380.0, 402.5, 402.5], "xaxis": "x", "y": [2193.61278428988, 6110.975881935716, 6110.975881935716, 3414.28837461044], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [334.375, 334.375, 391.25, 391.25], "xaxis": "x", "y": [5948.190960495552, 9430.330999643704, 9430.330999643704, 6110.975881935716], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [435.0, 435.0, 445.0, 445.0], "xaxis": "x", "y": [0.0, 903.9640208548126, 903.9640208548126, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [425.0, 425.0, 440.0, 440.0], "xaxis": "x", "y": [0.0, 1726.4701901567835, 1726.4701901567835, 903.9640208548126], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [455.0, 455.0, 465.0, 465.0], "xaxis": "x", "y": [0.0, 2720.5136823401567, 2720.5136823401567, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [432.5, 432.5, 460.0, 460.0], "xaxis": "x", "y": [1726.4701901567835, 3600.7614290174793, 3600.7614290174793, 2720.5136823401567], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [475.0, 475.0, 485.0, 485.0], "xaxis": "x", "y": [0.0, 473.23666869759785, 473.23666869759785, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [505.0, 505.0, 515.0, 515.0], "xaxis": "x", "y": [0.0, 206.40187959415485, 206.40187959415485, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [495.0, 495.0, 510.0, 510.0], "xaxis": "x", "y": [0.0, 988.2178160709308, 988.2178160709308, 206.40187959415485], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [480.0, 480.0, 502.5, 502.5], "xaxis": "x", "y": [473.23666869759785, 1172.1823729266705, 1172.1823729266705, 988.2178160709308], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [535.0, 535.0, 545.0, 545.0], "xaxis": "x", "y": [0.0, 989.2451624344695, 989.2451624344695, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [525.0, 525.0, 540.0, 540.0], "xaxis": "x", "y": [0.0, 1945.0502993239018, 1945.0502993239018, 989.2451624344695], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [555.0, 555.0, 565.0, 565.0], "xaxis": "x", "y": [0.0, 824.9509630275002, 824.9509630275002, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [575.0, 575.0, 585.0, 585.0], "xaxis": "x", "y": [0.0, 1512.7660733239625, 1512.7660733239625, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [560.0, 560.0, 580.0, 580.0], "xaxis": "x", "y": [824.9509630275002, 2039.549564634309, 2039.549564634309, 1512.7660733239625], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [532.5, 532.5, 570.0, 570.0], "xaxis": "x", "y": [1945.0502993239018, 3616.705248551504, 3616.705248551504, 2039.549564634309], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [491.25, 491.25, 551.25, 551.25], "xaxis": "x", "y": [1172.1823729266705, 4668.990463269335, 4668.990463269335, 3616.705248551504], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [446.25, 446.25, 521.25, 521.25], "xaxis": "x", "y": [3600.7614290174793, 9491.716886132877, 9491.716886132877, 4668.990463269335], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [362.8125, 362.8125, 483.75, 483.75], "xaxis": "x", "y": [9430.330999643704, 17154.601321214082, 17154.601321214082, 9491.716886132877], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [136.66015625, 136.66015625, 423.28125, 423.28125], "xaxis": "x", "y": [7355.651822809451, 26223.461706885686, 26223.461706885686, 17154.601321214082], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [605.0, 605.0, 615.0, 615.0], "xaxis": "x", "y": [0.0, 1612.91957342082, 1612.91957342082, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [595.0, 595.0, 610.0, 610.0], "xaxis": "x", "y": [0.0, 5361.08645056205, 5361.08645056205, 1612.91957342082], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [625.0, 625.0, 635.0, 635.0], "xaxis": "x", "y": [0.0, 1838.4822137023789, 1838.4822137023789, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [645.0, 645.0, 655.0, 655.0], "xaxis": "x", "y": [0.0, 4440.723130138716, 4440.723130138716, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [630.0, 630.0, 650.0, 650.0], "xaxis": "x", "y": [1838.4822137023789, 8139.420170046574, 8139.420170046574, 4440.723130138716], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [602.5, 602.5, 640.0, 640.0], "xaxis": "x", "y": [5361.08645056205, 14712.341777425645, 14712.341777425645, 8139.420170046574], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [675.0, 675.0, 685.0, 685.0], "xaxis": "x", "y": [0.0, 5903.429856350967, 5903.429856350967, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [665.0, 665.0, 680.0, 680.0], "xaxis": "x", "y": [0.0, 10993.197839087998, 10993.197839087998, 5903.429856350967], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [705.0, 705.0, 715.0, 715.0], "xaxis": "x", "y": [0.0, 4427.210196410376, 4427.210196410376, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [695.0, 695.0, 710.0, 710.0], "xaxis": "x", "y": [0.0, 11807.239456375906, 11807.239456375906, 4427.210196410376], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [672.5, 672.5, 702.5, 702.5], "xaxis": "x", "y": [10993.197839087998, 24030.21517823028, 24030.21517823028, 11807.239456375906], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [621.25, 621.25, 687.5, 687.5], "xaxis": "x", "y": [14712.341777425645, 35641.94321383866, 35641.94321383866, 24030.21517823028], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#F58518"}, "mode": "lines", "type": "scatter", "x": [735.0, 735.0, 745.0, 745.0], "xaxis": "x", "y": [0.0, 8675.171667754823, 8675.171667754823, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#F58518"}, "mode": "lines", "type": "scatter", "x": [725.0, 725.0, 740.0, 740.0], "xaxis": "x", "y": [0.0, 41125.42747477148, 41125.42747477148, 8675.171667754823], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#4C78A8"}, "mode": "lines", "type": "scatter", "x": [654.375, 654.375, 732.5, 732.5], "xaxis": "x", "y": [35641.94321383866, 61493.92628349883, 61493.92628349883, 41125.42747477148], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#4C78A8"}, "mode": "lines", "type": "scatter", "x": [279.970703125, 279.970703125, 693.4375, 693.4375], "xaxis": "x", "y": [26223.461706885686, 92340.618336387, 92340.618336387, 61493.92628349883], "yaxis": "y"}],                        {"autosize": false, "height": 600, "hovermode": "closest", "showlegend": false, "template": {"data": {"bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "bar"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "barpolar"}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "choropleth": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "choropleth"}], "contour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "contour"}], "contourcarpet": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "contourcarpet"}], "heatmap": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmap"}], "heatmapgl": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmapgl"}], "histogram": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "histogram"}], "histogram2d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2d"}], "histogram2dcontour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2dcontour"}], "mesh3d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "mesh3d"}], "parcoords": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "parcoords"}], "pie": [{"automargin": true, "type": "pie"}], "scatter": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter"}], "scatter3d": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter3d"}], "scattercarpet": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattercarpet"}], "scattergeo": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergeo"}], "scattergl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergl"}], "scattermapbox": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattermapbox"}], "scatterpolar": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolar"}], "scatterpolargl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolargl"}], "scatterternary": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterternary"}], "surface": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "surface"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}]}, "layout": {"annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "autotypenumbers": "strict", "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]], "sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}, "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "geo": {"bgcolor": "white", "lakecolor": "white", "landcolor": "#E5ECF6", "showlakes": true, "showland": true, "subunitcolor": "white"}, "hoverlabel": {"align": "left"}, "hovermode": "closest", "mapbox": {"style": "light"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "ternary": {"aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "title": {"x": 0.05}, "xaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}, "yaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}}}, "title": {"text": "Repr\u00e9sentation d'une classification hi\u00e9rarchique par dendrogramme"}, "width": 1000, "xaxis": {"mirror": "allticks", "rangemode": "tozero", "showgrid": false, "showline": true, "showticklabels": true, "tickmode": "array", "ticks": "outside", "ticktext": ["Morocco", "Guatemala", "Georgia", "Paraguay", "Mongolia", "Congo, Rep.", "Nigeria", "Samoa", "Cape Verde", "Angola", "Solomon Islands", "Chad", "Senegal", "Cambodia", "Cameroon", "Burundi", "Central African Republic", "Malawi", "Guinea", "Afghanistan", "Uganda", "Rwanda", "Guinea-Bissau", "Burkina Faso", "Haiti", "Comoros", "Mauritania", "Zambia", "Lao", "Uzbekistan", "Timor-Leste", "Micronesia, Fed. Sts.", "Barbados", "Chile", "Uruguay", "Latvia", "Turkey", "Poland", "Estonia", "Russia", "Kazakhstan", "Seychelles", "Suriname", "Mauritius", "Gabon", "Belarus", "Romania", "Albania", "Tunisia", "Jordan", "Ecuador", "China", "Botswana", "Iraq", "Thailand", "Dominican Republic", "Colombia", "South Africa", "Maldives", "Australia", "Netherlands", "Ireland", "France", "United Kingdom", "Germany", "Finland", "New Zealand", "Bahamas", "Greece", "Equatorial Guinea", "Oman", "Bahrain", "Switzerland", "Singapore", "Kuwait"], "tickvals": [5.0, 15.0, 25.0, 35.0, 45.0, 55.0, 65.0, 75.0, 85.0, 95.0, 105.0, 115.0, 125.0, 135.0, 145.0, 155.0, 165.0, 175.0, 185.0, 195.0, 205.0, 215.0, 225.0, 235.0, 245.0, 255.0, 265.0, 275.0, 285.0, 295.0, 305.0, 315.0, 325.0, 335.0, 345.0, 355.0, 365.0, 375.0, 385.0, 395.0, 405.0, 415.0, 425.0, 435.0, 445.0, 455.0, 465.0, 475.0, 485.0, 495.0, 505.0, 515.0, 525.0, 535.0, 545.0, 555.0, 565.0, 575.0, 585.0, 595.0, 605.0, 615.0, 625.0, 635.0, 645.0, 655.0, 665.0, 675.0, 685.0, 695.0, 705.0, 715.0, 725.0, 735.0, 745.0], "type": "linear", "zeroline": false}, "yaxis": {"mirror": "allticks", "rangemode": "tozero", "showgrid": false, "showline": true, "showticklabels": true, "ticks": "outside", "type": "linear", "zeroline": false}},                        {"displayModeBar": false, "responsive": true}                    )                };                            </script>        </div>
+<div class="block-example">
+<p>
+<h4>Intuition</h4>
+</p>
 
+<ul>
+<li>On démarre en considérant une partition dans laquelle il y a autant de classes que d'individus,
+i.e. chaque individus est seul dans sa classe</li>
+<li>On regroupe ensuite les deux individus les plus proches (notion de proximité géométrique) en
+créant une nouvelle classe</li>
+<li>On recommence l'opération en recherchant les deux individus les plus proches, ou l'individu et la
+classe la plus proche</li>
+<li>On réitère ce principe jusqu'à qu'il n'ait plus qu'une seul classe contenant tous les individus</li>
+<li>Au final, nous obtenons un emboîtement de classes qui peut se mettre sous la forme d'un
+arbre hiérarchique appelé <b>dendrogramme</b></li>
+
+</ul>
+
+</div>
+
+<div class="fragment (appear) block-alert">
+<p>
+<h4>Proximité faisant intervenir les classes</h4>
+</p>
+
+<ul>
+<li>Nous avons déjà vu comment mesurer la proximité entre deux individus grâce à la notion de distance
+(ou plus généralement de dissimilarité)</li>
+<li>Il va falloir ici définir en plus la notion de proximité entre classes deux classes</li>
+
+</ul>
+
+</div>
+
+
+</section>
+<section id="slide-org2113860">
+<h4 id="org2113860">Représentation d'une hiérarchie avec un dendrogramme</h4>
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>                <div id="eb5e4db3-5134-4c43-952d-095ec42570e3" class="plotly-graph-div" style="height:600px; width:1000px;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("eb5e4db3-5134-4c43-952d-095ec42570e3")) {                    Plotly.newPlot(                        "eb5e4db3-5134-4c43-952d-095ec42570e3",                        [{"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [15.0, 15.0, 25.0, 25.0], "xaxis": "x", "y": [0.0, 134.31556946236725, 134.31556946236725, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [5.0, 5.0, 20.0, 20.0], "xaxis": "x", "y": [0.0, 318.5516929416637, 318.5516929416637, 134.31556946236725], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [35.0, 35.0, 45.0, 45.0], "xaxis": "x", "y": [0.0, 716.9796461546172, 716.9796461546172, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [12.5, 12.5, 40.0, 40.0], "xaxis": "x", "y": [318.5516929416637, 1283.459047019421, 1283.459047019421, 716.9796461546172], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [55.0, 55.0, 65.0, 65.0], "xaxis": "x", "y": [0.0, 431.2575149490151, 431.2575149490151, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [85.0, 85.0, 95.0, 95.0], "xaxis": "x", "y": [0.0, 252.46086572972055, 252.46086572972055, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [75.0, 75.0, 90.0, 90.0], "xaxis": "x", "y": [0.0, 517.8742117541672, 517.8742117541672, 252.46086572972055], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [60.0, 60.0, 82.5, 82.5], "xaxis": "x", "y": [431.2575149490151, 1418.2044989351853, 1418.2044989351853, 517.8742117541672], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [26.25, 26.25, 71.25, 71.25], "xaxis": "x", "y": [1283.459047019421, 2583.2227095045446, 2583.2227095045446, 1418.2044989351853], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [115.0, 115.0, 125.0, 125.0], "xaxis": "x", "y": [0.0, 283.30825861594644, 283.30825861594644, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [105.0, 105.0, 120.0, 120.0], "xaxis": "x", "y": [0.0, 497.9003676439695, 497.9003676439695, 283.30825861594644], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [135.0, 135.0, 145.0, 145.0], "xaxis": "x", "y": [0.0, 548.0684259287339, 548.0684259287339, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [112.5, 112.5, 140.0, 140.0], "xaxis": "x", "y": [497.9003676439695, 895.77825526187, 895.77825526187, 548.0684259287339], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [165.0, 165.0, 175.0, 175.0], "xaxis": "x", "y": [0.0, 155.1992274465308, 155.1992274465308, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [155.0, 155.0, 170.0, 170.0], "xaxis": "x", "y": [0.0, 350.72490216692626, 350.72490216692626, 155.1992274465308], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [195.0, 195.0, 205.0, 205.0], "xaxis": "x", "y": [0.0, 84.07496297947445, 84.07496297947445, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [225.0, 225.0, 235.0, 235.0], "xaxis": "x", "y": [0.0, 49.6150743222259, 49.6150743222259, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [215.0, 215.0, 230.0, 230.0], "xaxis": "x", "y": [0.0, 97.05811248937412, 97.05811248937412, 49.6150743222259], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [245.0, 245.0, 255.0, 255.0], "xaxis": "x", "y": [0.0, 187.68109334719892, 187.68109334719892, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [222.5, 222.5, 250.0, 250.0], "xaxis": "x", "y": [97.05811248937412, 235.46960759299702, 235.46960759299702, 187.68109334719892], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [200.0, 200.0, 236.25, 236.25], "xaxis": "x", "y": [84.07496297947445, 294.7612164108433, 294.7612164108433, 235.46960759299702], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [185.0, 185.0, 218.125, 218.125], "xaxis": "x", "y": [0.0, 431.5649064741015, 431.5649064741015, 294.7612164108433], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [162.5, 162.5, 201.5625, 201.5625], "xaxis": "x", "y": [350.72490216692626, 905.2469276390835, 905.2469276390835, 431.5649064741015], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [126.25, 126.25, 182.03125, 182.03125], "xaxis": "x", "y": [895.77825526187, 2181.6830324086955, 2181.6830324086955, 905.2469276390835], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [265.0, 265.0, 275.0, 275.0], "xaxis": "x", "y": [0.0, 266.08097789958606, 266.08097789958606, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [285.0, 285.0, 295.0, 295.0], "xaxis": "x", "y": [0.0, 357.12999271973786, 357.12999271973786, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [270.0, 270.0, 290.0, 290.0], "xaxis": "x", "y": [266.08097789958606, 964.6356566082346, 964.6356566082346, 357.12999271973786], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [305.0, 305.0, 315.0, 315.0], "xaxis": "x", "y": [0.0, 1664.9552394283758, 1664.9552394283758, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [280.0, 280.0, 310.0, 310.0], "xaxis": "x", "y": [964.6356566082346, 3262.237546255637, 3262.237546255637, 1664.9552394283758], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [154.140625, 154.140625, 295.0, 295.0], "xaxis": "x", "y": [2181.6830324086955, 3681.3578902899403, 3681.3578902899403, 3262.237546255637], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [48.75, 48.75, 224.5703125, 224.5703125], "xaxis": "x", "y": [2583.2227095045446, 7355.651822809451, 7355.651822809451, 3681.3578902899403], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [355.0, 355.0, 365.0, 365.0], "xaxis": "x", "y": [0.0, 672.4585945498801, 672.4585945498801, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [345.0, 345.0, 360.0, 360.0], "xaxis": "x", "y": [0.0, 1500.039105156929, 1500.039105156929, 672.4585945498801], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [335.0, 335.0, 352.5, 352.5], "xaxis": "x", "y": [0.0, 2607.766719589772, 2607.766719589772, 1500.039105156929], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [325.0, 325.0, 343.75, 343.75], "xaxis": "x", "y": [0.0, 5948.190960495552, 5948.190960495552, 2607.766719589772], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [375.0, 375.0, 385.0, 385.0], "xaxis": "x", "y": [0.0, 2193.61278428988, 2193.61278428988, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [405.0, 405.0, 415.0, 415.0], "xaxis": "x", "y": [0.0, 1758.4363284179499, 1758.4363284179499, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [395.0, 395.0, 410.0, 410.0], "xaxis": "x", "y": [0.0, 3414.28837461044, 3414.28837461044, 1758.4363284179499], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [380.0, 380.0, 402.5, 402.5], "xaxis": "x", "y": [2193.61278428988, 6110.975881935716, 6110.975881935716, 3414.28837461044], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [334.375, 334.375, 391.25, 391.25], "xaxis": "x", "y": [5948.190960495552, 9430.330999643704, 9430.330999643704, 6110.975881935716], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [435.0, 435.0, 445.0, 445.0], "xaxis": "x", "y": [0.0, 903.9640208548126, 903.9640208548126, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [425.0, 425.0, 440.0, 440.0], "xaxis": "x", "y": [0.0, 1726.4701901567835, 1726.4701901567835, 903.9640208548126], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [455.0, 455.0, 465.0, 465.0], "xaxis": "x", "y": [0.0, 2720.5136823401567, 2720.5136823401567, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [432.5, 432.5, 460.0, 460.0], "xaxis": "x", "y": [1726.4701901567835, 3600.7614290174793, 3600.7614290174793, 2720.5136823401567], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [475.0, 475.0, 485.0, 485.0], "xaxis": "x", "y": [0.0, 473.23666869759785, 473.23666869759785, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [505.0, 505.0, 515.0, 515.0], "xaxis": "x", "y": [0.0, 206.40187959415485, 206.40187959415485, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [495.0, 495.0, 510.0, 510.0], "xaxis": "x", "y": [0.0, 988.2178160709308, 988.2178160709308, 206.40187959415485], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [480.0, 480.0, 502.5, 502.5], "xaxis": "x", "y": [473.23666869759785, 1172.1823729266705, 1172.1823729266705, 988.2178160709308], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [535.0, 535.0, 545.0, 545.0], "xaxis": "x", "y": [0.0, 989.2451624344695, 989.2451624344695, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [525.0, 525.0, 540.0, 540.0], "xaxis": "x", "y": [0.0, 1945.0502993239018, 1945.0502993239018, 989.2451624344695], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [555.0, 555.0, 565.0, 565.0], "xaxis": "x", "y": [0.0, 824.9509630275002, 824.9509630275002, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [575.0, 575.0, 585.0, 585.0], "xaxis": "x", "y": [0.0, 1512.7660733239625, 1512.7660733239625, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [560.0, 560.0, 580.0, 580.0], "xaxis": "x", "y": [824.9509630275002, 2039.549564634309, 2039.549564634309, 1512.7660733239625], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [532.5, 532.5, 570.0, 570.0], "xaxis": "x", "y": [1945.0502993239018, 3616.705248551504, 3616.705248551504, 2039.549564634309], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [491.25, 491.25, 551.25, 551.25], "xaxis": "x", "y": [1172.1823729266705, 4668.990463269335, 4668.990463269335, 3616.705248551504], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [446.25, 446.25, 521.25, 521.25], "xaxis": "x", "y": [3600.7614290174793, 9491.716886132877, 9491.716886132877, 4668.990463269335], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [362.8125, 362.8125, 483.75, 483.75], "xaxis": "x", "y": [9430.330999643704, 17154.601321214082, 17154.601321214082, 9491.716886132877], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#E45756"}, "mode": "lines", "type": "scatter", "x": [136.66015625, 136.66015625, 423.28125, 423.28125], "xaxis": "x", "y": [7355.651822809451, 26223.461706885686, 26223.461706885686, 17154.601321214082], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [605.0, 605.0, 615.0, 615.0], "xaxis": "x", "y": [0.0, 1612.91957342082, 1612.91957342082, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [595.0, 595.0, 610.0, 610.0], "xaxis": "x", "y": [0.0, 5361.08645056205, 5361.08645056205, 1612.91957342082], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [625.0, 625.0, 635.0, 635.0], "xaxis": "x", "y": [0.0, 1838.4822137023789, 1838.4822137023789, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [645.0, 645.0, 655.0, 655.0], "xaxis": "x", "y": [0.0, 4440.723130138716, 4440.723130138716, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [630.0, 630.0, 650.0, 650.0], "xaxis": "x", "y": [1838.4822137023789, 8139.420170046574, 8139.420170046574, 4440.723130138716], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [602.5, 602.5, 640.0, 640.0], "xaxis": "x", "y": [5361.08645056205, 14712.341777425645, 14712.341777425645, 8139.420170046574], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [675.0, 675.0, 685.0, 685.0], "xaxis": "x", "y": [0.0, 5903.429856350967, 5903.429856350967, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [665.0, 665.0, 680.0, 680.0], "xaxis": "x", "y": [0.0, 10993.197839087998, 10993.197839087998, 5903.429856350967], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [705.0, 705.0, 715.0, 715.0], "xaxis": "x", "y": [0.0, 4427.210196410376, 4427.210196410376, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [695.0, 695.0, 710.0, 710.0], "xaxis": "x", "y": [0.0, 11807.239456375906, 11807.239456375906, 4427.210196410376], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [672.5, 672.5, 702.5, 702.5], "xaxis": "x", "y": [10993.197839087998, 24030.21517823028, 24030.21517823028, 11807.239456375906], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#EECA3B"}, "mode": "lines", "type": "scatter", "x": [621.25, 621.25, 687.5, 687.5], "xaxis": "x", "y": [14712.341777425645, 35641.94321383866, 35641.94321383866, 24030.21517823028], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#F58518"}, "mode": "lines", "type": "scatter", "x": [735.0, 735.0, 745.0, 745.0], "xaxis": "x", "y": [0.0, 8675.171667754823, 8675.171667754823, 0.0], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#F58518"}, "mode": "lines", "type": "scatter", "x": [725.0, 725.0, 740.0, 740.0], "xaxis": "x", "y": [0.0, 41125.42747477148, 41125.42747477148, 8675.171667754823], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#4C78A8"}, "mode": "lines", "type": "scatter", "x": [654.375, 654.375, 732.5, 732.5], "xaxis": "x", "y": [35641.94321383866, 61493.92628349883, 61493.92628349883, 41125.42747477148], "yaxis": "y"}, {"hoverinfo": "text", "marker": {"color": "#4C78A8"}, "mode": "lines", "type": "scatter", "x": [279.970703125, 279.970703125, 693.4375, 693.4375], "xaxis": "x", "y": [26223.461706885686, 92340.618336387, 92340.618336387, 61493.92628349883], "yaxis": "y"}],                        {"autosize": false, "height": 600, "hovermode": "closest", "showlegend": false, "template": {"data": {"bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "bar"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "barpolar"}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "choropleth": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "choropleth"}], "contour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "contour"}], "contourcarpet": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "contourcarpet"}], "heatmap": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmap"}], "heatmapgl": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmapgl"}], "histogram": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "histogram"}], "histogram2d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2d"}], "histogram2dcontour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2dcontour"}], "mesh3d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "mesh3d"}], "parcoords": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "parcoords"}], "pie": [{"automargin": true, "type": "pie"}], "scatter": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter"}], "scatter3d": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter3d"}], "scattercarpet": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattercarpet"}], "scattergeo": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergeo"}], "scattergl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergl"}], "scattermapbox": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattermapbox"}], "scatterpolar": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolar"}], "scatterpolargl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolargl"}], "scatterternary": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterternary"}], "surface": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "surface"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}]}, "layout": {"annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "autotypenumbers": "strict", "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]], "sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}, "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "geo": {"bgcolor": "white", "lakecolor": "white", "landcolor": "#E5ECF6", "showlakes": true, "showland": true, "subunitcolor": "white"}, "hoverlabel": {"align": "left"}, "hovermode": "closest", "mapbox": {"style": "light"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "ternary": {"aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "title": {"x": 0.05}, "xaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}, "yaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}}}, "title": {"text": "Repr\u00e9sentation d'une classification hi\u00e9rarchique par dendrogramme"}, "width": 1000, "xaxis": {"mirror": "allticks", "rangemode": "tozero", "showgrid": false, "showline": true, "showticklabels": true, "tickmode": "array", "ticks": "outside", "ticktext": ["Morocco", "Guatemala", "Georgia", "Paraguay", "Mongolia", "Congo, Rep.", "Nigeria", "Samoa", "Cape Verde", "Angola", "Solomon Islands", "Chad", "Senegal", "Cambodia", "Cameroon", "Burundi", "Central African Republic", "Malawi", "Guinea", "Afghanistan", "Uganda", "Rwanda", "Guinea-Bissau", "Burkina Faso", "Haiti", "Comoros", "Mauritania", "Zambia", "Lao", "Uzbekistan", "Timor-Leste", "Micronesia, Fed. Sts.", "Barbados", "Chile", "Uruguay", "Latvia", "Turkey", "Poland", "Estonia", "Russia", "Kazakhstan", "Seychelles", "Suriname", "Mauritius", "Gabon", "Belarus", "Romania", "Albania", "Tunisia", "Jordan", "Ecuador", "China", "Botswana", "Iraq", "Thailand", "Dominican Republic", "Colombia", "South Africa", "Maldives", "Australia", "Netherlands", "Ireland", "France", "United Kingdom", "Germany", "Finland", "New Zealand", "Bahamas", "Greece", "Equatorial Guinea", "Oman", "Bahrain", "Switzerland", "Singapore", "Kuwait"], "tickvals": [5.0, 15.0, 25.0, 35.0, 45.0, 55.0, 65.0, 75.0, 85.0, 95.0, 105.0, 115.0, 125.0, 135.0, 145.0, 155.0, 165.0, 175.0, 185.0, 195.0, 205.0, 215.0, 225.0, 235.0, 245.0, 255.0, 265.0, 275.0, 285.0, 295.0, 305.0, 315.0, 325.0, 335.0, 345.0, 355.0, 365.0, 375.0, 385.0, 395.0, 405.0, 415.0, 425.0, 435.0, 445.0, 455.0, 465.0, 475.0, 485.0, 495.0, 505.0, 515.0, 525.0, 535.0, 545.0, 555.0, 565.0, 575.0, 585.0, 595.0, 605.0, 615.0, 625.0, 635.0, 645.0, 655.0, 665.0, 675.0, 685.0, 695.0, 705.0, 715.0, 725.0, 735.0, 745.0], "type": "linear", "zeroline": false}, "yaxis": {"mirror": "allticks", "rangemode": "tozero", "showgrid": false, "showline": true, "showticklabels": true, "ticks": "outside", "type": "linear", "zeroline": false}},                        {"displayModeBar": false, "responsive": true}                    )                };                            </script>        </div>
 
 
 
@@ -165,8 +247,109 @@ dans l'autre</li>
 </section>
 </section>
 <section>
-<section id="slide-org111dc07">
-<h2 id="org111dc07">Résumé de la séance</h2>
+<section id="slide-org296fad5">
+<h3 id="org296fad5">Distances d'agrégation</h3>
+<div class="block-definition">
+<p>
+<h4>Lien minimum</h4>
+</p>
+<ul>
+<li>Soit deux parties \(C\) et \(C^{\prime}\) d'un ensemble d'individus \(\boldsymbol{X}\) définis sur
+\(\mathbb{R}^{D}\) et soit \(d\) une distance sur cet espace.</li>
+<li>La distance d'agrégation, dite du lien minimum (<i>single link</i> en anglais), entre \(C\) et \(C^{\prime}\) définie par :
+\[
+  \Delta_{d}(C, C^{\prime}) = \underset{\boldsymbol{x} \in C,~ \boldsymbol{x}^{\prime} \in C^{\prime}}{\min} d(\boldsymbol{x},\boldsymbol{x}^{\prime})
+  \]</li>
+
+</ul>
+
+</div>
+
+
+
+
+</section>
+</section>
+<section>
+<section id="slide-org5abfc8a">
+<h3 id="org5abfc8a">Algorithme</h3>
+<div class="block-definition">
+<p>
+<h4>Entrées/Sorties</h4>
+</p>
+
+<ul>
+<li><b>Entrée :</b> \(\boldsymbol{X} = \{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}\) un ensemble d'individus dans \(\mathbb{R}^{D}\)</li>
+
+<li><b>Paramètres :</b>
+<ul>
+<li>\(d\) : Une distance entre individus définis dans \(\mathbb{R}^{D}\)</li>
+<li>\(\Delta_{d}\) : Une distance d'agrégation entre deux classes reposant sur la distance \(d\)</li>
+
+</ul></li>
+
+<li><b>Sortie :</b> Une hiérarchie \(H\) sur les individus \(\boldsymbol{X}\)</li>
+
+</ul>
+
+</div>
+
+<div class="block-definition">
+<p>
+<h4>Initialisation</h4>
+</p>
+
+<ul>
+<li>On part de la partition des singletons à \(N\) classes \(C^{(0)} = \{C^{(0)}_{1}, \ldots,
+  C^{(0)}_{N}\}\) où pour tout \(n\), la classe \(C^{(0)}_{n} = \{n\}\)</li>
+<li>On initialise la hiérarchie \(H^{(0)}\) avec cette première partition, i.e. \(H^{(0)} \leftarrow
+  \{C^{(0)}\}\)</li>
+
+</ul>
+
+</div>
+
+</section>
+<section id="slide-org2848565">
+<h4 id="org2848565">Algorithme</h4>
+<div class="block-definition">
+<p>
+<h4>Itérations</h4>
+</p>
+<ul>
+<li>Calculer la distance d'agrégation entre chaque paire de classes de la partition \(C^{(t-1)}\)
+afin de trouver les deux classes les plus proches, notées \(C^{(t-1)}_{\ell^{*}}\) et
+\(C^{(t-1)}_{m^{*}}\) :
+\[
+  C^{(t-1)}_{\ell^{*}}, C^{(t-1)}_{m^{*}} = \underset{C^{(t-1)}_{\ell},
+  C^{(t-1)}_{m} \in C^{(t-1)}}{\operatorname{arg min}} \Delta_{d}(C^{(t-1)}_{\ell}, C^{(t-1)}_{m})
+  \]</li>
+<li>Regrouper les deux classes les plus proches :
+\[
+  C^{(t)}_{*} \leftarrow C^{(t-1)}_{\ell^{*}} \cup C^{(t-1)}_{m^{*}}
+  \]</li>
+<li>Mettre à jour la partition courante en ajoutant la classe formée du regroupement des deux classes
+les plus proches et en supprimant ces deux classes individuellement :
+\[
+  C^{(t)} \leftarrow C^{(t-1)} \cup C^{(t)}_{*} \setminus \{C^{(t-1)}_{\ell^{*}}, C^{(t-1)}_{m^{*}}\}
+  \]</li>
+<li>Mise à jour de la hiérarchie courante avec la classe formée du regroupement des deux classes
+les plus proches :
+\[
+  H^{(t)} \leftarrow H^{(t - 1)} \cup C^{(t)}_{*}
+  \]</li>
+<li>Continuer <b>tant que</b> la partition courante \(C^{(t)}\) contient au moins deux classes</li>
+
+</ul>
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org3b801f8">
+<h2 id="org3b801f8">Résumé de la séance</h2>
 <div class="block-definition">
 <p>
 <h4>Points clés</h4>
@@ -194,8 +377,8 @@ Donnez 5 éléments clés que vous avez retenus lors de cette séance
 </section>
 </section>
 <section>
-<section id="slide-org1f4317f">
-<h3 id="org1f4317f">Merci pour votre attention !</h3>
+<section id="slide-orgab6e556">
+<h3 id="orgab6e556">Merci pour votre attention !</h3>
 <p>
 <div class="slidesubtitle">Des questions ?</div>
 </p>

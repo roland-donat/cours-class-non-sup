@@ -774,3 +774,15 @@ def plotly_2d_clust_animation(
     fig_dict["layout"]["sliders"] = [sliders_dict]
 
     return fig_dict
+
+
+# Distances d'agglomération
+
+def
+
+# Classification hiérarchique
+
+
+def cah(data_df, dist="euclidean", aggreg="Ward"):
+
+    return None

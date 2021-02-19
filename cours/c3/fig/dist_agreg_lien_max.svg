@@ -14,7 +14,7 @@
    id="svg8"
    inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"
    sodipodi:docname="dist_agreg_lien_max.svg"
-   inkscape:export-filename="/home/roland/Work/Enseignements/Classification non supervisée/cours/c3/fig/dist_agreg_lien_min.png"
+   inkscape:export-filename="/home/roland/Work/Enseignements/Classification non supervisée/cours/c3/fig/dist_agreg_lien_max.png"
    inkscape:export-xdpi="100"
    inkscape:export-ydpi="100">
   <defs
@@ -405,7 +405,9 @@
        id="path1256"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
     <text
        xml:space="preserve"
        style="font-size:16.9333px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"

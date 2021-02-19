@@ -808,6 +808,17 @@ def dist_complete_link(data_df1, data_df2, dist="euclidean", **dist_params):
     return dist_s.loc[idx_max], idx_max, dist_mat_df
 
 
+def dist_group_average(data_df1, data_df2, dist="euclidean", **dist_params):
+
+    #import ipdb
+    data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
+    dist_mat_df = pd.DataFrame(data_dist,
+                               index=data_df1.index,
+                               columns=data_df2.index)
+
+    return data_dist.mean(), dist_mat_df
+
+
 # Classification hiérarchique
 
 

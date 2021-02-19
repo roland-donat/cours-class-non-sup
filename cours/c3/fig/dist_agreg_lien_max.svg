@@ -13,7 +13,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"
-   sodipodi:docname="dist_agreg_lien_min.svg"
+   sodipodi:docname="dist_agreg_lien_max.svg"
    inkscape:export-filename="/home/roland/Work/Enseignements/Classification non supervisée/cours/c3/fig/dist_agreg_lien_min.png"
    inkscape:export-xdpi="100"
    inkscape:export-ydpi="100">
@@ -401,7 +401,7 @@
        transform="rotate(-0.03391895)" />
     <path
        style="display:inline;fill:#f2b6bc;fill-opacity:1;fill-rule:evenodd;stroke:#b100ff;stroke-width:2.47862;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 157.73149,146.02502 99.86855,-43.69027"
+       d="M 76.530699,63.401037 312.79737,173.03095"
        id="path1256"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"

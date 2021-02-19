@@ -776,9 +776,22 @@ def plotly_2d_clust_animation(
     return fig_dict
 
 
-# Distances d'agglomération
+# Distances entre groupes
 
-def
+def dist_single_link(data_df1, data_df2, dist="euclidean", **dist_params):
+
+    #import ipdb
+    data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
+    dist_mat_df = pd.DataFrame(data_dist,
+                               index=data_df1.index,
+                               columns=data_df2.index)
+
+    dist_s = dist_mat_df.stack()
+
+    idx_min = dist_s.idxmin()
+
+    return dist_s.loc[idx_min], idx_min, dist_mat_df
+
 
 # Classification hiérarchique
 

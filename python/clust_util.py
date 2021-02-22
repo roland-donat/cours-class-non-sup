@@ -180,6 +180,42 @@ def compute_inertia(data_df,
     return inertia, point_ref, dist2_to_point_weighted_s.rename("inertia")
 
 
+def eval_cluster(data_df, cluster,
+                 weights=None, dist="euclidean", **dist_params):
+    """
+    Entrées :
+    - data_df (pandas.DataFrame) : Données quantitatives
+    - partition (list, numpy.array ou pandas.Series) : partition des données
+    Sortie :
+    - inertia_intra : inertie intra-classe de la partition
+    - inertia_ratio : Inertie expliquée par la partition entre 0 et 1
+    """
+
+    if weights is None:
+        weights = pd.Series(1, index=data_df.index)
+    if isinstance(weights, (int, float)):
+        weights = pd.Series(weights, index=data_df.index)
+
+    inertia_total, _, _ = compute_inertia(data_df, weights=weights,
+                                          dist=dist, **dist_params)
+
+    cluster_s = pd.Series(cluster, index=data_df.index)
+
+    data_cls_grp = data_df.groupby(cluster_s)
+
+    inertia_within_cls = pd.Series(0, index=data_cls_grp.groups.keys())
+    for cls, data_cls_df in data_cls_grp:
+        inertia_within_cls.loc[cls], _, _ = \
+            compute_inertia(data_cls_df,
+                            weights=weights.loc[data_cls_df.index],
+                            dist=dist, **dist_params)
+
+    inertia_within = inertia_within_cls.sum()
+    inertia_ratio = 1 - inertia_within/inertia_total
+
+    return inertia_within, inertia_ratio
+
+
 def plotly_2d_data_to_point(fig,
                             data_df,
                             point,
@@ -652,19 +688,19 @@ def kmeans_algo(data_df, nb_cls=3,
 
         cls_values_it.index = \
             pd.MultiIndex.from_product([range(nb_iter), data_df.index],
-                                       names=["iter", data_df.index.name])
+                                       names=["iter_cur", data_df.index.name])
         cls_values_it.name = var_cls
 
         cls_centers_it_df = pd.concat(cls_centers)
         cls_centers_it_df.index = \
             pd.MultiIndex.from_product([range(nb_iter),
                                         cls_labels[:nb_cls]],
-                                       names=["iter", var_cls])
+                                       names=["iter_cur", var_cls])
 
         cls_inertia_it = \
             pd.DataFrame(cls_inertia, index=range(nb_iter))
 
-        cls_inertia_it.index.name = "iter"
+        cls_inertia_it.index.name = "iter_cur"
 
         return cls_values_it, cls_centers_it_df, cls_inertia_it
 
@@ -780,7 +816,7 @@ def plotly_2d_clust_animation(
 
 def dist_single_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
-    #import ipdb
+    # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
     dist_mat_df = pd.DataFrame(data_dist,
                                index=data_df1.index,
@@ -795,7 +831,7 @@ def dist_single_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
 def dist_complete_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
-    #import ipdb
+    # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
     dist_mat_df = pd.DataFrame(data_dist,
                                index=data_df1.index,
@@ -810,7 +846,7 @@ def dist_complete_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
 def dist_group_average(data_df1, data_df2, dist="euclidean", **dist_params):
 
-    #import ipdb
+    # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
     dist_mat_df = pd.DataFrame(data_dist,
                                index=data_df1.index,
@@ -819,9 +855,64 @@ def dist_group_average(data_df1, data_df2, dist="euclidean", **dist_params):
     return data_dist.mean(), dist_mat_df
 
 
+def dist_ward(data_df1, data_df2, **dist_params):
+
+    N1 = len(data_df1)
+    N2 = len(data_df2)
+    d2_mu = ((data_df1.mean() - data_df2.mean())**2).sum()
+
+    ward = ((N1*N2)/(N1 + N2))*d2_mu
+
+    return ward
+
+
 # Classification hiérarchique
 
 
-def cah(data_df, dist="euclidean", aggreg="Ward"):
+def cah(data_df, dist="euclidean", aggreg="ward", **dist_params):
 
-    return None
+    if aggreg == "ward":
+        dist_clust = dist_ward
+    else:
+        raise ValueError(f"Unsupported aggregation function {aggreg}")
+
+    nb_data = len(data_df)
+
+    cluster = []
+    cls_dist_mat = []
+    aggreg_cls = []
+    aggreg_dist = []
+    cluster.append(list(range(nb_data)))
+    inertia_within = []
+    inertia_ratio = []
+
+    for iter_cur in range(nb_data - 1):
+
+        iw, ir = eval_cluster(data_df, cluster[iter_cur],
+                              dist=dist, **dist_params)
+
+        inertia_within.append(iw)
+        inertia_ratio.append(ir)
+
+        data_cls_grp = data_df.groupby(cluster[iter_cur])
+
+        cls_dist_mat.append(pd.DataFrame(index=list(data_cls_grp.groups.keys()),
+                                         columns=list(data_cls_grp.groups.keys())).astype(float))
+
+        for cls_l, data_cls_l_df in data_cls_grp:
+            for cls_m, data_cls_m_df in data_cls_grp:
+
+                if (cls_l != cls_m) and pd.isnull(cls_dist_mat[iter_cur].loc[cls_m, cls_l]):
+                    cls_dist_mat[iter_cur].loc[cls_l, cls_m] = \
+                        dist_clust(data_cls_l_df, data_cls_m_df, **dist_params)
+
+        cls_dist_s = cls_dist_mat[iter_cur].stack()
+        aggreg_cls.append(cls_dist_s.idxmin())
+        aggreg_dist.append(cls_dist_s.loc[aggreg_cls[iter_cur]])
+        new_cls = nb_data + iter_cur
+        new_cluster = [new_cls if c in aggreg_cls[iter_cur] else c
+                       for c in cluster[iter_cur]]
+        cluster.append(new_cluster)
+
+        # pass
+    return cluster, cls_dist_mat, aggreg_cls, aggreg_dist, inertia_within, inertia_ratio

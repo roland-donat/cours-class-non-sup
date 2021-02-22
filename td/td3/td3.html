@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TD2: Méthodes de partitionnement</title>
+<title>TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Roland Donat" />
 <style type="text/css">
@@ -270,40 +270,40 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">TD2: Méthodes de partitionnement</h1>
+<h1 class="title">TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</h1>
 <div id="table-of-contents">
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf2635a5">Introduction</a></li>
-<li><a href="#org3fcefcf">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org99c8182">Exercice 1 : Données <code>Wine</code> centrées-réduites</a>
+<li><a href="#orgd3b1f58">Introduction</a></li>
+<li><a href="#org0601aae">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgcc41ce4">Exercice 1 : Données <code>Wine</code> centrées-réduites</a>
 <ul>
-<li><a href="#orga50ff44">Préparation des données</a></li>
-<li><a href="#org28b9d85">Moyennes mobiles</a></li>
-<li><a href="#org2dd9880">Mélange gaussien</a></li>
+<li><a href="#org2c12183">Préparation des données</a></li>
+<li><a href="#orgb2ae8be">Moyennes mobiles</a></li>
+<li><a href="#org0a83c8c">Mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#org23cb0a9">Exercice 1 bis : Données <code>Wine</code> (ACP)</a>
+<li><a href="#org56bb6fd">Exercice 1 bis : Données <code>Wine</code> (ACP)</a>
 <ul>
-<li><a href="#orgd874ad6">Préparation des données</a></li>
-<li><a href="#org34e0921">Application des moyennes mobiles et du mélange gaussien</a></li>
+<li><a href="#org46ea8c7">Préparation des données</a></li>
+<li><a href="#org56cef8c">Application des moyennes mobiles et du mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#orgcfddd58">Exercice 2 : Données synthétiques</a>
+<li><a href="#orgf564851">Exercice 2 : Données synthétiques</a>
 <ul>
-<li><a href="#orgf2e85a5">Données circulaires</a></li>
-<li><a href="#org70fd39f">Données elliptiques</a></li>
+<li><a href="#orgaea8f57">Données circulaires</a></li>
+<li><a href="#orgee1dccf">Données elliptiques</a></li>
 </ul>
 </li>
-<li><a href="#orgff2d839">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#orge17f8ae">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf2635a5" class="outline-2">
-<h2 id="orgf2635a5">Introduction</h2>
-<div class="outline-text-2" id="text-orgf2635a5">
+<div id="outline-container-orgd3b1f58" class="outline-2">
+<h2 id="orgd3b1f58">Introduction</h2>
+<div class="outline-text-2" id="text-orgd3b1f58">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -320,9 +320,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org3fcefcf" class="outline-2">
-<h2 id="org3fcefcf">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org3fcefcf">
+<div id="outline-container-org0601aae" class="outline-2">
+<h2 id="org0601aae">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org0601aae">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -331,6 +331,8 @@ Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 <li><code>plotly</code>, pour les représentations graphiques ;</li>
 <li><code>numpy</code>, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
 nombres aléatoires ;</li>
+<li><code>scipy</code>, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
+distances ;</li>
 <li><code>sklearn</code>, pour les algorithmes de <i>machine learning</i> (k-<i>Means</i>, mélange gaussien, ou autres).</li>
 </ul>
 
@@ -370,18 +372,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org99c8182" class="outline-2">
-<h2 id="org99c8182">Exercice 1 : Données <code>Wine</code> centrées-réduites</h2>
-<div class="outline-text-2" id="text-org99c8182">
+<div id="outline-container-orgcc41ce4" class="outline-2">
+<h2 id="orgcc41ce4">Exercice 1 : Données <code>Wine</code> centrées-réduites</h2>
+<div class="outline-text-2" id="text-orgcc41ce4">
 <p>
 Nous allons reprendre les données des analyses chimiques sur différents vins. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-orga50ff44" class="outline-3">
-<h3 id="orga50ff44">Préparation des données</h3>
-<div class="outline-text-3" id="text-orga50ff44">
+<div id="outline-container-org2c12183" class="outline-3">
+<h3 id="org2c12183">Préparation des données</h3>
+<div class="outline-text-3" id="text-org2c12183">
 <ol class="org-ol">
 <li>Chargez les données dans votre environnement.</li>
 
@@ -390,9 +392,9 @@ Nous allons reprendre les données des analyses chimiques sur différents vins. 
 </div>
 </div>
 
-<div id="outline-container-org28b9d85" class="outline-3">
-<h3 id="org28b9d85">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org28b9d85">
+<div id="outline-container-orgb2ae8be" class="outline-3">
+<h3 id="orgb2ae8be">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orgb2ae8be">
 <ol class="org-ol">
 <li>Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
 utilisant les paramètres par défaut. On notera <code>km_1</code> ce premier "modèle" de <i>clustering</i>.
@@ -440,9 +442,9 @@ données ?</li>
 </div>
 </div>
 
-<div id="outline-container-org2dd9880" class="outline-3">
-<h3 id="org2dd9880">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-org2dd9880">
+<div id="outline-container-org0a83c8c" class="outline-3">
+<h3 id="org0a83c8c">Mélange gaussien</h3>
+<div class="outline-text-3" id="text-org0a83c8c">
 <ol class="org-ol">
 <li>Appliquez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
 défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
@@ -458,13 +460,13 @@ défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la
 </div>
 
 
-<div id="outline-container-org23cb0a9" class="outline-2">
-<h2 id="org23cb0a9">Exercice 1 bis : Données <code>Wine</code> (ACP)</h2>
-<div class="outline-text-2" id="text-org23cb0a9">
+<div id="outline-container-org56bb6fd" class="outline-2">
+<h2 id="org56bb6fd">Exercice 1 bis : Données <code>Wine</code> (ACP)</h2>
+<div class="outline-text-2" id="text-org56bb6fd">
 </div>
-<div id="outline-container-orgd874ad6" class="outline-3">
-<h3 id="orgd874ad6">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgd874ad6">
+<div id="outline-container-org46ea8c7" class="outline-3">
+<h3 id="org46ea8c7">Préparation des données</h3>
+<div class="outline-text-3" id="text-org46ea8c7">
 <ol class="org-ol">
 <li>Chargez les données dans votre environnement.</li>
 
@@ -479,9 +481,9 @@ utilisez la classe <code>PCA</code> du <i>package</i> <code>sklearn.decompositio
 </div>
 </div>
 
-<div id="outline-container-org34e0921" class="outline-3">
-<h3 id="org34e0921">Application des moyennes mobiles et du mélange gaussien</h3>
-<div class="outline-text-3" id="text-org34e0921">
+<div id="outline-container-org56cef8c" class="outline-3">
+<h3 id="org56cef8c">Application des moyennes mobiles et du mélange gaussien</h3>
+<div class="outline-text-3" id="text-org56cef8c">
 <ul class="org-ul">
 <li>Reprenez les questions de l'exercice 1 sur les données <code>data_wine_acp_2d_df</code> et
 <code>data_wine_acp_3d_df</code>.</li>
@@ -492,9 +494,9 @@ utilisez la classe <code>PCA</code> du <i>package</i> <code>sklearn.decompositio
 </div>
 </div>
 
-<div id="outline-container-orgcfddd58" class="outline-2">
-<h2 id="orgcfddd58">Exercice 2 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-orgcfddd58">
+<div id="outline-container-orgf564851" class="outline-2">
+<h2 id="orgf564851">Exercice 2 : Données synthétiques</h2>
+<div class="outline-text-2" id="text-orgf564851">
 <p>
 Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
 utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
@@ -507,9 +509,9 @@ maîtrise le partitionnement <i>a priori</i>.
 </p>
 </div>
 
-<div id="outline-container-orgf2e85a5" class="outline-3">
-<h3 id="orgf2e85a5">Données circulaires</h3>
-<div class="outline-text-3" id="text-orgf2e85a5">
+<div id="outline-container-orgaea8f57" class="outline-3">
+<h3 id="orgaea8f57">Données circulaires</h3>
+<div class="outline-text-3" id="text-orgaea8f57">
 <ol class="org-ol">
 <li>Chargez les données <code>data_circ.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv</a>. Le séparateur utilisé
@@ -528,9 +530,9 @@ des groupes.</li>
 </div>
 
 
-<div id="outline-container-org70fd39f" class="outline-3">
-<h3 id="org70fd39f">Données elliptiques</h3>
-<div class="outline-text-3" id="text-org70fd39f">
+<div id="outline-container-orgee1dccf" class="outline-3">
+<h3 id="orgee1dccf">Données elliptiques</h3>
+<div class="outline-text-3" id="text-orgee1dccf">
 <ol class="org-ol">
 <li>Chargez les données <code>data_ellipse.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv</a>. Le séparateur utilisé
@@ -553,9 +555,9 @@ des groupes.</li>
 </div>
 
 
-<div id="outline-container-orgff2d839" class="outline-2">
-<h2 id="orgff2d839">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orgff2d839">
+<div id="outline-container-orge17f8ae" class="outline-2">
+<h2 id="orge17f8ae">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-orge17f8ae">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

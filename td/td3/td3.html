@@ -253,23 +253,35 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd087f81">Introduction</a></li>
-<li><a href="#org45b41ad">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orgcf06d38">Analyse de la méthode CAH sur des données synthétiques</a>
+<li><a href="#orge175d07">Introduction</a></li>
+<li><a href="#org362a340">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orge9e8e8b">Analyse de la méthode CAH sur des données synthétiques</a>
 <ul>
-<li><a href="#orga3bb946">Chargement des données</a></li>
-<li><a href="#org8b480a2">CAH</a></li>
-<li><a href="#org496e532">Autres modèles</a></li>
+<li><a href="#orgd32ddae">Chargement des données</a></li>
+<li><a href="#orgbc26a69">CAH</a></li>
+<li><a href="#org3fa8708">Autres modèles</a></li>
 </ul>
 </li>
-<li><a href="#orgc0b94f1">Programmation des distances entre classes</a></li>
+<li><a href="#org533c57e">Analyse de profils d'équipes de football</a>
+<ul>
+<li><a href="#org6f3a448">Préparation des données</a></li>
+<li><a href="#org354018a">Détection de profils</a></li>
+</ul>
+</li>
+<li><a href="#org4353286"><span class="todo TODO">TODO</span> Analyse d'images</a>
+<ul>
+<li><a href="#orgda646f5">Préparation des données</a></li>
+<li><a href="#org19b6c5c">Détection de profils</a></li>
+</ul>
+</li>
+<li><a href="#org8b5d07d">Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd087f81" class="outline-2">
-<h2 id="orgd087f81">Introduction</h2>
-<div class="outline-text-2" id="text-orgd087f81">
+<div id="outline-container-orge175d07" class="outline-2">
+<h2 id="orge175d07">Introduction</h2>
+<div class="outline-text-2" id="text-orge175d07">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -286,9 +298,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org45b41ad" class="outline-2">
-<h2 id="org45b41ad">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org45b41ad">
+<div id="outline-container-org362a340" class="outline-2">
+<h2 id="org362a340">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org362a340">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -343,9 +355,9 @@ pandas<span style="color: #CC9393;">": pd.__version__, </span>
 </div>
 
 
-<div id="outline-container-orgcf06d38" class="outline-2">
-<h2 id="orgcf06d38">Analyse de la méthode CAH sur des données synthétiques</h2>
-<div class="outline-text-2" id="text-orgcf06d38">
+<div id="outline-container-orge9e8e8b" class="outline-2">
+<h2 id="orge9e8e8b">Analyse de la méthode CAH sur des données synthétiques</h2>
+<div class="outline-text-2" id="text-orge9e8e8b">
 <p>
 Ce premier exercice consiste à utiliser des données générées comportant des distributions
 remarquables permettant d'illustrer les propriétés des différents algorithmes de partitionnement vu
@@ -353,17 +365,17 @@ en cours.
 </p>
 </div>
 
-<div id="outline-container-orga3bb946" class="outline-3">
-<h3 id="orga3bb946">Chargement des données</h3>
-<div class="outline-text-3" id="text-orga3bb946">
+<div id="outline-container-orgd32ddae" class="outline-3">
+<h3 id="orgd32ddae">Chargement des données</h3>
+<div class="outline-text-3" id="text-orgd32ddae">
 <p>
 Nous travaillerons sur les quatre jeux de données suivants :
 </p>
 <ul class="org-ul">
 <li>Patches circulaires : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv</a> ;</li>
-<li>Patches elliptiques : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_patches_ellip.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_patches_ellip.csv</a>;</li>
-<li>Cercles : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circles.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circles.csv</a></li>
-<li>Croissants de lune : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_moons.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_moons.csv</a></li>
+<li>Patches elliptiques : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv</a>;</li>
+<li>Cercles : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv</a></li>
+<li>Croissants de lune : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv</a></li>
 </ul>
 
 <p>
@@ -378,13 +390,9 @@ Notes : ces exemples synthétiques ont été inspirés par ceux du <a href="http
 </div>
 </div>
 
-<div id="outline-container-org8b480a2" class="outline-3">
-<h3 id="org8b480a2">CAH</h3>
-<div class="outline-text-3" id="text-org8b480a2">
-<p>
-<a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering">https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering</a>
-</p>
-
+<div id="outline-container-orgbc26a69" class="outline-3">
+<h3 id="orgbc26a69">CAH</h3>
+<div class="outline-text-3" id="text-orgbc26a69">
 <ol class="org-ol">
 <li>Construire un modèle de classification ascendante hiérarchique (CAH) (en utilisant les paramètres
 par défaut) et ajustez le sur les données de patches circulaires. Aide : utilisez la classe
@@ -412,9 +420,9 @@ la distance d'agrégation choisie.</li>
 </div>
 </div>
 
-<div id="outline-container-org496e532" class="outline-3">
-<h3 id="org496e532">Autres modèles</h3>
-<div class="outline-text-3" id="text-org496e532">
+<div id="outline-container-org3fa8708" class="outline-3">
+<h3 id="org3fa8708">Autres modèles</h3>
+<div class="outline-text-3" id="text-org3fa8708">
 <ol class="org-ol">
 <li>Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
 circulaires et en croissant de lune.</li>
@@ -425,18 +433,254 @@ circulaires et en croissant de lune.</li>
 </div>
 </div>
 
+<div id="outline-container-org533c57e" class="outline-2">
+<h2 id="org533c57e">Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-org533c57e">
+<p>
+Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
+données couvrent deux premières divisions de différents championnat européens.
+</p>
+
+<p>
+Le Tableau <a href="#orgbb6c1ae">1</a> donne une description des variables du jeu de
+données. 
+</p>
+
+<table id="orgbb6c1ae" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <div id="data_soccer_fixtures_columns_desc"></div></caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Colonne</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">league_id</td>
+<td class="org-left">Identifiant du championnat</td>
+</tr>
+
+<tr>
+<td class="org-left">season_id</td>
+<td class="org-left">Identifiant de la saison</td>
+</tr>
+
+<tr>
+<td class="org-left">Date</td>
+<td class="org-left">Date du match au format %Y-%m-%d</td>
+</tr>
+
+<tr>
+<td class="org-left">HomeTeam</td>
+<td class="org-left">Équipe à domicile (ED)</td>
+</tr>
+
+<tr>
+<td class="org-left">AwayTeam</td>
+<td class="org-left">Équipe à l'exterieur (EE)</td>
+</tr>
+
+<tr>
+<td class="org-left">FTHG</td>
+<td class="org-left">Nombre de buts de l'ED à la fin du match</td>
+</tr>
+
+<tr>
+<td class="org-left">FTAG</td>
+<td class="org-left">Nombre de buts de l'EE à la fin du match</td>
+</tr>
+
+<tr>
+<td class="org-left">FTR</td>
+<td class="org-left">Résultat à la fin du match (H = ED gagne, D = match nul, A = EE gagne)</td>
+</tr>
+
+<tr>
+<td class="org-left">HTHG</td>
+<td class="org-left">Nombre de buts de l'ED à la mi-temps</td>
+</tr>
+
+<tr>
+<td class="org-left">HTAG</td>
+<td class="org-left">Nombre de buts de l'EE à la mi-temps</td>
+</tr>
+
+<tr>
+<td class="org-left">HTR</td>
+<td class="org-left">Résultat à la mi-temps (H = ED gagne, D = match nul, A = EE gagne)</td>
+</tr>
+
+<tr>
+<td class="org-left">HS</td>
+<td class="org-left">Nombre de tirs tentés par l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AS</td>
+<td class="org-left">Nombre de tirs tentés par l'EE</td>
+</tr>
+
+<tr>
+<td class="org-left">HST</td>
+<td class="org-left">Nombre de tirs cadrés par l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AST</td>
+<td class="org-left">Nombre de tirs cadrés par l'EE</td>
+</tr>
+
+<tr>
+<td class="org-left">HC</td>
+<td class="org-left">Nombre de corners pour l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AC</td>
+<td class="org-left">Nombre de corners pour l'EE</td>
+</tr>
+
+<tr>
+<td class="org-left">HF</td>
+<td class="org-left">Nombre de fautes commises par l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AF</td>
+<td class="org-left">Nombre de fautes commises par l'EE</td>
+</tr>
+
+<tr>
+<td class="org-left">HY</td>
+<td class="org-left">Nombre de cartons jaunes reçus par l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AY</td>
+<td class="org-left">Nombre de cartons jaunes reçus par l'EE</td>
+</tr>
+
+<tr>
+<td class="org-left">HR</td>
+<td class="org-left">Nombre de cartons rouges reçus par l'ED</td>
+</tr>
+
+<tr>
+<td class="org-left">AR</td>
+<td class="org-left">Nombre de cartons rouges reçus par l'EE</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+L'objectif est d'identifier des profils d'équipes à partir des méthodes de classification non
+supervisées vues en cours.
+</p>
+</div>
+
+<div id="outline-container-org6f3a448" class="outline-3">
+<h3 id="org6f3a448">Préparation des données</h3>
+<div class="outline-text-3" id="text-org6f3a448">
+<ol class="org-ol">
+<li>Chargez les données à partir de l'adresse suivante :
+<a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
+est ";".</li>
+
+<li>Faites une extraction des données de la division 1 française (<code>league_id = fra_l1</code>) sur la saison
+2018-2019.</li>
+
+<li>Sélectionnez les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']</code>.</li>
+
+<li>Calculez la moyenne des faits de jeu par équipe.</li>
+
+<li>Réalisez une ACP sur les données précédentes et conservez les deux premiers axes principaux dans
+un nouveau <code>DataFrame</code> nommé <code>data_soccer_2d_df</code>.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org354018a" class="outline-3">
+<h3 id="org354018a">Détection de profils</h3>
+<div class="outline-text-3" id="text-org354018a">
+<ol class="org-ol">
+<li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_2d_df</code>. Appliquez la
+méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
+
+<li>Utilisez une CAH sur les données <code>data_soccer_2d_df</code>. Appliquez la
+méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
+
+<li>Tentez d'interpréter les partitions obtenues.</li>
+</ol>
+</div>
+</div>
+</div>
 
 
-<div id="outline-container-orgc0b94f1" class="outline-2">
-<h2 id="orgc0b94f1">Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-orgc0b94f1">
+<div id="outline-container-org4353286" class="outline-2">
+<h2 id="org4353286"><span class="todo TODO">TODO</span> Analyse d'images</h2>
+<div class="outline-text-2" id="text-org4353286">
+<p>
+Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
+données couvrent deux premières divisions de différents championnat européens.
+</p>
+</div>
+
+<div id="outline-container-orgda646f5" class="outline-3">
+<h3 id="orgda646f5">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgda646f5">
+<ol class="org-ol">
+<li>Chargez les données à partir de l'adresse suivante :
+<a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
+est ";".</li>
+
+<li>Faites une extraction des données de la division 1 française (<code>league_id = fra_l1</code>) sur la saison
+2018-2019.</li>
+
+<li>Sélectionnez les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']</code>.</li>
+
+<li>Calculez la moyenne des faits de jeu par équipe.</li>
+
+<li>Réalisez une ACP sur les données précédentes et conservez les deux premiers axes principaux dans
+un nouveau <code>DataFrame</code> nommé <code>data_soccer_2d_df</code>.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org19b6c5c" class="outline-3">
+<h3 id="org19b6c5c">Détection de profils</h3>
+<div class="outline-text-3" id="text-org19b6c5c">
+<ol class="org-ol">
+<li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_2d_df</code>. Appliquez la
+méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
+
+<li>Utilisez une CAH sur les données <code>data_soccer_2d_df</code>. Appliquez la
+méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
+
+<li>Tentez d'interpréter les partitions obtenues.</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org8b5d07d" class="outline-2">
+<h2 id="org8b5d07d">Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-org8b5d07d">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">calcul_</span>&lt;nom distance&gt;(data_df1, data_df2):
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   &lt;Code &#224; &#233;crire&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Votre code &#224; mettre ici</span>
 
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">return</span> dist
 </pre>
@@ -462,7 +706,7 @@ Le travail consiste alors à créer les quatre fonctions suivantes :
 </ol>
 
 <p>
-*Aide : vous pouvez utiliser la fonction <code>cdist</code> du package =scipy
+*Aide : vous pouvez utiliser la fonction <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html"><code>cdist</code></a> du package <code>scipy.spatial.distance</code>.
 </p>
 </div>
 </div>

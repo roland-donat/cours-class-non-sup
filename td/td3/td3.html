@@ -253,29 +253,23 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org82a4fbd">Introduction</a></li>
-<li><a href="#org2dddb1f">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org5f7e4fa">Exercice 1 : Données synthétiques</a>
+<li><a href="#orgd087f81">Introduction</a></li>
+<li><a href="#org45b41ad">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgcf06d38">Analyse de la méthode CAH sur des données synthétiques</a>
 <ul>
-<li><a href="#orgfb64b3d">Chargement des données</a></li>
-<li><a href="#org3e299cc">CAH</a></li>
-<li><a href="#org6f44f6c">Mélange gaussien</a></li>
+<li><a href="#orga3bb946">Chargement des données</a></li>
+<li><a href="#org8b480a2">CAH</a></li>
+<li><a href="#org496e532">Autres modèles</a></li>
 </ul>
 </li>
-<li><a href="#orgda5280d">Exercice 1 bis : Données <code>Wine</code> (ACP)</a>
-<ul>
-<li><a href="#orgd9d1a7a">Préparation des données</a></li>
-<li><a href="#orgd6463c3">Application des moyennes mobiles et du mélange gaussien</a></li>
-</ul>
-</li>
-<li><a href="#orgf809b98">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#orgc0b94f1">Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org82a4fbd" class="outline-2">
-<h2 id="org82a4fbd">Introduction</h2>
-<div class="outline-text-2" id="text-org82a4fbd">
+<div id="outline-container-orgd087f81" class="outline-2">
+<h2 id="orgd087f81">Introduction</h2>
+<div class="outline-text-2" id="text-orgd087f81">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -292,9 +286,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org2dddb1f" class="outline-2">
-<h2 id="org2dddb1f">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org2dddb1f">
+<div id="outline-container-org45b41ad" class="outline-2">
+<h2 id="org45b41ad">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org45b41ad">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -315,7 +309,7 @@ donc utiliser la commande <code>!pip install &lt;nom_module&gt;</code> pour les 
 <div class="org-src-container">
 <pre class="src src-python">!pip install pandas==<span style="color: #CC9393;">'1.1.5'</span>
 !pip install plotly==<span style="color: #CC9393;">'4.14.3'</span>
-!pip install scipy==<span style="color: #CC9393;">'0.24.1'</span>
+!pip install scipy==<span style="color: #CC9393;">'1.4.1'</span>
 !pip install scikit-learn==<span style="color: #CC9393;">'0.24.1'</span>
 </pre>
 </div>
@@ -325,31 +319,33 @@ donc utiliser la commande <code>!pip install &lt;nom_module&gt;</code> pour les 
 Rappel : code d'import des modules :
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd  <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Manipulation des donn&#233;es</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul num&#233;rique</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly <span style="color: #F0DFAF; font-weight: bold;">as</span> pl <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly pour utiliser les visualisations de haut niveau</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.figure_factory <span style="color: #F0DFAF; font-weight: bold;">as</span> plf <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly donnant acc&#232;s &#224; des visualisations suppl&#233;mentaire (e.g. dendrogramme)</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn <span style="color: #F0DFAF; font-weight: bold;">as</span> sk <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.cluster <span style="color: #F0DFAF; font-weight: bold;">as</span> skc <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; au clustering</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.mixture <span style="color: #F0DFAF; font-weight: bold;">as</span> skm <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; au mod&#232;les de m&#233;lange</span>
-
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd                   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Manipulation des donn&#233;es</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np                    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul num&#233;rique</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly <span style="color: #F0DFAF; font-weight: bold;">as</span> pl                   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly pour utiliser les visualisations de haut niveau</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.figure_factory <span style="color: #F0DFAF; font-weight: bold;">as</span> pff   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly pour utiliser d'autres visualisations de haut niveau plus exotiques (e.g. dendrogramme)</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn <span style="color: #F0DFAF; font-weight: bold;">as</span> sk                  <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.cluster <span style="color: #F0DFAF; font-weight: bold;">as</span> skc         <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; au clustering</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.mixture <span style="color: #F0DFAF; font-weight: bold;">as</span> skm         <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; aux mod&#232;les de m&#233;lange</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> sklearn.decomposition <span style="color: #F0DFAF; font-weight: bold;">as</span> skd   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package sklearn d&#233;di&#233; aux m&#233;thodes factorielles</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> scipy <span style="color: #F0DFAF; font-weight: bold;">as</span> sc                    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale de calcul num&#233;rique avanc&#233;e</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> scipy.cluster.hierarchy <span style="color: #F0DFAF; font-weight: bold;">as</span> sch <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package scipy d&#233;di&#233; au clustering hi&#233;rarchique</span>
+<span style="color: #F0DFAF; font-weight: bold;">import</span> scipy.spatial.distance <span style="color: #F0DFAF; font-weight: bold;">as</span> scd  <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package scipy d&#233;di&#233; au clacul de distance</span>
 
 <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">V&#233;rification des versions des librairies utilis&#233;es</span>
-{<span style="color: #CC9393;">"plotly"</span>: pl.__version__, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"pandas"</span>: pd.__version__, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"numpy"</span>: np.__version__, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"sklearn"</span>: sk.__version__}
+pandas<span style="color: #CC9393;">": pd.__version__, </span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"</span>numpy<span style="color: #CC9393;">": np.__version__,</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"</span>sklearn<span style="color: #CC9393;">": sk.__version__,</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #CC9393;">"</span>scipy<span style="color: #CC9393;">": sc.__version__}</span>
 </pre>
 </div>
 </div>
 </div>
 
 
-<div id="outline-container-org5f7e4fa" class="outline-2">
-<h2 id="org5f7e4fa">Exercice 1 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-org5f7e4fa">
+<div id="outline-container-orgcf06d38" class="outline-2">
+<h2 id="orgcf06d38">Analyse de la méthode CAH sur des données synthétiques</h2>
+<div class="outline-text-2" id="text-orgcf06d38">
 <p>
 Ce premier exercice consiste à utiliser des données générées comportant des distributions
 remarquables permettant d'illustrer les propriétés des différents algorithmes de partitionnement vu
@@ -357,9 +353,9 @@ en cours.
 </p>
 </div>
 
-<div id="outline-container-orgfb64b3d" class="outline-3">
-<h3 id="orgfb64b3d">Chargement des données</h3>
-<div class="outline-text-3" id="text-orgfb64b3d">
+<div id="outline-container-orga3bb946" class="outline-3">
+<h3 id="orga3bb946">Chargement des données</h3>
+<div class="outline-text-3" id="text-orga3bb946">
 <p>
 Nous travaillerons sur les quatre jeux de données suivants :
 </p>
@@ -382,9 +378,9 @@ Notes : ces exemples synthétiques ont été inspirés par ceux du <a href="http
 </div>
 </div>
 
-<div id="outline-container-org3e299cc" class="outline-3">
-<h3 id="org3e299cc">CAH</h3>
-<div class="outline-text-3" id="text-org3e299cc">
+<div id="outline-container-org8b480a2" class="outline-3">
+<h3 id="org8b480a2">CAH</h3>
+<div class="outline-text-3" id="text-org8b480a2">
 <p>
 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering">https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering</a>
 </p>
@@ -408,91 +404,66 @@ Ward.</li>
 <code>plotly.figure_factory</code> (ou <code>plf</code> pour nous).</li>
 
 <li>Construisez différentes hiérarchies sur les données de patches circulaires en modifiant la
-distance entre classes et visualisez les dendrogrammes associés.</li>
+distance entre classes (distance d'agrégation) et visualisez les dendrogrammes associés.</li>
 
-<li>Appliquez la méthodes CAH sur les autres jeux de données synthétiques.</li>
+<li>Appliquez la méthodes CAH sur les autres jeux de données synthétiques et analysez l'influence de
+la distance d'agrégation choisie.</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-org6f44f6c" class="outline-3">
-<h3 id="org6f44f6c">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-org6f44f6c">
+<div id="outline-container-org496e532" class="outline-3">
+<h3 id="org496e532">Autres modèles</h3>
+<div class="outline-text-3" id="text-org496e532">
 <ol class="org-ol">
-<li>Appliquez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
-défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
-<code>GaussianMixture</code> </a>du package <code>sklearn.mixture</code> (ou <code>skm</code> pour nous).</li>
+<li>Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
+circulaires et en croissant de lune.</li>
 
-<li>Représenter graphiquement la partition obtenue avec le modèle <code>gmm_1</code> sur les variables
-<code>Alcohol</code>, <code>Magnesium</code>, <code>Total_Phenols</code> et <code>Hue</code> à l'aide d'un diagramme en paires.</li>
-
-<li>Comparez vos résultats avec les partitions obtenues avec les moyennes mobiles. Que constatez vous ?</li>
+<li>Expliquez les résultats.</li>
 </ol>
 </div>
 </div>
 </div>
 
 
-<div id="outline-container-orgda5280d" class="outline-2">
-<h2 id="orgda5280d">Exercice 1 bis : Données <code>Wine</code> (ACP)</h2>
-<div class="outline-text-2" id="text-orgda5280d">
+
+<div id="outline-container-orgc0b94f1" class="outline-2">
+<h2 id="orgc0b94f1">Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-orgc0b94f1">
+<p>
+Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
+en cours. Vous développerez ainsi des fonctions ayant la forme suivante :
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">calcul_</span>&lt;nom distance&gt;(data_df1, data_df2):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   &lt;Code &#224; &#233;crire&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">return</span> dist
+</pre>
 </div>
-<div id="outline-container-orgd9d1a7a" class="outline-3">
-<h3 id="orgd9d1a7a">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgd9d1a7a">
-<ol class="org-ol">
-<li>Chargez les données dans votre environnement.</li>
-
-<li>Créez le <code>DataFrame</code> <code>data_wine_df</code> correspondant aux données centrées et réduites.</li>
-
-<li>Faites une ACP sur les données <code>data_wine_df</code> en analysant rapidement le résultat obtenu. Aide :
-utilisez la classe <code>PCA</code> du <i>package</i> <code>sklearn.decomposition</code> (ou <code>skd</code> pour nous).</li>
-
-<li>Créez deux <code>DataFrame</code> <code>data_wine_acp_2d_df</code> et <code>data_wine_acp_3d_df</code> correspondant aux données
-<code>Wine</code> projetées respectivement sur les deux premiers axes et trois premiers axes de l'ACP.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgd6463c3" class="outline-3">
-<h3 id="orgd6463c3">Application des moyennes mobiles et du mélange gaussien</h3>
-<div class="outline-text-3" id="text-orgd6463c3">
+<p>
+Remarques :
+</p>
 <ul class="org-ul">
-<li>Reprenez les questions de l'exercice 1 sur les données <code>data_wine_acp_2d_df</code> et
-<code>data_wine_acp_3d_df</code>.</li>
-<li>Vous pourrez ainsi visualiser les données en deux ou trois dimensions à l'aide des fonction
-<code>px.scatter</code> et <code>px.scatter_3d</code>.</li>
+<li><code>&lt;nom_distance&gt;</code> est à remplacer par le nom de la distance programmée.</li>
+<li><code>data_df1</code> et <code>data_df2</code> sont deux <code>DataFrame</code> contenant les individus de deux classes disjointes.</li>
+<li>La fonction retourne la valeur de la distance calculée.</li>
+<li>Vous supposerez que la distance entre individus est la distance euclidienne.</li>
 </ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgf809b98" class="outline-2">
-<h2 id="orgf809b98">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orgf809b98">
-<p>
-Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
-dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.
-</p>
 
 <p>
-Pour ce faire, il vous faudra créer les trois fonctions suivantes :
+Le travail consiste alors à créer les quatre fonctions suivantes :
 </p>
-
 <ol class="org-ol">
-<li>La fonction <code>calcule_centres</code> qui calcule le centre de chaque classe à partir de données
-quantitative et d'une partition.</li>
-
-<li>La fonction <code>affecte_classe</code> qui prend en entrée des données et les centres des classes et qui
-affecte à chaque individu la classe ayant le centre le plus proche au sens de la distance euclidienne.</li>
-
-<li>La fonction <code>mon_kmeans</code> qui prend en entrée des données et un nombre de classes et qui applique
-la méthode des moyennes mobiles. L'initialisation est supposée aléatoire et on arrêtera
-l'algorithme dès que la partition construite n'évolue plus entre deux itérations.</li>
-
-<li>Utilisez votre algorithme sur les données des exercices précédents et comparez vos résultats avec
-la méthode <code>KMeans</code> de <code>scikit-learn</code>.</li>
+<li><code>calcul_single</code> qui calcule la distance du lien minimum.</li>
+<li><code>calcul_complete</code> qui calcule la distance du lien maximum.</li>
+<li><code>calcul_average</code> qui calcule la distance moyenne.</li>
+<li><code>calcul_ward</code> qui calcule la distance de Ward.</li>
 </ol>
+
+<p>
+*Aide : vous pouvez utiliser la fonction <code>cdist</code> du package =scipy
+</p>
 </div>
 </div>
 </div>

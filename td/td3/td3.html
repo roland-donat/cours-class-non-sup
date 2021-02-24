@@ -253,35 +253,35 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc7c4045">Introduction</a></li>
-<li><a href="#org9332a3a">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orga79ba8d">Analyse de la méthode CAH sur des données synthétiques</a>
+<li><a href="#org9e484a4">Introduction</a></li>
+<li><a href="#org6f629fd">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orga260b48">Analyse de la méthode CAH sur des données synthétiques</a>
 <ul>
-<li><a href="#orgd769e6b">Chargement des données</a></li>
-<li><a href="#orgf4fe053">CAH</a></li>
-<li><a href="#orge02c68a">Autres modèles</a></li>
+<li><a href="#orgacc5d03">Chargement des données</a></li>
+<li><a href="#orgb1288cb">CAH</a></li>
+<li><a href="#orgd6b6b9c">Autres modèles</a></li>
 </ul>
 </li>
-<li><a href="#orgfcd5fe1">Analyse de profils d'équipes de football</a>
+<li><a href="#org17a4898">Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#org640376c">Préparation des données</a></li>
-<li><a href="#orgbe40d25">Détection de profils</a></li>
+<li><a href="#orge8ef298">Préparation des données</a></li>
+<li><a href="#org0d8bdb7">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#orga08d1cd">Compression d'images</a>
+<li><a href="#org8e93d7f">Compression d'images</a>
 <ul>
-<li><a href="#org9a47112">Chargement d'une image</a></li>
-<li><a href="#org601a0e6">Application des moyennes mobiles</a></li>
+<li><a href="#orgad366b8">Chargement d'une image</a></li>
+<li><a href="#org5b13c35">Application des moyennes mobiles</a></li>
 </ul>
 </li>
-<li><a href="#org3d5d9bf">Programmation des distances entre classes</a></li>
+<li><a href="#org39a10a2">Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc7c4045" class="outline-2">
-<h2 id="orgc7c4045">Introduction</h2>
-<div class="outline-text-2" id="text-orgc7c4045">
+<div id="outline-container-org9e484a4" class="outline-2">
+<h2 id="org9e484a4">Introduction</h2>
+<div class="outline-text-2" id="text-org9e484a4">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -298,9 +298,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org9332a3a" class="outline-2">
-<h2 id="org9332a3a">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org9332a3a">
+<div id="outline-container-org6f629fd" class="outline-2">
+<h2 id="org6f629fd">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org6f629fd">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -355,9 +355,9 @@ pandas<span style="color: #CC9393;">": pd.__version__, </span>
 </div>
 
 
-<div id="outline-container-orga79ba8d" class="outline-2">
-<h2 id="orga79ba8d">Analyse de la méthode CAH sur des données synthétiques</h2>
-<div class="outline-text-2" id="text-orga79ba8d">
+<div id="outline-container-orga260b48" class="outline-2">
+<h2 id="orga260b48">Analyse de la méthode CAH sur des données synthétiques</h2>
+<div class="outline-text-2" id="text-orga260b48">
 <p>
 Ce premier exercice consiste à utiliser des données générées comportant des distributions
 remarquables permettant d'illustrer les propriétés des différents algorithmes de partitionnement vu
@@ -365,9 +365,9 @@ en cours.
 </p>
 </div>
 
-<div id="outline-container-orgd769e6b" class="outline-3">
-<h3 id="orgd769e6b">Chargement des données</h3>
-<div class="outline-text-3" id="text-orgd769e6b">
+<div id="outline-container-orgacc5d03" class="outline-3">
+<h3 id="orgacc5d03">Chargement des données</h3>
+<div class="outline-text-3" id="text-orgacc5d03">
 <p>
 Nous travaillerons sur les quatre jeux de données suivants :
 </p>
@@ -390,9 +390,9 @@ Notes : ces exemples synthétiques ont été inspirés par ceux du <a href="http
 </div>
 </div>
 
-<div id="outline-container-orgf4fe053" class="outline-3">
-<h3 id="orgf4fe053">CAH</h3>
-<div class="outline-text-3" id="text-orgf4fe053">
+<div id="outline-container-orgb1288cb" class="outline-3">
+<h3 id="orgb1288cb">CAH</h3>
+<div class="outline-text-3" id="text-orgb1288cb">
 <ol class="org-ol">
 <li>Construire un modèle de classification ascendante hiérarchique (CAH) (en utilisant les paramètres
 par défaut) et ajustez le sur les données de patches circulaires. Aide : utilisez la classe
@@ -420,9 +420,9 @@ la distance d'agrégation choisie.</li>
 </div>
 </div>
 
-<div id="outline-container-orge02c68a" class="outline-3">
-<h3 id="orge02c68a">Autres modèles</h3>
-<div class="outline-text-3" id="text-orge02c68a">
+<div id="outline-container-orgd6b6b9c" class="outline-3">
+<h3 id="orgd6b6b9c">Autres modèles</h3>
+<div class="outline-text-3" id="text-orgd6b6b9c">
 <ol class="org-ol">
 <li>Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
 circulaires et en croissant de lune.</li>
@@ -433,20 +433,20 @@ circulaires et en croissant de lune.</li>
 </div>
 </div>
 
-<div id="outline-container-orgfcd5fe1" class="outline-2">
-<h2 id="orgfcd5fe1">Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-orgfcd5fe1">
+<div id="outline-container-org17a4898" class="outline-2">
+<h2 id="org17a4898">Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-org17a4898">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent deux premières divisions de différents championnat européens.
 </p>
 
 <p>
-Le Tableau <a href="#orgbf4e8f7">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org6895f7e">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="orgbf4e8f7" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org6895f7e" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <div id="data_soccer_fixtures_columns_desc"></div></caption>
 
 <colgroup>
@@ -584,9 +584,9 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-org640376c" class="outline-3">
-<h3 id="org640376c">Préparation des données</h3>
-<div class="outline-text-3" id="text-org640376c">
+<div id="outline-container-orge8ef298" class="outline-3">
+<h3 id="orge8ef298">Préparation des données</h3>
+<div class="outline-text-3" id="text-orge8ef298">
 <ol class="org-ol">
 <li>Chargez les données à partir de l'adresse suivante :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
@@ -605,9 +605,9 @@ un nouveau <code>DataFrame</code> nommé <code>data_soccer_2d_df</code>.</li>
 </div>
 </div>
 
-<div id="outline-container-orgbe40d25" class="outline-3">
-<h3 id="orgbe40d25">Détection de profils</h3>
-<div class="outline-text-3" id="text-orgbe40d25">
+<div id="outline-container-org0d8bdb7" class="outline-3">
+<h3 id="org0d8bdb7">Détection de profils</h3>
+<div class="outline-text-3" id="text-org0d8bdb7">
 <ol class="org-ol">
 <li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_2d_df</code>. Appliquez la
 méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
@@ -622,9 +622,9 @@ méthode du coude afin d'évaluer un compromis entre nombre de classes et inerti
 </div>
 
 
-<div id="outline-container-orga08d1cd" class="outline-2">
-<h2 id="orga08d1cd">Compression d'images</h2>
-<div class="outline-text-2" id="text-orga08d1cd">
+<div id="outline-container-org8e93d7f" class="outline-2">
+<h2 id="org8e93d7f">Compression d'images</h2>
+<div class="outline-text-2" id="text-org8e93d7f">
 <p>
 Cette exercice propose d'explorer comment les méthodes de classification non supervisée peuvent être
 appliquées à la compression d'images et en particulier à la problématique de quantification en
@@ -639,14 +639,13 @@ de données quantitatives à trois dimensions.
 </p>
 </div>
 
-<div id="outline-container-org9a47112" class="outline-3">
-<h3 id="org9a47112">Chargement d'une image</h3>
-<div class="outline-text-3" id="text-org9a47112">
+<div id="outline-container-orgad366b8" class="outline-3">
+<h3 id="orgad366b8">Chargement d'une image</h3>
+<div class="outline-text-3" id="text-orgad366b8">
 <ol class="org-ol">
 <li>Importer la <a href="https://scikit-image.org/docs/dev/user_guide/getting_started.html">librairie <code>skimage</code> </a> permettant de faire du traitement d'image : <code>import skimage</code>.</li>
 
-<li>Utiliser la fonction <code>skimage.io.imread</code> pour lire le fichier image
-<img src="https://roland-donat.github.io/cours-class-non-sup/td/td3/streetball.jpg" alt="streetball.jpg" /></li>
+<li>Utiliser la fonction <code>skimage.io.imread</code> pour lire ce <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/streetball.jpg">fichier image</a>.</li>
 
 <li>Transformez l'image en un <code>DataFrame</code> à trois variables. Aide : utilisez la méthode <code>.reshape</code>
 des <code>numpy.array</code>.</li>
@@ -654,9 +653,9 @@ des <code>numpy.array</code>.</li>
 </div>
 </div>
 
-<div id="outline-container-org601a0e6" class="outline-3">
-<h3 id="org601a0e6">Application des moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org601a0e6">
+<div id="outline-container-org5b13c35" class="outline-3">
+<h3 id="org5b13c35">Application des moyennes mobiles</h3>
+<div class="outline-text-3" id="text-org5b13c35">
 <ol class="org-ol">
 <li>Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en quatre
 classes.</li>
@@ -673,9 +672,9 @@ d'interprétez les résultats.</li>
 </div>
 </div>
 
-<div id="outline-container-org3d5d9bf" class="outline-2">
-<h2 id="org3d5d9bf">Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-org3d5d9bf">
+<div id="outline-container-org39a10a2" class="outline-2">
+<h2 id="org39a10a2">Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-org39a10a2">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :

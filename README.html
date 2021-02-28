@@ -253,31 +253,31 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge71fdc4">Introduction</a></li>
-<li><a href="#org383f317">Objectifs Pédagogiques</a></li>
-<li><a href="#org6161538">Crédit</a></li>
-<li><a href="#org68f8a04">Organisation pratique</a></li>
-<li><a href="#org7c8856a">Cours</a>
+<li><a href="#org7216844">Introduction</a></li>
+<li><a href="#orgc8fede7">Objectifs Pédagogiques</a></li>
+<li><a href="#org97c3af1">Crédit</a></li>
+<li><a href="#org0f5be5b">Organisation pratique</a></li>
+<li><a href="#org9125ced">Cours</a>
 <ul>
-<li><a href="#orge8c3e47">Semaine 1 : Introduction et notions fondamentales</a></li>
-<li><a href="#orgb4a6525">Semaine 2 : Méthodes de partitionnement</a></li>
-<li><a href="#orge0ba0d4">Semaine 3 : Classification hiérarchique</a></li>
+<li><a href="#orge2a765a">Semaine 1 : Introduction et notions fondamentales</a></li>
+<li><a href="#org4da8389">Semaine 2 : Méthodes de partitionnement</a></li>
+<li><a href="#orged0318a">Semaine 3 : Classification hiérarchique</a></li>
 </ul>
 </li>
-<li><a href="#org9d0d424">Évaluation du cours</a></li>
-<li><a href="#orgd1c4a93">Références</a>
+<li><a href="#orgc713930">Évaluation du cours</a></li>
+<li><a href="#orga750a4f">Références</a>
 <ul>
-<li><a href="#org526bf20">L'environnement <code>Python</code></a></li>
-<li><a href="#orgcfa8ee3">Principaux modules <code>Python</code> utilisés</a></li>
+<li><a href="#org3736ccc">L'environnement <code>Python</code></a></li>
+<li><a href="#orgab3516d">Principaux modules <code>Python</code> utilisés</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge71fdc4" class="outline-2">
-<h2 id="orge71fdc4">Introduction</h2>
-<div class="outline-text-2" id="text-orge71fdc4">
+<div id="outline-container-org7216844" class="outline-2">
+<h2 id="org7216844">Introduction</h2>
+<div class="outline-text-2" id="text-org7216844">
 <p>
 Ce site présente l'ensemble des ressources pédagogiques relatives au cours de classification non
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
@@ -285,9 +285,9 @@ supervisée pour la promotion de STID2 à l'IUT de Vannes.
 </div>
 </div>
 
-<div id="outline-container-org383f317" class="outline-2">
-<h2 id="org383f317">Objectifs Pédagogiques</h2>
-<div class="outline-text-2" id="text-org383f317">
+<div id="outline-container-orgc8fede7" class="outline-2">
+<h2 id="orgc8fede7">Objectifs Pédagogiques</h2>
+<div class="outline-text-2" id="text-orgc8fede7">
 <p>
 Les principaux objectifs pédagogiques du cours sont :
 </p>
@@ -296,16 +296,19 @@ Les principaux objectifs pédagogiques du cours sont :
 <li>Replacer cette problématique dans le contexte méthodologique de l'analyse de données.</li>
 <li>Introduire la notion d'inertie et son utilisation.</li>
 <li>Présenter différentes approches de classification non supervisée pour l'analyse des données
-quantitatives, à savoir les méthodes de partitionnement et les méthodes de construction d'arbres hiérarchiques
-le modèle de mélange gaussien.</li>
+quantitatives, à savoir :
+<ul class="org-ul">
+<li>deux méthodes de partitionnement (moyennes mobiles et mélange gaussien) ;</li>
+<li>la classification ascendante hiérarchique.</li>
+</ul></li>
 <li>Savoir mettre en oeuvre ces méthodes avec la langage <code>Python</code>.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6161538" class="outline-2">
-<h2 id="org6161538">Crédit</h2>
-<div class="outline-text-2" id="text-org6161538">
+<div id="outline-container-org97c3af1" class="outline-2">
+<h2 id="org97c3af1">Crédit</h2>
+<div class="outline-text-2" id="text-org97c3af1">
 <p>
 Les cours et TD proposés s'inspirent largement des supports pédagogiques élaborées par Mme. Arlette
 ANTONI qui avait en charge le cours de classification non supervisée sur l'année 2019-2020. Vous
@@ -314,9 +317,9 @@ pouvez consulter ces ressources pédagogiques en vous rendant dans <a href="http
 </div>
 </div>
 
-<div id="outline-container-org68f8a04" class="outline-2">
-<h2 id="org68f8a04">Organisation pratique</h2>
-<div class="outline-text-2" id="text-org68f8a04">
+<div id="outline-container-org0f5be5b" class="outline-2">
+<h2 id="org0f5be5b">Organisation pratique</h2>
+<div class="outline-text-2" id="text-org0f5be5b">
 <p>
 Compte tenu du contexte sanitaire actuel, les cours et TD sont prévus pour se tenir en 100%
 distanciel. Mais nous ne sommes pas à l'abri de changements de dernières minutes, restez donc sur
@@ -331,9 +334,9 @@ supervisée</a>.
 </div>
 </div>
 
-<div id="outline-container-org7c8856a" class="outline-2">
-<h2 id="org7c8856a">Cours</h2>
-<div class="outline-text-2" id="text-org7c8856a">
+<div id="outline-container-org9125ced" class="outline-2">
+<h2 id="org9125ced">Cours</h2>
+<div class="outline-text-2" id="text-org9125ced">
 <p>
 Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
 donc requise).
@@ -349,9 +352,9 @@ donc requise).
 </p>
 </div>
 
-<div id="outline-container-orge8c3e47" class="outline-3">
-<h3 id="orge8c3e47">Semaine 1 : Introduction et notions fondamentales</h3>
-<div class="outline-text-3" id="text-orge8c3e47">
+<div id="outline-container-orge2a765a" class="outline-3">
+<h3 id="orge2a765a">Semaine 1 : Introduction et notions fondamentales</h3>
+<div class="outline-text-3" id="text-orge2a765a">
 <p>
 <b>Cours :</b>
 </p>
@@ -370,9 +373,9 @@ donc requise).
 </div>
 </div>
 
-<div id="outline-container-orgb4a6525" class="outline-3">
-<h3 id="orgb4a6525">Semaine 2 : Méthodes de partitionnement</h3>
-<div class="outline-text-3" id="text-orgb4a6525">
+<div id="outline-container-org4da8389" class="outline-3">
+<h3 id="org4da8389">Semaine 2 : Méthodes de partitionnement</h3>
+<div class="outline-text-3" id="text-org4da8389">
 <p>
 <b>Cours :</b>
 </p>
@@ -392,9 +395,9 @@ donc requise).
 </div>
 </div>
 
-<div id="outline-container-orge0ba0d4" class="outline-3">
-<h3 id="orge0ba0d4">Semaine 3 : Classification hiérarchique</h3>
-<div class="outline-text-3" id="text-orge0ba0d4">
+<div id="outline-container-orged0318a" class="outline-3">
+<h3 id="orged0318a">Semaine 3 : Classification hiérarchique</h3>
+<div class="outline-text-3" id="text-orged0318a">
 <p>
 <b>Cours :</b>
 </p>
@@ -415,9 +418,9 @@ donc requise).
 </div>
 
 
-<div id="outline-container-org9d0d424" class="outline-2">
-<h2 id="org9d0d424">Évaluation du cours</h2>
-<div class="outline-text-2" id="text-org9d0d424">
+<div id="outline-container-orgc713930" class="outline-2">
+<h2 id="orgc713930">Évaluation du cours</h2>
+<div class="outline-text-2" id="text-orgc713930">
 <p>
 L'objectif est d'évaluer votre compréhension des notions et méthodes abordées en cours et
 en TD. Pour ce faire, nous vérifierons votre aptitude à mettre en oeuvre les traitements
@@ -441,9 +444,9 @@ les devoirs : <a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=271762">h
 </div>
 
 
-<div id="outline-container-orgd1c4a93" class="outline-2">
-<h2 id="orgd1c4a93">Références</h2>
-<div class="outline-text-2" id="text-orgd1c4a93">
+<div id="outline-container-orga750a4f" class="outline-2">
+<h2 id="orga750a4f">Références</h2>
+<div class="outline-text-2" id="text-orga750a4f">
 <p>
 L'élaboration de ce cours s'est appuyée sur de nombreuses références. Voici mes principales sources
 d'inspiration :
@@ -458,9 +461,9 @@ d'inspiration :
 </ul>
 </div>
 
-<div id="outline-container-org526bf20" class="outline-3">
-<h3 id="org526bf20">L'environnement <code>Python</code></h3>
-<div class="outline-text-3" id="text-org526bf20">
+<div id="outline-container-org3736ccc" class="outline-3">
+<h3 id="org3736ccc">L'environnement <code>Python</code></h3>
+<div class="outline-text-3" id="text-org3736ccc">
 <p>
 Les exemples du cours et les travaux dirigés utilisent le logiciel <code>Python</code>. Si vous pensez ne pas
 être à l'aise avec <code>Python</code>, je vous encourage vivement à faire une petite mise à niveau.
@@ -488,9 +491,9 @@ Sinon vous pouvez bien évidement utiliser <code>Python</code> en local en insta
 </div>
 </div>
 
-<div id="outline-container-orgcfa8ee3" class="outline-3">
-<h3 id="orgcfa8ee3">Principaux modules <code>Python</code> utilisés</h3>
-<div class="outline-text-3" id="text-orgcfa8ee3">
+<div id="outline-container-orgab3516d" class="outline-3">
+<h3 id="orgab3516d">Principaux modules <code>Python</code> utilisés</h3>
+<div class="outline-text-3" id="text-orgab3516d">
 <p>
 Dans ce cours, nous utiliserons principalement les modules <code>Python</code> suivants :
 </p>

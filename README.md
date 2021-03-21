@@ -1,21 +1,22 @@
 
 # Table des matières
 
--   [Introduction](#orga9a78da)
--   [Objectifs Pédagogiques](#org606e3af)
--   [Crédit](#orgd8ae8ea)
--   [Organisation pratique](#orgff0ecf2)
--   [Cours](#orgc53ba08)
-    -   [Semaine 1 : Introduction et notions fondamentales](#org1cfa92c)
-    -   [Semaine 2 : Méthodes de partitionnement](#orgc2227da)
--   [Évaluation du cours](#org8de3448)
--   [Références](#org6c7de19)
-    -   [L'environnement `Python`](#orgb32cce7)
-    -   [Principaux modules `Python` utilisés](#orgf4ce919)
+-   [Introduction](#orgb8a7a4d)
+-   [Objectifs Pédagogiques](#orga1cacc7)
+-   [Crédit](#org5014f10)
+-   [Organisation pratique](#orgc373c09)
+-   [Cours](#orgb1724b5)
+    -   [Semaine 1 : Introduction et notions fondamentales](#orgd60fb26)
+    -   [Semaine 2 : Méthodes de partitionnement](#org1074b3c)
+    -   [Semaine 3 : Classification hiérarchique](#org16d8fe5)
+-   [Évaluation du cours](#org8c62333)
+-   [Références](#org1900ba0)
+    -   [L'environnement `Python`](#org5e727bc)
+    -   [Principaux modules `Python` utilisés](#orga48856e)
 
 
 
-<a id="orga9a78da"></a>
+<a id="orgb8a7a4d"></a>
 
 # Introduction
 
@@ -23,7 +24,7 @@ Ce site présente l'ensemble des ressources pédagogiques relatives au cours de 
 supervisée pour la promotion de STID2 à l'IUT de Vannes.
 
 
-<a id="org606e3af"></a>
+<a id="orga1cacc7"></a>
 
 # Objectifs Pédagogiques
 
@@ -33,12 +34,13 @@ Les principaux objectifs pédagogiques du cours sont :
 -   Replacer cette problématique dans le contexte méthodologique de l'analyse de données.
 -   Introduire la notion d'inertie et son utilisation.
 -   Présenter différentes approches de classification non supervisée pour l'analyse des données
-    quantitatives, à savoir les méthodes de partitionnement et les méthodes de construction d'arbres hiérarchiques
-    le modèle de mélange gaussien.
+    quantitatives, à savoir :
+    -   deux méthodes de partitionnement (moyennes mobiles et mélange gaussien) ;
+    -   la classification ascendante hiérarchique.
 -   Savoir mettre en oeuvre ces méthodes avec la langage `Python`.
 
 
-<a id="orgd8ae8ea"></a>
+<a id="org5014f10"></a>
 
 # Crédit
 
@@ -47,7 +49,7 @@ ANTONI qui avait en charge le cours de classification non supervisée sur l'ann�
 pouvez consulter ces ressources pédagogiques en vous rendant dans [l'espace *Clustering* sur Moodle](https://moodle.univ-ubs.fr/course/view.php?id=3596).
 
 
-<a id="orgff0ecf2"></a>
+<a id="orgc373c09"></a>
 
 # Organisation pratique
 
@@ -60,7 +62,7 @@ faire une demande d'inscription à l'équipe Teams [STID2 - Classification non
 supervisée](https://teams.microsoft.com/l/team/19%3a541fb9397ced490aab1776de0de9202f%40thread.tacv2/conversations?groupId=775ce021-bec5-4bc8-9892-4854cd178be3&tenantId=2fbd12a9-cbb9-49a2-9612-7af4096a6529).
 
 
-<a id="orgc53ba08"></a>
+<a id="orgb1724b5"></a>
 
 # Cours
 
@@ -73,7 +75,7 @@ donc requise).
 [`clust_util.py`](https://github.com/roland-donat/cours-class-non-sup/tree/main/python) en le plaçant dans le même répertoire que les scripts.**
 
 
-<a id="org1cfa92c"></a>
+<a id="orgd60fb26"></a>
 
 ## Semaine 1 : Introduction et notions fondamentales
 
@@ -88,7 +90,7 @@ donc requise).
 -   [Notebook de la séance](https://colab.research.google.com/drive/1OxeIT0Kj5nimaCdbpbwHqgiEuXo-HQvn?usp=sharing) (sur Google Colab)
 
 
-<a id="orgc2227da"></a>
+<a id="org1074b3c"></a>
 
 ## Semaine 2 : Méthodes de partitionnement
 
@@ -100,10 +102,25 @@ donc requise).
 **TD :**
 
 -   [Sujet du TD](https://roland-donat.github.io/cours-class-non-sup/td/td2/td2.html)
--   Notebook de la séance (sur Google Colab) [à venir]
+-   [Notebook de la séance](https://colab.research.google.com/drive/1hbkkCzxpxK4I68eKdGmj5N2by3gYQjZS?usp=sharing) (sur Google Colab)
 
 
-<a id="org8de3448"></a>
+<a id="org16d8fe5"></a>
+
+## Semaine 3 : Classification hiérarchique
+
+**Cours :**
+
+-   [Slides du cours HTML](https://roland-donat.github.io/cours-class-non-sup/cours/c3/c3.html)
+-   [Scripts `Python` du cours](https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/c3/)
+
+**TD :**
+
+-   [Sujet du TD](https://roland-donat.github.io/cours-class-non-sup/td/td3/td3.html)
+-   [Notebook de la séance](https://colab.research.google.com/drive/1eqrltVAsk2_v9Lcvy4zMdK7mvuGqQcco?usp=sharing) (sur Google Colab)
+
+
+<a id="org8c62333"></a>
 
 # Évaluation du cours
 
@@ -112,10 +129,17 @@ en TD. Pour ce faire, nous vérifierons votre aptitude à mettre en oeuvre les t
 informatiques adéquats face à une problématique de classification non supervisée. Les évaluations se
 présenteront sous la forme de quiz sur la plateforme Moodle. 
 
-Planning des évaluations (à venir)
+Planning des évaluations :
+
+-   [Devoir médian](https://moodle.univ-ubs.fr/mod/quiz/view.php?id=271431&forceview=1) : mardi 9 mars 2021 entre 9h00 et 9h30
+-   [Devoir final](https://moodle.univ-ubs.fr/mod/quiz/view.php?id=277121) : mercredi 24 mars 2021 entre 15h00 et 16h00
+
+**Note :** 
+Le petit quiz suivant vous aidera afin de préparer votre environnement de programmation pour
+les devoirs : <https://moodle.univ-ubs.fr/mod/quiz/view.php?id=271762>
 
 
-<a id="org6c7de19"></a>
+<a id="org1900ba0"></a>
 
 # Références
 
@@ -130,7 +154,7 @@ d'inspiration :
     *clustering* et visualiser les résultats.
 
 
-<a id="orgb32cce7"></a>
+<a id="org5e727bc"></a>
 
 ## L'environnement `Python`
 
@@ -152,7 +176,7 @@ Sinon vous pouvez bien évidement utiliser `Python` en local en installant la di
 **L'important est de vous assurer que vous utilisez bien la version `3.8` ou supérieure de `Python`.**
 
 
-<a id="orgf4ce919"></a>
+<a id="orga48856e"></a>
 
 ## Principaux modules `Python` utilisés
 

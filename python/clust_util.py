@@ -814,7 +814,8 @@ def plotly_2d_clust_animation(
 
 # Distances entre groupes
 
-def dist_single_link(data_df1, data_df2, dist="euclidean", **dist_params):
+def dist_group_single(data_df1, data_df2, dist="euclidean",
+                      returns_dist_mat=False, **dist_params):
 
     # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
@@ -826,10 +827,14 @@ def dist_single_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
     idx_min = dist_s.idxmin()
 
-    return dist_s.loc[idx_min], idx_min, dist_mat_df
+    if returns_dist_mat:
+        return dist_s.loc[idx_min], dist_mat_df
+    else:
+        return dist_s.loc[idx_min]
 
 
-def dist_complete_link(data_df1, data_df2, dist="euclidean", **dist_params):
+def dist_group_complete(data_df1, data_df2, dist="euclidean",
+                        returns_dist_mat=False, **dist_params):
 
     # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
@@ -841,10 +846,14 @@ def dist_complete_link(data_df1, data_df2, dist="euclidean", **dist_params):
 
     idx_max = dist_s.idxmax()
 
-    return dist_s.loc[idx_max], idx_max, dist_mat_df
+    if returns_dist_mat:
+        return dist_s.loc[idx_max], dist_mat_df
+    else:
+        return dist_s.loc[idx_max]
 
 
-def dist_group_average(data_df1, data_df2, dist="euclidean", **dist_params):
+def dist_group_average(data_df1, data_df2, dist="euclidean",
+                       returns_dist_mat=False, **dist_params):
 
     # import ipdb
     data_dist = cdist(data_df1, data_df2, metric=dist, **dist_params)
@@ -852,10 +861,13 @@ def dist_group_average(data_df1, data_df2, dist="euclidean", **dist_params):
                                index=data_df1.index,
                                columns=data_df2.index)
 
-    return data_dist.mean(), dist_mat_df
+    if returns_dist_mat:
+        return data_dist.mean(), dist_mat_df
+    else:
+        return data_dist.mean()
 
 
-def dist_ward(data_df1, data_df2, **dist_params):
+def dist_group_ward(data_df1, data_df2, **dist_params):
 
     N1 = len(data_df1)
     N2 = len(data_df2)
@@ -869,14 +881,16 @@ def dist_ward(data_df1, data_df2, **dist_params):
 # Classification hiérarchique
 
 
-def cah(data_df, dist="euclidean", aggreg="ward", **dist_params):
+def cah(data_df, dist="euclidean", aggreg="ward", nb_iter=None, **dist_params):
 
     if aggreg == "ward":
-        dist_clust = dist_ward
+        dist_clust = dist_group_ward
     else:
         raise ValueError(f"Unsupported aggregation function {aggreg}")
 
     nb_data = len(data_df)
+    if nb_iter is None:
+        nb_iter = nb_data - 1
 
     cluster = []
     cls_dist_mat = []
@@ -886,7 +900,7 @@ def cah(data_df, dist="euclidean", aggreg="ward", **dist_params):
     inertia_within = []
     inertia_ratio = []
 
-    for iter_cur in range(nb_data - 1):
+    for iter_cur in range(nb_iter):
 
         iw, ir = eval_cluster(data_df, cluster[iter_cur],
                               dist=dist, **dist_params)

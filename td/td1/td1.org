@@ -288,9 +288,9 @@ Ces modules ne sont pas forcément installés dans votre environnement local ou 
 donc utiliser la commande =!pip install <nom_module>= pour les installer : 
 #+attr_latex: :options bgcolor=almostwhite, frame=lines
 #+BEGIN_SRC python :results silent :exports code
-!pip install pandas=='1.1.5'
-!pip install plotly=='4.14.3'
-!pip install scipy=="1.5.4"
+!pip install pandas=='1.2.5'
+!pip install plotly=='5.6.0'
+!pip install scipy=="1.7.3"
 #+END_SRC
  
 
@@ -316,27 +316,52 @@ import sklearn as sk
 * Chargement des données et premières analyses
 
 1. Chargez les données dans votre environnement à l'aide de la fonction =pd.read_csv=. 
+   #+BEGIN_SRC python :results silent :exports code
+data_path = "https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv"
+data_df = pd.read_csv(data_path, sep=",")
+   #+END_SRC
 2. Faites une rapide analyse exploratoire de vos données :
    - de manière macroscopique avec les méthodes =.head=, =.describe= et =.info=
    - de manière visuelle en représentant la distribution de chaque variable en utilisant la fonction
      =px.box=. 
      Que constatez vous ?
+   #+BEGIN_SRC python :results silent :exports code
+data_df.describe()
+data_df.info()
+px.box(data_df, title="Boxplot de chaque variable (donnée originale)")
+   #+END_SRC
 3. Centrez et réduisez les données. Aide : utilisez les méthodes =.mean= et =.std= des =DataFrame=.
+   #+BEGIN_SRC python :results silent :exports code
+data_scaled_df = <...>
+   #+END_SRC
 4. Calculez la matrice des corrélations linéaires avec la méthode =.corr= des =DataFrame=. Quelles
    sont les caractéristiques remarquables de cette matrice ?
-5. Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.
+5. Affichez un diagramme en paire et une carte de chaleur des corrélations linéaires.
+   #+BEGIN_SRC python :results silent :exports code
+px.imshow(data_df.corr(), 
+          color_continuous_midpoint=0, 
+          title="Corrélations linéaires des données sous forme de carte de chaleur (heatmap)")
+   #+END_SRC
 
 
 * Distance euclidienne
 
+*Dans la suite du TD, nous allons travailler avec les données centrées réduites calculées
+précédemment dans le =DataFrame= =data_scaled_df=.* 
+
 1. Calculez la distance euclidienne entre les deux premiers individus. Aide :
    utilisez la méthode =sum= des =DataFrame=.
 2. Calculez la distance euclidienne entre le premier individu et le troisième, puis entre le
-   deuxième et le troisième. Que constatez vous ?
+   deuxième et le troisième.
 3. Calculez la matrice des distances euclidiennes. Aide : utilisez les fonctions =pdist= et
    =squareform= du package =scipy.spatial.distance=. Quelle sera la taille de cette matrice, quelles
    seront ses propriétés remarquables ?
-4. Vérifiez que les distances calculées au point 1 grâce à la matrice des distances calculée au
+   #+BEGIN_SRC python :results silent :exports code
+scd.pdist(data_scaled_df, metric="euclidean")
+scd.squareform(scd.pdist(data_scaled_df, metric="euclidean"))
+   #+END_SRC
+4. Transformez la matrice de distances précédente sous la forme d'un =DataFrame= pour en améliorer
+   la lisibilité. Vérifiez que les distances calculées aux points 1 et 2 grâce à la matrice des distances calculée au
    point 3.
 
 * Inertie totale
@@ -359,12 +384,17 @@ pour chaque observation. Par ailleurs, la distance utilisée sera la distance eu
 Nous allons nous donner une première partition $C_{\text{A}}$ totalement arbitraire consistant à affecter :
 - la classe $c_{1}$ aux individus d'indices 0-49 ;
 - la classe $c_{2}$ aux individus d'indices 50-99 ;
-- la classe $c_{3}$ aux individus d'indices 101-177.
+- la classe $c_{3}$ aux individus d'indices 100-177.
 
 *Rappel :* N'oubliez pas que =Python= indexe les listes, vecteurs, tableaux en commençant à 0 !
 
-1. Ajoutez une nouvelle variable =cls_CA= contenant la classe de chaque individu suivant le schéma
+1. Ajoutez une nouvelle variable =cls_A= contenant la classe de chaque individu suivant le schéma
    décrit précédemment.
+   #+BEGIN_SRC python :results silent :exports code
+data_scaled_df["cls_A"] = "c1"
+data_scaled_df["cls_A"].loc[50:99] = "c2"
+data_scaled_df["cls_A"].loc[100:] = "c3"
+   #+END_SRC
 2. Visualiser le nuage d'individus sur les variables =OD280= et =Alcohol= en faisant apparaître
    votre partition. Aide : utilisez la fonction =px.scatter= en utilisant l'option =color= pour
    colorer les individus en fonction de leur classe.
@@ -398,4 +428,15 @@ hasard. Pour ce faire, utilisez la fonction =np.ramdom.choice= pour affecter les
 individus. N'hésitez pas à fixer la graine du générateur aléatoire avec la fonction =np.random.seed=
 afin de reproduire le "même hasard" d'une exécution à l'autre de votre script. 
 
+#+BEGIN_SRC python :results silent :exports code
+# On fixe la graîne du générateur de nombre aléatoire pour 
+# reproduire le même "hasard" d'une exécution à l'autre
+np.random.seed(56)
 
+# Initalisation au hasard de la partition
+data_scaled_df["cls_B"] = np.random.choice(["c1", "c2", "c3"],
+                                            len(data_scaled_df))
+
+N_cls_B = data_scaled_df["cls_B"].value_counts()
+N_cls_B
+#+END_SRC

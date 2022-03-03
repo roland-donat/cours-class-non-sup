@@ -332,7 +332,7 @@ px.box(data_df, title="Boxplot de chaque variable (donnée originale)")
    #+END_SRC
 3. Centrez et réduisez les données. Aide : utilisez les méthodes =.mean= et =.std= des =DataFrame=.
    #+BEGIN_SRC python :results silent :exports code
-data_scaled_df = <...>
+data_scaled_df = <à compléter>
    #+END_SRC
 4. Calculez la matrice des corrélations linéaires avec la méthode =.corr= des =DataFrame=. Quelles
    sont les caractéristiques remarquables de cette matrice ?

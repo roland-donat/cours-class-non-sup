@@ -369,6 +369,8 @@ scd.squareform(scd.pdist(data_scaled_df, metric="euclidean"))
 *Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
 pour chaque observation. Par ailleurs, la distance utilisée sera la distance euclidienne.* 
 
+*Nous travaillons toujours avec les données centrées réduites du =DataFrame= =data_scaled_df=.* 
+
 1. Calculer le centre de gravité du nuage d'observations.
 2. Calculer les distances au carré entre les observations et le centre de gravité du nuage. 
 3. En déduire l'inertie totale des données.

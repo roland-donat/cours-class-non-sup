@@ -231,6 +231,17 @@
 
 #+LATEX: \clearpage
 
+* TODO                                                             :noexport:
+** Ajouter plus d'exemple de code python pour se lancer
+- group_by
+- px.scatter
+- value_counts
+- boucle for
+
+* Notes                                                            :noexport:
+** Difficultés côté calcul de la distance euclidienne
+
+
 * Préambule
 
 ** Crédit
@@ -414,7 +425,6 @@ data_scaled_df["cls_A"].loc[100:] = "c3"
 6. Calculez la somme des variances empiriques corrigées des variables au sein de chaque classe.
 7. Comparez les inerties internes et le résultat de la question 6.
 8. Comment calculer l'inertie intra-classe de la partition à partir de la question 6.
-
 
 ** Inertie inter-classe
 

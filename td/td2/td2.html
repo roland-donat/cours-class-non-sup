@@ -262,29 +262,29 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd619ac0">Introduction</a></li>
-<li><a href="#org9b1c9db">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org2203865">Exercice 1 : Données <code>Wine</code></a>
+<li><a href="#org9e0141e">Introduction</a></li>
+<li><a href="#orge122269">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org6038075">Exercice 1 : Données <code>Wine</code></a>
 <ul>
-<li><a href="#orgf819d95">Préparation des données</a></li>
-<li><a href="#orgfacc706">Moyennes mobiles</a></li>
-<li><a href="#orge48a266">Mélange gaussien</a></li>
+<li><a href="#orgcfb4276">Préparation des données</a></li>
+<li><a href="#org0e4c8af">Moyennes mobiles</a></li>
+<li><a href="#orgc229302">Mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#org143422b">Exercice 2 : Données synthétiques</a>
+<li><a href="#org3f30fb0">Exercice 2 : Données synthétiques</a>
 <ul>
-<li><a href="#orgc980d9d">Données circulaires</a></li>
-<li><a href="#org86a568f">Données elliptiques</a></li>
+<li><a href="#org8a59c2f">Données circulaires</a></li>
+<li><a href="#org4baddc1">Données elliptiques</a></li>
 </ul>
 </li>
-<li><a href="#orgedf11a4">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#org618a8a9">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd619ac0" class="outline-2">
-<h2 id="orgd619ac0">Introduction</h2>
-<div class="outline-text-2" id="text-orgd619ac0">
+<div id="outline-container-org9e0141e" class="outline-2">
+<h2 id="org9e0141e">Introduction</h2>
+<div class="outline-text-2" id="text-org9e0141e">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -301,9 +301,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org9b1c9db" class="outline-2">
-<h2 id="org9b1c9db">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org9b1c9db">
+<div id="outline-container-orge122269" class="outline-2">
+<h2 id="orge122269">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orge122269">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -352,18 +352,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org2203865" class="outline-2">
-<h2 id="org2203865">Exercice 1 : Données <code>Wine</code></h2>
-<div class="outline-text-2" id="text-org2203865">
+<div id="outline-container-org6038075" class="outline-2">
+<h2 id="org6038075">Exercice 1 : Données <code>Wine</code></h2>
+<div class="outline-text-2" id="text-org6038075">
 <p>
 Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-orgf819d95" class="outline-3">
-<h3 id="orgf819d95">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgf819d95">
+<div id="outline-container-orgcfb4276" class="outline-3">
+<h3 id="orgcfb4276">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgcfb4276">
 <ol class="org-ol">
 <li>Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>data_wine_ori_df</code> (<code>ori</code> pour originales).</li>
 
@@ -406,26 +406,26 @@ Représentez graphiquement le nuage de points des données <code>data_wine_acp_2
 </div>
 
 
-<div id="outline-container-orgfacc706" class="outline-3">
-<h3 id="orgfacc706">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-orgfacc706">
+<div id="outline-container-org0e4c8af" class="outline-3">
+<h3 id="org0e4c8af">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-org0e4c8af">
 <ol class="org-ol">
-<li>Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
+<li><p>
+Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
 utilisant les paramètres par défaut. On notera <code>km_1</code> ce premier "modèle" de <i>clustering</i>.
+</p>
 <ul class="org-ul">
 <li>Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html"><code>KMeans</code></a> du package <code>sklearn.cluster</code> (ou <code>skc</code> pour nous).</li>
-<li><p>
-Prenez le temps de bien comprendre le fonctionnement et les concepts de la librairie
+<li>Prenez le temps de bien comprendre le fonctionnement et les concepts de la librairie
 <code>scikit-learn</code> associés aux  algorithmes de classification (méthode <code>fit</code>, entrées/sorties,
-etc.). 
-</p>
+etc.).</li>
+</ul>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #DFAF8F;">km_1</span> = skc.KMeans(n_clusters=3)
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  km_1.fit(data_wine_acp_2d_df)
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  &lt;Analysez le contenu de l<span style="color: #CC9393;">'objet km_1&gt;</span>
+<pre class="src src-python"><span style="color: #DFAF8F;">km_1</span> = skc.KMeans(n_clusters=3)
+km_1.fit(data_wine_acp_2d_df)
+&lt;Analysez le contenu de l<span style="color: #CC9393;">'objet km_1&gt;</span>
 </pre>
 </div></li>
-</ul></li>
 
 <li>Représentez graphiquement la partition obtenue avec le modèle <code>km_1</code>.</li>
 
@@ -444,30 +444,30 @@ etc.).
 </ul></li>
 </ol>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">eval_partition</span>(data_df, partition):
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">"""</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">Entr&#233;es :</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- data_df (pandas.DataFrame) : Donn&#233;es quantitatives</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- partition (list, numpy.array ou pandas.Series) : partition des donn&#233;es</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">Sortie :</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- inertie_intra : inertie intra-classe de la partition</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- inertie_score : Inertie expliqu&#233;e par la partition entre 0 et 1</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">"""</span>
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">eval_partition</span>(data_df, partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #9FC59F;">"""</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> Entr&#233;es :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> - data_df (pandas.DataFrame) : Donn&#233;es quantitatives</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> - partition (list, numpy.array ou pandas.Series) : partition des donn&#233;es</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> Sortie :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> - inertie_intra : inertie intra-classe de la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> - inertie_score : Inertie expliqu&#233;e par la partition entre 0 et 1</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;"> """</span>
 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es (cf. TD1)</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>&lt;&#224; compl&#233;ter&gt;
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_totale</span> = &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">inertie_totale</span> = &lt;&#224; compl&#233;ter&gt;
 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie interne aux classes (cf. TD1)</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_intra</span> = 0
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_df.groupby(partition):
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  &lt;&#224; compl&#233;ter&gt;
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #DFAF8F;">inertie_intra</span> += &lt;&#224; compl&#233;ter&gt;
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Inertie expliqu&#233;e par la partition</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_score</span> = &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie interne aux classes (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">inertie_intra</span> = 0
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_df.groupby(partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_intra</span> += &lt;&#224; compl&#233;ter&gt;
 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #F0DFAF; font-weight: bold;">return</span> inertie_intra, inertie_score
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Inertie expliqu&#233;e par la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">inertie_score</span> = &lt;&#224; compl&#233;ter&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">return</span> inertie_intra, inertie_score
 </pre>
 </div>
 
@@ -507,9 +507,9 @@ px.line(x=K_list, y=inertie_intra,
 </div>
 </div>
 
-<div id="outline-container-orge48a266" class="outline-3">
-<h3 id="orge48a266">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-orge48a266">
+<div id="outline-container-orgc229302" class="outline-3">
+<h3 id="orgc229302">Mélange gaussien</h3>
+<div class="outline-text-3" id="text-orgc229302">
 <ol class="org-ol">
 <li>Estimez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
 défaut. Ce modèle sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
@@ -559,9 +559,9 @@ px.line(x=K_list, y=score,
 </div>
 </div>
 
-<div id="outline-container-org143422b" class="outline-2">
-<h2 id="org143422b">Exercice 2 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-org143422b">
+<div id="outline-container-org3f30fb0" class="outline-2">
+<h2 id="org3f30fb0">Exercice 2 : Données synthétiques</h2>
+<div class="outline-text-2" id="text-org3f30fb0">
 <p>
 Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
 utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
@@ -574,9 +574,9 @@ maîtrise le partitionnement <i>a priori</i>.
 </p>
 </div>
 
-<div id="outline-container-orgc980d9d" class="outline-3">
-<h3 id="orgc980d9d">Données circulaires</h3>
-<div class="outline-text-3" id="text-orgc980d9d">
+<div id="outline-container-org8a59c2f" class="outline-3">
+<h3 id="org8a59c2f">Données circulaires</h3>
+<div class="outline-text-3" id="text-org8a59c2f">
 <ol class="org-ol">
 <li>Chargez les données <code>data_circ.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv</a>. Le séparateur utilisé
@@ -594,9 +594,9 @@ des groupes.</li>
 </div>
 </div>
 
-<div id="outline-container-org86a568f" class="outline-3">
-<h3 id="org86a568f">Données elliptiques</h3>
-<div class="outline-text-3" id="text-org86a568f">
+<div id="outline-container-org4baddc1" class="outline-3">
+<h3 id="org4baddc1">Données elliptiques</h3>
+<div class="outline-text-3" id="text-org4baddc1">
 <ol class="org-ol">
 <li>Chargez les données <code>data_ellipse.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv</a>. Le séparateur utilisé
@@ -618,9 +618,9 @@ des groupes.</li>
 </div>
 </div>
 
-<div id="outline-container-orgedf11a4" class="outline-2">
-<h2 id="orgedf11a4">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orgedf11a4">
+<div id="outline-container-org618a8a9" class="outline-2">
+<h2 id="org618a8a9">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-org618a8a9">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

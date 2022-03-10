@@ -262,35 +262,29 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2ad4071">Introduction</a></li>
-<li><a href="#org1643d25">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orgf8ae8bf">Exercice 1 : Données <code>Wine</code> centrées-réduites</a>
+<li><a href="#orgdfbf34c">Introduction</a></li>
+<li><a href="#orged41c3e">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgf88b1f0">Exercice 1 : Données <code>Wine</code> centrées-réduites</a>
 <ul>
-<li><a href="#orgc93edcd">Préparation des données</a></li>
-<li><a href="#org4886541">Moyennes mobiles</a></li>
-<li><a href="#orgb137ae9">Mélange gaussien</a></li>
+<li><a href="#org19bdfe8">Préparation des données</a></li>
+<li><a href="#orgad5eb76">Moyennes mobiles</a></li>
+<li><a href="#org6c4ccb6">Mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#org3553773">Exercice 1 bis : Données <code>Wine</code> (ACP)</a>
+<li><a href="#org560f789">Exercice 2 : Données synthétiques</a>
 <ul>
-<li><a href="#org734cd01">Préparation des données</a></li>
-<li><a href="#org74c6551">Application des moyennes mobiles et du mélange gaussien</a></li>
+<li><a href="#orga848c2d">Données circulaires</a></li>
+<li><a href="#org697363a">Données elliptiques</a></li>
 </ul>
 </li>
-<li><a href="#org0fa3048">Exercice 2 : Données synthétiques</a>
-<ul>
-<li><a href="#org8e5b1e2">Données circulaires</a></li>
-<li><a href="#org877a65a">Données elliptiques</a></li>
-</ul>
-</li>
-<li><a href="#orga7bf909">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#org55556a1">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2ad4071" class="outline-2">
-<h2 id="org2ad4071">Introduction</h2>
-<div class="outline-text-2" id="text-org2ad4071">
+<div id="outline-container-orgdfbf34c" class="outline-2">
+<h2 id="orgdfbf34c">Introduction</h2>
+<div class="outline-text-2" id="text-orgdfbf34c">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -307,9 +301,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org1643d25" class="outline-2">
-<h2 id="org1643d25">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org1643d25">
+<div id="outline-container-orged41c3e" class="outline-2">
+<h2 id="orged41c3e">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orged41c3e">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -358,18 +352,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-orgf8ae8bf" class="outline-2">
-<h2 id="orgf8ae8bf">Exercice 1 : Données <code>Wine</code> centrées-réduites</h2>
-<div class="outline-text-2" id="text-orgf8ae8bf">
+<div id="outline-container-orgf88b1f0" class="outline-2">
+<h2 id="orgf88b1f0">Exercice 1 : Données <code>Wine</code> centrées-réduites</h2>
+<div class="outline-text-2" id="text-orgf88b1f0">
 <p>
 Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-orgc93edcd" class="outline-3">
-<h3 id="orgc93edcd">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgc93edcd">
+<div id="outline-container-org19bdfe8" class="outline-3">
+<h3 id="org19bdfe8">Préparation des données</h3>
+<div class="outline-text-3" id="text-org19bdfe8">
 <ol class="org-ol">
 <li>Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>data_wine_ori_df</code> (<code>ori</code> pour originales).</li>
 
@@ -412,28 +406,28 @@ Représentez graphiquement le nuage de points des données <code>data_wine_acp_2
 </div>
 
 
-<div id="outline-container-org4886541" class="outline-3">
-<h3 id="org4886541">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org4886541">
+<div id="outline-container-orgad5eb76" class="outline-3">
+<h3 id="orgad5eb76">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orgad5eb76">
 <ol class="org-ol">
-<li><p>
-Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
+<li>Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
 utilisant les paramètres par défaut. On notera <code>km_1</code> ce premier "modèle" de <i>clustering</i>.
-</p>
 <ul class="org-ul">
 <li>Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html"><code>KMeans</code></a> du package <code>sklearn.cluster</code> (ou <code>skc</code> pour nous).</li>
-<li>Prenez le temps de bien comprendre le fonctionnement et les concepts de la librairie
+<li><p>
+Prenez le temps de bien comprendre le fonctionnement et les concepts de la librairie
 <code>scikit-learn</code> associés aux  algorithmes de classification (méthode <code>fit</code>, entrées/sorties,
-etc.).</li>
-</ul>
+etc.). 
+</p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">km_1</span> = skc.KMeans(n_clusters=3)
-km_1.fit(data_wine_acp_2d_df)
-&lt;Analysez le contenu de l<span style="color: #CC9393;">'objet km_1&gt;</span>
+<pre class="src src-python"><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #DFAF8F;">km_1</span> = skc.KMeans(n_clusters=3)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  km_1.fit(data_wine_acp_2d_df)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  &lt;Analysez le contenu de l<span style="color: #CC9393;">'objet km_1&gt;</span>
 </pre>
 </div></li>
+</ul></li>
 
-<li>Représentez graphiquement la partition obtenue avec le modèle <code>km_1</code> sur les variables <code>Alcohol</code>, <code>Magnesium</code>, <code>Total_Phenols</code> et <code>Hue</code> à l'aide d'un diagramme en paires.</li>
+<li>Représentez graphiquement la partition obtenue avec le modèle <code>km_1</code>.</li>
 
 <li>Créez une fonction <code>eval_partition</code> ayant les caractéristiques suivantes :
 <ul class="org-ul">
@@ -448,11 +442,38 @@ km_1.fit(data_wine_acp_2d_df)
 <li>le pourcentage d'inertie expliquée par la partition.</li>
 </ul></li>
 </ul></li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">eval_partition</span>(data_df, partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">"""</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">Entr&#233;es :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- data_df (pandas.DataFrame) : Donn&#233;es quantitatives</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- partition (list, numpy.array ou pandas.Series) : partition des donn&#233;es</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">Sortie :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- inertie_intra : inertie intra-classe de la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">- inertie_score : Inertie expliqu&#233;e par la partition entre 0 et 1</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   </span><span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">"""</span>
 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>&lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_totale</span> = &lt;&#224; compl&#233;ter&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie interne aux classes (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_intra</span> = 0
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_df.groupby(partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  <span style="color: #DFAF8F;">inertie_intra</span> += &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Inertie expliqu&#233;e par la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #DFAF8F;">inertie_score</span> = &lt;&#224; compl&#233;ter&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #F0DFAF; font-weight: bold;">return</span> inertie_intra, inertie_score
+</pre>
+</div>
+
+<ol class="org-ol">
 <li>Utilisez votre fonction <code>eval_partition</code> sur la partition du modèle <code>km_1</code> et comparez avec les résultats
 obtenus par la classe <code>KMeans</code>.</li>
-
-<li>Étudiez plus en détails les principaux paramètres de la classe <code>KMeans</code> (l'aide est votre amie).</li>
 
 <li>Réalisez un second modèle <code>km_2</code> :
 <ul class="org-ul">
@@ -467,64 +488,80 @@ obtenus par la classe <code>KMeans</code>.</li>
 d'inertie expliqué correspondants. Quel est selon vous le nombre de classes pertinent pour ces
 données ?</li>
 </ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">M&#233;thode du coude</span>
+<span style="color: #DFAF8F;">inertie_intra</span> = []
+<span style="color: #DFAF8F;">K_list</span> = <span style="color: #DCDCCC; font-weight: bold;">range</span>(2, 50)
+<span style="color: #F0DFAF; font-weight: bold;">for</span> k <span style="color: #F0DFAF; font-weight: bold;">in</span> K_list:
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">iintra</span>, <span style="color: #DFAF8F;">iscore</span> = eval_partition(data_wine_acp_2d_df, 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> &lt;&#224; compl&#233;ter&gt;)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> inertie_intra.append(iintra)
+
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Repr&#233;sentation graphique des r&#233;sultats</span>
+px.line(x=K_list, y=inertie_intra, 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title=<span style="color: #CC9393;">"Inertie intra-classe vs nb de classes (m&#233;thode du coude)"</span>,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=500, height=500)
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgb137ae9" class="outline-3">
-<h3 id="orgb137ae9">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-orgb137ae9">
+<div id="outline-container-org6c4ccb6" class="outline-3">
+<h3 id="org6c4ccb6">Mélange gaussien</h3>
+<div class="outline-text-3" id="text-org6c4ccb6">
 <ol class="org-ol">
-<li>Appliquez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
-défaut. La partition obtenue sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
+<li>Estimez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
+défaut. Ce modèle sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
 <code>GaussianMixture</code> </a>du package <code>sklearn.mixture</code> (ou <code>skm</code> pour nous).</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">gmm_1</span> = skm.GaussianMixture(n_components=3)
+gmm_1.fit(data_wine_acp_2d_df)
+</pre>
+</div>
 
-<li>Représenter graphiquement la partition obtenue avec le modèle <code>gmm_1</code> sur les variables
-<code>Alcohol</code>, <code>Magnesium</code>, <code>Total_Phenols</code> et <code>Hue</code> à l'aide d'un diagramme en paires.</li>
+<ol class="org-ol">
+<li>Affichez les paramètres du modèle <code>gmm_1</code>. Aide : consultez les attributs <code>means_</code>,
+<code>covariances_</code>, <code>weights_</code>.</li>
+
+<li>Calculez la partition des données <code>data_wine_acp_2d_df</code> à partir du modèle <code>gmm_1</code>.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">gmm_1_cls_pred</span> = gmm_1.predict(data_wine_acp_2d_df)
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>Représenter graphiquement la partition <code>gmm_1_cls_pred</code>.</li>
 
 <li>Comparez vos résultats avec les partitions obtenues avec les moyennes mobiles. Que constatez vous ?</li>
+
+<li>Adaptez à la méthode des mélanges le principe de la méthode du coude vue pour le choix du nombre
+de classes dans le cas des moyennes mobiles. Aide : utilisez l'attribut <code>bic</code> comme critère de
+qualité sans oublier bien sûr de comprendre à quoi correspond ce critère.</li>
 </ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">M&#233;thode du coude</span>
+<span style="color: #DFAF8F;">score</span> = []
+<span style="color: #DFAF8F;">K_list</span> = <span style="color: #DCDCCC; font-weight: bold;">range</span>(2, 50)
+<span style="color: #F0DFAF; font-weight: bold;">for</span> k <span style="color: #F0DFAF; font-weight: bold;">in</span> K_list:
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">gmm_k_test</span> = &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> score.append(gmm_k_test.bic(data_wine_acp_2d_df))
+
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Repr&#233;sentation graphique des r&#233;sultats</span>
+px.line(x=K_list, y=score, 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title=<span style="color: #CC9393;">"BIC vs nb de classes (m&#233;thode du coude)"</span>,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=500, height=500)
+</pre>
+</div>
 </div>
 </div>
 </div>
 
-
-<div id="outline-container-org3553773" class="outline-2">
-<h2 id="org3553773">Exercice 1 bis : Données <code>Wine</code> (ACP)</h2>
-<div class="outline-text-2" id="text-org3553773">
-</div>
-<div id="outline-container-org734cd01" class="outline-3">
-<h3 id="org734cd01">Préparation des données</h3>
-<div class="outline-text-3" id="text-org734cd01">
-<ol class="org-ol">
-<li>Chargez les données dans votre environnement.</li>
-
-<li>Créez le <code>DataFrame</code> <code>data_wine_df</code> correspondant aux données centrées et réduites.</li>
-
-<li>Faites une ACP sur les données <code>data_wine_df</code> en analysant rapidement le résultat obtenu. Aide :
-utilisez la classe <code>PCA</code> du <i>package</i> <code>sklearn.decomposition</code> (ou <code>skd</code> pour nous).</li>
-
-<li>Créez deux <code>DataFrame</code> <code>data_wine_acp_2d_df</code> et <code>data_wine_acp_3d_df</code> correspondant aux données
-<code>Wine</code> projetées respectivement sur les deux premiers axes et trois premiers axes de l'ACP.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org74c6551" class="outline-3">
-<h3 id="org74c6551">Application des moyennes mobiles et du mélange gaussien</h3>
-<div class="outline-text-3" id="text-org74c6551">
-<ul class="org-ul">
-<li>Reprenez les questions de l'exercice 1 sur les données <code>data_wine_acp_2d_df</code> et
-<code>data_wine_acp_3d_df</code>.</li>
-<li>Vous pourrez ainsi visualiser les données en deux ou trois dimensions à l'aide des fonction
-<code>px.scatter</code> et <code>px.scatter_3d</code>.</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org0fa3048" class="outline-2">
-<h2 id="org0fa3048">Exercice 2 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-org0fa3048">
+<div id="outline-container-org560f789" class="outline-2">
+<h2 id="org560f789">Exercice 2 : Données synthétiques</h2>
+<div class="outline-text-2" id="text-org560f789">
 <p>
 Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
 utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
@@ -537,9 +574,9 @@ maîtrise le partitionnement <i>a priori</i>.
 </p>
 </div>
 
-<div id="outline-container-org8e5b1e2" class="outline-3">
-<h3 id="org8e5b1e2">Données circulaires</h3>
-<div class="outline-text-3" id="text-org8e5b1e2">
+<div id="outline-container-orga848c2d" class="outline-3">
+<h3 id="orga848c2d">Données circulaires</h3>
+<div class="outline-text-3" id="text-orga848c2d">
 <ol class="org-ol">
 <li>Chargez les données <code>data_circ.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv</a>. Le séparateur utilisé
@@ -548,19 +585,18 @@ est le ";".</li>
 <li>Visualisez les données. Combien de groupes identifiez vous ? Faites un résumé statistique visuel
 des groupes.</li>
 
-<li>Appliquer un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.</li>
+<li>Appliquez un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.</li>
 
-<li>Appliquer un partitionnement avec un mélange gaussien et affichez le résultat.</li>
+<li>Appliquez un partitionnement avec un mélange gaussien et affichez le résultat.</li>
 
-<li>Évaluer les deux partitionnements obtenus et interprétez les résultats.</li>
+<li>Évaluez les deux partitionnements obtenus et interprétez les résultats.</li>
 </ol>
 </div>
 </div>
 
-
-<div id="outline-container-org877a65a" class="outline-3">
-<h3 id="org877a65a">Données elliptiques</h3>
-<div class="outline-text-3" id="text-org877a65a">
+<div id="outline-container-org697363a" class="outline-3">
+<h3 id="org697363a">Données elliptiques</h3>
+<div class="outline-text-3" id="text-org697363a">
 <ol class="org-ol">
 <li>Chargez les données <code>data_ellipse.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv</a>. Le séparateur utilisé
@@ -569,23 +605,22 @@ est le ";".</li>
 <li>Visualisez les données. Combien de groupes identifiez vous ? Faites un résumé statistique visuel
 des groupes.</li>
 
-<li>Appliquer un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.</li>
+<li>Appliquez un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.</li>
 
-<li>Appliquer un partitionnement avec un mélange gaussien et affichez le résultat.</li>
+<li>Appliquez un partitionnement avec un mélange gaussien et affichez le résultat.</li>
 
-<li>Évaluer les deux partitionnements obtenus et interprétez les résultats.</li>
+<li>Évaluez les deux partitionnements obtenus et interprétez les résultats.</li>
 
-<li>Appliquer de nouveau la méthode du mélange gaussien en modifiant le paramètre
+<li>Appliquez de nouveau la méthode du mélange gaussien en modifiant le paramètre
 <code>covariance_type</code>. Visualisez et interprétez les résultats.</li>
 </ol>
 </div>
 </div>
 </div>
 
-
-<div id="outline-container-orga7bf909" class="outline-2">
-<h2 id="orga7bf909">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orga7bf909">
+<div id="outline-container-org55556a1" class="outline-2">
+<h2 id="org55556a1">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-org55556a1">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.
@@ -598,14 +633,58 @@ Pour ce faire, il vous faudra créer les trois fonctions suivantes :
 <ol class="org-ol">
 <li>La fonction <code>calcule_centres</code> qui calcule le centre de chaque classe à partir de données
 quantitative et d'une partition.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">calcule_centres</span>(data, partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> &lt;&#224; compl&#233;ter&gt;
 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">return</span> centres
+</pre>
+</div>
+
+<ol class="org-ol">
 <li>La fonction <code>affecte_classe</code> qui prend en entrée des données et les centres des classes et qui
 affecte à chaque individu la classe ayant le centre le plus proche au sens de la distance euclidienne.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">affecte_classe</span>(data, centres):
 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> &lt;&#224; compl&#233;ter&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">return</span> partition
+</pre>
+</div>
+
+<ol class="org-ol">
 <li>La fonction <code>mon_kmeans</code> qui prend en entrée des données et un nombre de classes et qui applique
 la méthode des moyennes mobiles. L'initialisation est supposée aléatoire et on arrêtera
 l'algorithme dès que la partition construite n'évolue plus entre deux itérations.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">my_kmeans</span>(data, K):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Partition initiale</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">partition</span> = np.random.choice(K, <span style="color: #DCDCCC; font-weight: bold;">len</span>(data))
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">critere_arret</span> = <span style="color: #BFEBBF;">False</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">while</span> critere_arret:
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Affectation des classes</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">centres</span> = &lt;&#224; compl&#233;ter&gt;
 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul des nouveaux centres</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">partition</span> = &lt;&#224; compl&#233;ter&gt;
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul du crit&#232;re d'arr&#234;t</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">critere_arret</span> = &lt;&#224; compl&#233;ter&gt;
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #F0DFAF; font-weight: bold;">return</span> partition, centres
+</pre>
+</div>
+
+<ol class="org-ol">
 <li>Utilisez votre algorithme sur les données des exercices précédents et comparez vos résultats avec
 la méthode <code>KMeans</code> de <code>scikit-learn</code>.</li>
 </ol>

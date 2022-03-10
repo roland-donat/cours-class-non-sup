@@ -262,29 +262,29 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9e0141e">Introduction</a></li>
-<li><a href="#orge122269">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org6038075">Exercice 1 : Données <code>Wine</code></a>
+<li><a href="#org270e456">Introduction</a></li>
+<li><a href="#org2a73683">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgf612f51">Exercice 1 : Données <code>Wine</code></a>
 <ul>
-<li><a href="#orgcfb4276">Préparation des données</a></li>
-<li><a href="#org0e4c8af">Moyennes mobiles</a></li>
-<li><a href="#orgc229302">Mélange gaussien</a></li>
+<li><a href="#org35d1dfb">Préparation des données</a></li>
+<li><a href="#org1dd12ad">Moyennes mobiles</a></li>
+<li><a href="#org785e398">Mélange gaussien</a></li>
 </ul>
 </li>
-<li><a href="#org3f30fb0">Exercice 2 : Données synthétiques</a>
+<li><a href="#org73f174b">Exercice 2 : Données synthétiques</a>
 <ul>
-<li><a href="#org8a59c2f">Données circulaires</a></li>
-<li><a href="#org4baddc1">Données elliptiques</a></li>
+<li><a href="#org1882f05">Données circulaires</a></li>
+<li><a href="#org161e055">Données elliptiques</a></li>
 </ul>
 </li>
-<li><a href="#org618a8a9">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#orgc9dd11b">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9e0141e" class="outline-2">
-<h2 id="org9e0141e">Introduction</h2>
-<div class="outline-text-2" id="text-org9e0141e">
+<div id="outline-container-org270e456" class="outline-2">
+<h2 id="org270e456">Introduction</h2>
+<div class="outline-text-2" id="text-org270e456">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement vues en cours, à savoir la
 méthode des moyennes mobiles (k-<i>Means</i>) et la méthode du mélange gaussien. 
@@ -301,9 +301,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-orge122269" class="outline-2">
-<h2 id="orge122269">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-orge122269">
+<div id="outline-container-org2a73683" class="outline-2">
+<h2 id="org2a73683">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org2a73683">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -352,18 +352,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org6038075" class="outline-2">
-<h2 id="org6038075">Exercice 1 : Données <code>Wine</code></h2>
-<div class="outline-text-2" id="text-org6038075">
+<div id="outline-container-orgf612f51" class="outline-2">
+<h2 id="orgf612f51">Exercice 1 : Données <code>Wine</code></h2>
+<div class="outline-text-2" id="text-orgf612f51">
 <p>
 Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-orgcfb4276" class="outline-3">
-<h3 id="orgcfb4276">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgcfb4276">
+<div id="outline-container-org35d1dfb" class="outline-3">
+<h3 id="org35d1dfb">Préparation des données</h3>
+<div class="outline-text-3" id="text-org35d1dfb">
 <ol class="org-ol">
 <li>Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>data_wine_ori_df</code> (<code>ori</code> pour originales).</li>
 
@@ -406,9 +406,9 @@ Représentez graphiquement le nuage de points des données <code>data_wine_acp_2
 </div>
 
 
-<div id="outline-container-org0e4c8af" class="outline-3">
-<h3 id="org0e4c8af">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org0e4c8af">
+<div id="outline-container-org1dd12ad" class="outline-3">
+<h3 id="org1dd12ad">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-org1dd12ad">
 <ol class="org-ol">
 <li><p>
 Appliquez l'algorithme des moyennes mobiles sur les données en recherchant \(K=3\) groupes en
@@ -507,9 +507,9 @@ px.line(x=K_list, y=inertie_intra,
 </div>
 </div>
 
-<div id="outline-container-orgc229302" class="outline-3">
-<h3 id="orgc229302">Mélange gaussien</h3>
-<div class="outline-text-3" id="text-orgc229302">
+<div id="outline-container-org785e398" class="outline-3">
+<h3 id="org785e398">Mélange gaussien</h3>
+<div class="outline-text-3" id="text-org785e398">
 <ol class="org-ol">
 <li>Estimez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
 défaut. Ce modèle sera notée <code>gmm_1</code>. Aide : utilisez la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html">classe
@@ -559,9 +559,9 @@ px.line(x=K_list, y=score,
 </div>
 </div>
 
-<div id="outline-container-org3f30fb0" class="outline-2">
-<h2 id="org3f30fb0">Exercice 2 : Données synthétiques</h2>
-<div class="outline-text-2" id="text-org3f30fb0">
+<div id="outline-container-org73f174b" class="outline-2">
+<h2 id="org73f174b">Exercice 2 : Données synthétiques</h2>
+<div class="outline-text-2" id="text-org73f174b">
 <p>
 Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
 utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
@@ -574,9 +574,9 @@ maîtrise le partitionnement <i>a priori</i>.
 </p>
 </div>
 
-<div id="outline-container-org8a59c2f" class="outline-3">
-<h3 id="org8a59c2f">Données circulaires</h3>
-<div class="outline-text-3" id="text-org8a59c2f">
+<div id="outline-container-org1882f05" class="outline-3">
+<h3 id="org1882f05">Données circulaires</h3>
+<div class="outline-text-3" id="text-org1882f05">
 <ol class="org-ol">
 <li>Chargez les données <code>data_circ.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv</a>. Le séparateur utilisé
@@ -594,9 +594,9 @@ des groupes.</li>
 </div>
 </div>
 
-<div id="outline-container-org4baddc1" class="outline-3">
-<h3 id="org4baddc1">Données elliptiques</h3>
-<div class="outline-text-3" id="text-org4baddc1">
+<div id="outline-container-org161e055" class="outline-3">
+<h3 id="org161e055">Données elliptiques</h3>
+<div class="outline-text-3" id="text-org161e055">
 <ol class="org-ol">
 <li>Chargez les données <code>data_ellipse.csv</code> à partir de l'adresse :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv">https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv</a>. Le séparateur utilisé
@@ -618,9 +618,9 @@ des groupes.</li>
 </div>
 </div>
 
-<div id="outline-container-org618a8a9" class="outline-2">
-<h2 id="org618a8a9">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-org618a8a9">
+<div id="outline-container-orgc9dd11b" class="outline-2">
+<h2 id="orgc9dd11b">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-orgc9dd11b">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

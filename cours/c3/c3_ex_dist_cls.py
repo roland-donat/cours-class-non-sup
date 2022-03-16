@@ -47,23 +47,23 @@ data_cls_df2 = data_sel_cls_grp.get_group("C2")
 data_cls_df3 = data_sel_cls_grp.get_group("C3")
 
 dsl_12, dsl_12_idx, dsl_12_mat_df = \
-    clu.dist_single_link(data_cls_df1, data_cls_df2,
-                         dist=dist)
+    clu.dist_group_single(data_cls_df1, data_cls_df2,
+                          dist=dist, returns_dist_mat=True)
 
 dcl_13, dcl_13_idx, dcl_13_mat_df = \
-    clu.dist_complete_link(data_cls_df1, data_cls_df3,
-                           dist=dist)
+    clu.dist_group_complete(data_cls_df1, data_cls_df3,
+                            dist=dist, returns_dist_mat=True)
 
 dga_23, dga_23_mat_df = \
     clu.dist_group_average(data_cls_df2, data_cls_df3,
-                           dist=dist)
+                           dist=dist, returns_dist_mat=True)
 
 
 data_mu_cls_df = data_sel_cls_grp.mean()
 
 dward_12 = \
-    clu.dist_ward(data_cls_df1, data_cls_df2)
+    clu.dist_group_ward(data_cls_df1, data_cls_df2)
 dward_13 = \
-    clu.dist_ward(data_cls_df1, data_cls_df3)
+    clu.dist_group_ward(data_cls_df1, data_cls_df3)
 dward_23 = \
-    clu.dist_ward(data_cls_df2, data_cls_df3)
+    clu.dist_group_ward(data_cls_df2, data_cls_df3)

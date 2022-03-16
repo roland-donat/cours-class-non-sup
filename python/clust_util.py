@@ -828,9 +828,9 @@ def dist_group_single(data_df1, data_df2, dist="euclidean",
     idx_min = dist_s.idxmin()
 
     if returns_dist_mat:
-        return dist_s.loc[idx_min], dist_mat_df
+        return dist_s.loc[idx_min], idx_min, dist_mat_df
     else:
-        return dist_s.loc[idx_min]
+        return dist_s.loc[idx_min], idx_min
 
 
 def dist_group_complete(data_df1, data_df2, dist="euclidean",
@@ -847,9 +847,9 @@ def dist_group_complete(data_df1, data_df2, dist="euclidean",
     idx_max = dist_s.idxmax()
 
     if returns_dist_mat:
-        return dist_s.loc[idx_max], dist_mat_df
+        return dist_s.loc[idx_max], idx_max, dist_mat_df
     else:
-        return dist_s.loc[idx_max]
+        return dist_s.loc[idx_max], idx_max
 
 
 def dist_group_average(data_df1, data_df2, dist="euclidean",

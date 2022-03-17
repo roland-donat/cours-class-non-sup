@@ -240,35 +240,35 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4a9d7dd">Introduction</a></li>
-<li><a href="#org8c320c8">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orgc42c473">Analyse de la méthode CAH sur des données synthétiques</a>
+<li><a href="#orgb6c530f">Introduction</a></li>
+<li><a href="#orga53bdae">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org548530a">Analyse de la méthode CAH sur des données synthétiques</a>
 <ul>
-<li><a href="#org35ff675">Chargement des données</a></li>
-<li><a href="#orge916e48">CAH</a></li>
-<li><a href="#orgc61323c">Autres modèles</a></li>
+<li><a href="#org1cba786">Chargement des données</a></li>
+<li><a href="#orgff555f4">CAH</a></li>
+<li><a href="#org162ed8a">Autres modèles</a></li>
 </ul>
 </li>
-<li><a href="#orgc605dfc">Analyse de profils d'équipes de football</a>
+<li><a href="#org9d54d7a">Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#org26c22ef">Préparation des données</a></li>
-<li><a href="#orgb24ad26">Détection de profils</a></li>
+<li><a href="#orgc352f5a">Préparation des données</a></li>
+<li><a href="#orgb426ee7">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#org02931fc">Compression d'images</a>
+<li><a href="#org414a791">Compression d'images</a>
 <ul>
-<li><a href="#org9ea4244">Chargement d'une image</a></li>
-<li><a href="#org8fc752f">Application des moyennes mobiles</a></li>
+<li><a href="#orge5f50fb">Chargement d'une image</a></li>
+<li><a href="#org5fe4284">Application des moyennes mobiles</a></li>
 </ul>
 </li>
-<li><a href="#org5d9b48f">Programmation des distances entre classes</a></li>
+<li><a href="#orgbab1cff">Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4a9d7dd" class="outline-2">
-<h2 id="org4a9d7dd">Introduction</h2>
-<div class="outline-text-2" id="text-org4a9d7dd">
+<div id="outline-container-orgb6c530f" class="outline-2">
+<h2 id="orgb6c530f">Introduction</h2>
+<div class="outline-text-2" id="text-orgb6c530f">
 <p>
 Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
 (CAH) sur différents jeux de données afin d'évaluer les propriétés de cette méthode.
@@ -286,9 +286,9 @@ compétence sur le langage <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-org8c320c8" class="outline-2">
-<h2 id="org8c320c8">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org8c320c8">
+<div id="outline-container-orga53bdae" class="outline-2">
+<h2 id="orga53bdae">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orga53bdae">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -344,9 +344,9 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-orgc42c473" class="outline-2">
-<h2 id="orgc42c473">Analyse de la méthode CAH sur des données synthétiques</h2>
-<div class="outline-text-2" id="text-orgc42c473">
+<div id="outline-container-org548530a" class="outline-2">
+<h2 id="org548530a">Analyse de la méthode CAH sur des données synthétiques</h2>
+<div class="outline-text-2" id="text-org548530a">
 <p>
 Ce premier exercice consiste à utiliser des données générées comportant des distributions
 d'individus remarquables permettant d'illustrer les propriétés des différents algorithmes de
@@ -354,9 +354,9 @@ partitionnement vu en cours.
 </p>
 </div>
 
-<div id="outline-container-org35ff675" class="outline-3">
-<h3 id="org35ff675">Chargement des données</h3>
-<div class="outline-text-3" id="text-org35ff675">
+<div id="outline-container-org1cba786" class="outline-3">
+<h3 id="org1cba786">Chargement des données</h3>
+<div class="outline-text-3" id="text-org1cba786">
 <p>
 Nous travaillerons sur les quatre jeux de données suivants :
 </p>
@@ -406,9 +406,9 @@ Visualisez les nuages de points correspondant.
 </div>
 </div>
 
-<div id="outline-container-orge916e48" class="outline-3">
-<h3 id="orge916e48">CAH</h3>
-<div class="outline-text-3" id="text-orge916e48">
+<div id="outline-container-orgff555f4" class="outline-3">
+<h3 id="orgff555f4">CAH</h3>
+<div class="outline-text-3" id="text-orgff555f4">
 <ol class="org-ol">
 <li><p>
 Construisez un modèle de classification ascendante hiérarchique (CAH) avec la classe
@@ -448,12 +448,13 @@ Visualisez le dendrogramme associé. Aide : étudiez la fonction <code>create_de
 <code>plotly.figure_factory</code> (ou <code>plf</code> pour nous).
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">data_patches_circ_dendro_fig</span> = pff.create_dendrogram(data_patches_circ_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>labels=data_patches_circ_df.index,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>color_threshold=50,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>distfun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: scd.pdist(x, metric=<span style="color: #CC9393;">"euclidean"</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   x, <span style="color: #CC9393;">"ward"</span>, metric=<span style="color: #CC9393;">"euclidean"</span>))
+<pre class="src src-python"><span style="color: #DFAF8F;">data_patches_circ_dendro_fig</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(data_patches_circ_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=data_patches_circ_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=50,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> distfun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: scd.pdist(x, metric=<span style="color: #CC9393;">"euclidean"</span>),
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"ward"</span>, metric=<span style="color: #CC9393;">"euclidean"</span>))
+
 data_patches_circ_dendro_fig.update_layout(
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation : {link_dist} et distance entre individus : {data_dist}"</span>,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1000, height=600)
@@ -469,9 +470,9 @@ la distance d'agrégation choisie.</li>
 </div>
 </div>
 
-<div id="outline-container-orgc61323c" class="outline-3">
-<h3 id="orgc61323c">Autres modèles</h3>
-<div class="outline-text-3" id="text-orgc61323c">
+<div id="outline-container-org162ed8a" class="outline-3">
+<h3 id="org162ed8a">Autres modèles</h3>
+<div class="outline-text-3" id="text-org162ed8a">
 <ol class="org-ol">
 <li><p>
 Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
@@ -502,20 +503,20 @@ px.scatter(data_circles_df, x=<span style="color: #CC9393;">"X1"</span>, y=<span
 </div>
 </div>
 
-<div id="outline-container-orgc605dfc" class="outline-2">
-<h2 id="orgc605dfc">Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-orgc605dfc">
+<div id="outline-container-org9d54d7a" class="outline-2">
+<h2 id="org9d54d7a">Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-org9d54d7a">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent les deux premières divisions de différents championnats européens.
 </p>
 
 <p>
-Le Tableau <a href="#org25fe497">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org1bc99f1">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="org25fe497" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org1bc99f1" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <div id="data_soccer_fixtures_columns_desc"></div></caption>
 
 <colgroup>
@@ -653,9 +654,9 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-org26c22ef" class="outline-3">
-<h3 id="org26c22ef">Préparation des données</h3>
-<div class="outline-text-3" id="text-org26c22ef">
+<div id="outline-container-orgc352f5a" class="outline-3">
+<h3 id="orgc352f5a">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgc352f5a">
 <ol class="org-ol">
 <li>Chargez les données à partir de l'adresse suivante :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
@@ -672,24 +673,25 @@ data_soccer_sel_df.head()
 </pre>
 </div></li>
 
-<li>Sélectionnez les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']</code>.</li>
+<li>Sélectionnez les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST',
+   'HC', 'HF', 'HY', 'HR']</code>.</li>
 
-<li>Calculez la moyenne des faits de jeu par équipe.</li>
+<li>Regroupez les données par équipe et calculez la moyenne des faits de jeu par équipe. Le résultat
+sera stocké dans un <code>DataFrame</code> <code>data_soccer_mean_df</code>.</li>
 
-<li>Réalisez une ACP sur les données précédentes et conservez les deux premiers axes principaux dans
-un nouveau <code>DataFrame</code> nommé <code>data_soccer_2d_df</code>.</li>
+<li>Réalisez une ACP sur les données précédentes et stockez le résultat dans un <code>DataFrame</code> <code>data_soccer_acp_df</code>.</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-orgb24ad26" class="outline-3">
-<h3 id="orgb24ad26">Détection de profils</h3>
-<div class="outline-text-3" id="text-orgb24ad26">
+<div id="outline-container-orgb426ee7" class="outline-3">
+<h3 id="orgb426ee7">Détection de profils</h3>
+<div class="outline-text-3" id="text-orgb426ee7">
 <ol class="org-ol">
-<li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_2d_df</code>. Appliquez la
+<li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_acp_df</code>. Appliquez la
 méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
 
-<li>Utilisez une CAH sur les données <code>data_soccer_2d_df</code>. Appliquez la
+<li>Utilisez une CAH sur les données <code>data_soccer_acp_df</code>. Appliquez la
 méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
 
 <li>Tentez d'interpréter les partitions obtenues.</li>
@@ -699,9 +701,9 @@ méthode du coude afin d'évaluer un compromis entre nombre de classes et inerti
 </div>
 
 
-<div id="outline-container-org02931fc" class="outline-2">
-<h2 id="org02931fc">Compression d'images</h2>
-<div class="outline-text-2" id="text-org02931fc">
+<div id="outline-container-org414a791" class="outline-2">
+<h2 id="org414a791">Compression d'images</h2>
+<div class="outline-text-2" id="text-org414a791">
 <p>
 Cette exercice propose d'explorer comment les méthodes de classification non supervisée peuvent être
 appliquées à la compression d'images et en particulier à la problématique de quantification en
@@ -716,9 +718,9 @@ de données quantitatives à trois dimensions.
 </p>
 </div>
 
-<div id="outline-container-org9ea4244" class="outline-3">
-<h3 id="org9ea4244">Chargement d'une image</h3>
-<div class="outline-text-3" id="text-org9ea4244">
+<div id="outline-container-orge5f50fb" class="outline-3">
+<h3 id="orge5f50fb">Chargement d'une image</h3>
+<div class="outline-text-3" id="text-orge5f50fb">
 <ol class="org-ol">
 <li>Installez et importez la <a href="https://scikit-image.org/docs/dev/user_guide/getting_started.html">librairie <code>skimage</code> </a> permettant de faire du traitement d'image : <code>import
    skimage.io</code>.</li>
@@ -757,9 +759,9 @@ des <code>numpy.array</code>.</li>
 </div>
 </div>
 
-<div id="outline-container-org8fc752f" class="outline-3">
-<h3 id="org8fc752f">Application des moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org8fc752f">
+<div id="outline-container-org5fe4284" class="outline-3">
+<h3 id="org5fe4284">Application des moyennes mobiles</h3>
+<div class="outline-text-3" id="text-org5fe4284">
 <ol class="org-ol">
 <li>Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en quatre
 classes.</li>
@@ -776,9 +778,9 @@ d'interprétez les résultats.</li>
 </div>
 </div>
 
-<div id="outline-container-org5d9b48f" class="outline-2">
-<h2 id="org5d9b48f">Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-org5d9b48f">
+<div id="outline-container-orgbab1cff" class="outline-2">
+<h2 id="orgbab1cff">Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-orgbab1cff">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :

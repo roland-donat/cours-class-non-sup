@@ -11,6 +11,7 @@ import numpy as np  # Calcul numérique
 import pandas as pd  # Manipulation des données
 import plotly.express as px  # Visualisation
 import plotly.io as pio  # Visualisation
+import ipdb
 pio.renderers.default = 'browser'
 
 
@@ -124,7 +125,6 @@ data_classif_ib_fig = \
                     cls_vlist=cls_vlist,
                     cls_cmap=cls_cmap,
                     between_inertia_color=between_inertia_color)
-
 
 data_classif_inertia_fig = \
     plotly_2d_clust(data_df=data_sel_df,

@@ -6,179 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cours de classification non supervisée</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Roland Donat" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
-</style>
+<meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
 <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -186,94 +15,45 @@
 <script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
 <script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
 <link rel="stylesheet" type="text/css" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Cours de classification non supervisée</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table des matières</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2d9e570">Introduction</a></li>
-<li><a href="#org70fcb13">Objectifs pédagogiques</a></li>
-<li><a href="#org9859e26">Cours</a>
+<li><a href="#orgc1a0de1">Introduction</a></li>
+<li><a href="#org56171e6">Objectifs pédagogiques</a></li>
+<li><a href="#org748944f">Cours</a>
 <ul>
-<li><a href="#org3ae011c">Semaine 1 : Introduction et notions fondamentales</a></li>
-<li><a href="#org03485f8">Semaine 2 : Méthodes de partitionnement</a></li>
-<li><a href="#org0d509af">Semaine 3 : Classification hiérarchique</a></li>
+<li><a href="#orgebba9e5">Semaine 1 : Introduction et notions fondamentales</a></li>
 </ul>
 </li>
-<li><a href="#org104cf76">Évaluation du cours</a></li>
-<li><a href="#orgb5ef19d">Ressources pédagogiques</a>
+<li><a href="#orgef9ea7a">Ressources pédagogiques</a>
 <ul>
-<li><a href="#org98392cc">Références</a></li>
-<li><a href="#orgc0090c2">L'environnement <code>Python</code></a></li>
-<li><a href="#orgc4a5467">Principaux modules <code>Python</code> utilisés</a></li>
+<li><a href="#org0acfa0a">Références</a></li>
+<li><a href="#org15186a4">L'environnement <code>Python</code></a></li>
+<li><a href="#org0adb1bf">Principaux modules <code>Python</code> utilisés</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2d9e570" class="outline-2">
-<h2 id="org2d9e570">Introduction</h2>
-<div class="outline-text-2" id="text-org2d9e570">
+<div id="outline-container-orgc1a0de1" class="outline-2">
+<h2 id="orgc1a0de1">Introduction</h2>
+<div class="outline-text-2" id="text-orgc1a0de1">
 <p>
 Ce site présente l'ensemble des ressources pédagogiques relatives au cours de classification non
-supervisée pour la promotion de STID2 à l'IUT de Vannes.
+supervisée pour les 2ème années de BUT SD à l'IUT de Vannes.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org70fcb13" class="outline-2">
-<h2 id="org70fcb13">Objectifs pédagogiques</h2>
-<div class="outline-text-2" id="text-org70fcb13">
+<div id="outline-container-org56171e6" class="outline-2">
+<h2 id="org56171e6">Objectifs pédagogiques</h2>
+<div class="outline-text-2" id="text-org56171e6">
 <p>
 Les principaux objectifs pédagogiques du cours sont :
 </p>
@@ -284,7 +64,7 @@ Les principaux objectifs pédagogiques du cours sont :
 <li>Présenter différentes approches de classification non supervisée pour l'analyse des données
 quantitatives, à savoir :
 <ul class="org-ul">
-<li>deux méthodes de partitionnement (moyennes mobiles et mélange gaussien) ;</li>
+<li>la méthode des moyennes mobiles ;</li>
 <li>la classification ascendante hiérarchique.</li>
 </ul></li>
 <li>Savoir mettre en oeuvre ces méthodes avec la langage <code>Python</code>.</li>
@@ -293,9 +73,9 @@ quantitatives, à savoir :
 </div>
 
 
-<div id="outline-container-org9859e26" class="outline-2">
-<h2 id="org9859e26">Cours</h2>
-<div class="outline-text-2" id="text-org9859e26">
+<div id="outline-container-org748944f" class="outline-2">
+<h2 id="org748944f">Cours</h2>
+<div class="outline-text-2" id="text-org748944f">
 <p>
 Les supports de cours sont disponibles en ligne sous forme de présentation HTML (une connexion internet est
 donc requise).
@@ -311,9 +91,9 @@ donc requise).
 </p>
 </div>
 
-<div id="outline-container-org3ae011c" class="outline-3">
-<h3 id="org3ae011c">Semaine 1 : Introduction et notions fondamentales</h3>
-<div class="outline-text-3" id="text-org3ae011c">
+<div id="outline-container-orgebba9e5" class="outline-3">
+<h3 id="orgebba9e5">Semaine 1 : Introduction et notions fondamentales</h3>
+<div class="outline-text-3" id="text-orgebba9e5">
 <p>
 <b>Cours :</b>
 </p>
@@ -327,87 +107,21 @@ donc requise).
 </p>
 <ul class="org-ul">
 <li><a href="https://roland-donat.github.io/cours-class-non-sup/td/td1/td1.html">Sujet du TD</a></li>
-<li><a href="https://deepnote.com/project/Classification-non-supervisee-IYmZHw53QbSvZFvuqqr6pg//td1.ipynb">Notebook de la séance</a></li>
+<li><a href="https://deepnote.com/project/Classification-non-supervisee-IYmZHw53QbSvZFvuqqr6pg/%2Ftd1.ipynb">Notebook de la séance</a></li>
 <li><a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=323898">Quiz d'entraînement</a></li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org03485f8" class="outline-3">
-<h3 id="org03485f8">Semaine 2 : Méthodes de partitionnement</h3>
-<div class="outline-text-3" id="text-org03485f8">
-<p>
-<b>Cours :</b>
-</p>
-<ul class="org-ul">
-<li><a href="https://roland-donat.github.io/cours-class-non-sup/cours/c2/c2.html">Slides du cours HTML</a></li>
-<li><a href="https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/c2">Scripts <code>Python</code> du cours</a></li>
-</ul>
-
-<p>
-<b>TD :</b>
-</p>
-<ul class="org-ul">
-<li><a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/td2.html">Sujet du TD</a></li>
-<li><a href="https://deepnote.com/project/Segmentation-stid2-iut-vannes-IYmZHw53QbSvZFvuqqr6pg//td2_corrig%C3%A9.ipynb/#00028-bafa5f8b-3129-4951-aca6-c86016c287a3">Notebook de la séance</a></li>
-<li><a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=325781">Quiz d'entraînement</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org0d509af" class="outline-3">
-<h3 id="org0d509af">Semaine 3 : Classification hiérarchique</h3>
-<div class="outline-text-3" id="text-org0d509af">
-<p>
-<b>Cours :</b>
-</p>
-<ul class="org-ul">
-<li><a href="https://roland-donat.github.io/cours-class-non-sup/cours/c3/c3.html">Slides du cours HTML</a></li>
-<li><a href="https://github.com/roland-donat/cours-class-non-sup/tree/main/cours/c3/">Scripts <code>Python</code> du cours</a></li>
-</ul>
-
-
-<p>
-<b>TD :</b>
-</p>
-<ul class="org-ul">
-<li><a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/td3.html">Sujet du TD</a></li>
-<li><a href="https://deepnote.com/project/Segmentation-stid2-iut-vannes-IYmZHw53QbSvZFvuqqr6pg//td3_corrig%C3%A9.ipynb/#00101-8c2519b5-4c37-4fd5-942b-9dd13a86fb41">Notebook de la séance</a></li>
-</ul>
-</div>
-</div>
 </div>
 
 
-<div id="outline-container-org104cf76" class="outline-2">
-<h2 id="org104cf76">Évaluation du cours</h2>
-<div class="outline-text-2" id="text-org104cf76">
-<p>
-L'objectif est d'évaluer votre compréhension des notions et méthodes abordées en cours et
-en TD. Pour ce faire, nous vérifierons votre aptitude à mettre en oeuvre les traitements
-informatiques adéquats face à une problématique de classification non supervisée. Les évaluations se
-présenteront sous la forme de quiz sur la plateforme Moodle. 
-</p>
-
-<p>
-Planning des évaluations :
-</p>
-<ul class="org-ul">
-<li><a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=323924">Quiz 1</a> : vendredi 11 mars 2022 au début du TD !! <a href="https://deepnote.com/project/Segmentation-stid2-iut-vannes-IYmZHw53QbSvZFvuqqr6pg//quiz1_corrig%C3%A9.ipynb/#00020-cc45260b-0c46-4551-9c89-14a5fb29fd74">Corrigé</a> !!</li>
-<li><a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=325782">Quiz 2</a> : vendredi 18 mars 2022 au début du TD !! <a href="https://deepnote.com/project/Segmentation-stid2-iut-vannes-IYmZHw53QbSvZFvuqqr6pg//quiz2_corrig%C3%A9.ipynb/#02a241fd-fb9f-4b87-8308-2ff04a0b3aba">Corrigé</a> !!</li>
-<li><a href="https://moodle.univ-ubs.fr/mod/quiz/view.php?id=326043">Devoir final</a> : jeudi 24 mars 2022 entre 11h00 et 12h00</li>
-</ul>
+<div id="outline-container-orgef9ea7a" class="outline-2">
+<h2 id="orgef9ea7a">Ressources pédagogiques</h2>
+<div class="outline-text-2" id="text-orgef9ea7a">
 </div>
-</div>
-
-
-<div id="outline-container-orgb5ef19d" class="outline-2">
-<h2 id="orgb5ef19d">Ressources pédagogiques</h2>
-<div class="outline-text-2" id="text-orgb5ef19d">
-</div>
-<div id="outline-container-org98392cc" class="outline-3">
-<h3 id="org98392cc">Références</h3>
-<div class="outline-text-3" id="text-org98392cc">
+<div id="outline-container-org0acfa0a" class="outline-3">
+<h3 id="org0acfa0a">Références</h3>
+<div class="outline-text-3" id="text-org0acfa0a">
 <p>
 L'élaboration de ce cours s'est appuyée sur de nombreuses références. Voici mes principales sources
 d'inspiration :
@@ -425,9 +139,9 @@ charge le cours de classification non supervisée sur l'année 2019-2020.</li>
 </div>
 </div>
 
-<div id="outline-container-orgc0090c2" class="outline-3">
-<h3 id="orgc0090c2">L'environnement <code>Python</code></h3>
-<div class="outline-text-3" id="text-orgc0090c2">
+<div id="outline-container-org15186a4" class="outline-3">
+<h3 id="org15186a4">L'environnement <code>Python</code></h3>
+<div class="outline-text-3" id="text-org15186a4">
 <p>
 Les exemples du cours et les travaux dirigés utilisent le logiciel <code>Python</code>. Si vous pensez ne pas
 être à l'aise avec <code>Python</code>, je vous encourage vivement à faire une petite mise à niveau.
@@ -457,9 +171,9 @@ Sinon vous pouvez bien évidement utiliser <code>Python</code> en local en insta
 </div>
 </div>
 
-<div id="outline-container-orgc4a5467" class="outline-3">
-<h3 id="orgc4a5467">Principaux modules <code>Python</code> utilisés</h3>
-<div class="outline-text-3" id="text-orgc4a5467">
+<div id="outline-container-org0adb1bf" class="outline-3">
+<h3 id="org0adb1bf">Principaux modules <code>Python</code> utilisés</h3>
+<div class="outline-text-3" id="text-org0adb1bf">
 <p>
 Dans ce cours, nous utiliserons principalement les modules <code>Python</code> suivants :
 </p>

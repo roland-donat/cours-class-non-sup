@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import chi2
 from scipy.spatial.distance import cdist
 import plotly.graph_objects as go  # Visualisation
-
+import ipdb
 
 def hex_to_rgb(hexcode):
     hexcode = hexcode.lstrip("#")
@@ -404,8 +404,9 @@ def plotly_2d_clust(
     data_grp_cls = data_bis_df.groupby(data_df[var_cls])
 
     data_cls_center_df = pd.DataFrame(index=cls_vlist,
-                                      columns=data_bis_df.columns)
-    data_cls_center_weights = pd.Series(index=cls_vlist)
+                                      columns=data_bis_df.columns,
+                                      dtype=float)
+    data_cls_center_weights = pd.Series(index=cls_vlist, dtype=float)
 
     dist_params = {}
     if dist == "mahalanobis":

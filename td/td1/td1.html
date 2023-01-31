@@ -44,42 +44,42 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7567903">1. Préambule</a>
+<li><a href="#org22fd4e3">1. Préambule</a>
 <ul>
-<li><a href="#org1ef9336">1.1. Crédit</a></li>
-<li><a href="#orgc3aed86">1.2. Environnement logiciel</a></li>
+<li><a href="#org4cec564">1.1. Crédit</a></li>
+<li><a href="#orge443aec">1.2. Environnement logiciel</a></li>
 </ul>
 </li>
-<li><a href="#org44041a5">2. Introduction</a></li>
-<li><a href="#org55b8992">3. Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org16d9a95">4. Chargement des données et premières analyses</a></li>
-<li><a href="#org49ceabe">5. Distance euclidienne</a></li>
-<li><a href="#orge25e4d9">6. Inertie totale</a></li>
-<li><a href="#orgce92a86">7. Première partition \(C_{\text{A}}\)</a>
+<li><a href="#orge25bf5d">2. Introduction</a></li>
+<li><a href="#org25bd72e">3. Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org3cf4466">4. Chargement des données et premières analyses</a></li>
+<li><a href="#org29c5b61">5. Distance euclidienne</a></li>
+<li><a href="#orgffb9561">6. Inertie totale</a></li>
+<li><a href="#org4afd3e6">7. Première partition \(C_{\text{A}}\)</a>
 <ul>
-<li><a href="#orgbfde15b">7.1. Construction des classes</a></li>
-<li><a href="#org81c9965">7.2. Inertie intra-classe</a></li>
-<li><a href="#orgf1c45c4">7.3. Inertie inter-classe</a></li>
+<li><a href="#org0daef18">7.1. Construction des classes</a></li>
+<li><a href="#org02d3f7b">7.2. Inertie intra-classe</a></li>
+<li><a href="#org9f8e2dc">7.3. Inertie inter-classe</a></li>
 </ul>
 </li>
-<li><a href="#orgee9bc77">8. Seconde partition \(C_{\text{B}}\)</a></li>
+<li><a href="#org53a5d34">8. Seconde partition \(C_{\text{B}}\)</a></li>
 </ul>
 </div>
 </div>
 
-<div id="org0959a1b" class="figure">
+<div id="orgcc5984f" class="figure">
 <p><img src="./vigneronnes.png" alt="vigneronnes.png" width="50%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;1&nbsp;: </span>Image générée par <a href="https://openai.com/dall-e-2/">DALL-E</a></p>
 </div>
 
 
-<div id="outline-container-org7567903" class="outline-2">
-<h2 id="org7567903"><span class="section-number-2">1.</span> Préambule</h2>
+<div id="outline-container-org22fd4e3" class="outline-2">
+<h2 id="org22fd4e3"><span class="section-number-2">1.</span> Préambule</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org1ef9336" class="outline-3">
-<h3 id="org1ef9336"><span class="section-number-3">1.1.</span> Crédit</h3>
+<div id="outline-container-org4cec564" class="outline-3">
+<h3 id="org4cec564"><span class="section-number-3">1.1.</span> Crédit</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
@@ -89,8 +89,8 @@ logiciel <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-orgc3aed86" class="outline-3">
-<h3 id="orgc3aed86"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
+<div id="outline-container-orge443aec" class="outline-3">
+<h3 id="orge443aec"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Les travaux se dérouleront sous <code>Python</code>. Si vous disposez d'une connexion internet, je vous
@@ -103,8 +103,8 @@ assurer que vous utilisez bien la version <code>3.8</code> ou plus de <code>Pyth
 </div>
 </div>
 
-<div id="outline-container-org44041a5" class="outline-2">
-<h2 id="org44041a5"><span class="section-number-2">2.</span> Introduction</h2>
+<div id="outline-container-orge25bf5d" class="outline-2">
+<h2 id="orge25bf5d"><span class="section-number-2">2.</span> Introduction</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 L'objectif de ce TD est de mettre en pratique les principales notions vues en cours en les
@@ -143,8 +143,8 @@ d'Italie mais produits par trois vignerons différents. L'analyse quantifie la p
 </div>
 </div>
 
-<div id="outline-container-org55b8992" class="outline-2">
-<h2 id="org55b8992"><span class="section-number-2">3.</span> Modules <code>Python</code> utilisés dans ce TD</h2>
+<div id="outline-container-org25bd72e" class="outline-2">
+<h2 id="org25bd72e"><span class="section-number-2">3.</span> Modules <code>Python</code> utilisés dans ce TD</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
@@ -177,6 +177,8 @@ Rappel : code d'import des modules :
 <pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd
 <span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly <span style="color: #F0DFAF; font-weight: bold;">as</span> pl
+<span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.io <span style="color: #F0DFAF; font-weight: bold;">as</span> pio           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">N&#233;cessaire avec Spyder</span>
+<span style="color: #DFAF8F;">pio.renderers.default</span> = <span style="color: #CC9393;">'browser'</span> <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">N&#233;cessaire avec Spyder</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px
 <span style="color: #F0DFAF; font-weight: bold;">import</span> scipy <span style="color: #F0DFAF; font-weight: bold;">as</span> sc
 <span style="color: #F0DFAF; font-weight: bold;">import</span> scipy.spatial.distance <span style="color: #F0DFAF; font-weight: bold;">as</span> scd
@@ -193,8 +195,8 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org16d9a95" class="outline-2">
-<h2 id="org16d9a95"><span class="section-number-2">4.</span> Chargement des données et premières analyses</h2>
+<div id="outline-container-org3cf4466" class="outline-2">
+<h2 id="org3cf4466"><span class="section-number-2">4.</span> Chargement des données et premières analyses</h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li><p>
@@ -241,7 +243,10 @@ sont les caractéristiques remarquables de cette matrice ?
 Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.
 </p>
 <div class="org-src-container">
-<pre class="src src-python">px.imshow(data_df.corr(), 
+<pre class="src src-python">px.scatter_matrix(data_df, 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>title=<span style="color: #CC9393;">"Diagramme en paires des donn&#233;es origiales"</span>)
+
+px.imshow(data_df.corr(), 
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_continuous_midpoint=0, 
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Corr&#233;lations lin&#233;aires des donn&#233;es sous forme de carte de chaleur (heatmap)"</span>)
 </pre>
@@ -251,8 +256,8 @@ Afficher un diagramme en paire et une carte de chaleur des corrélations linéai
 </div>
 
 
-<div id="outline-container-org49ceabe" class="outline-2">
-<h2 id="org49ceabe"><span class="section-number-2">5.</span> Distance euclidienne</h2>
+<div id="outline-container-org29c5b61" class="outline-2">
+<h2 id="org29c5b61"><span class="section-number-2">5.</span> Distance euclidienne</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>Dans la suite du TD, nous allons travailler avec les données centrées réduites calculées
@@ -289,8 +294,8 @@ point 3.</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orge25e4d9" class="outline-2">
-<h2 id="orge25e4d9"><span class="section-number-2">6.</span> Inertie totale</h2>
+<div id="outline-container-orgffb9561" class="outline-2">
+<h2 id="orgffb9561"><span class="section-number-2">6.</span> Inertie totale</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 <b>Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
@@ -321,12 +326,12 @@ variable. Expliquer le résultat.</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgce92a86" class="outline-2">
-<h2 id="orgce92a86"><span class="section-number-2">7.</span> Première partition \(C_{\text{A}}\)</h2>
+<div id="outline-container-org4afd3e6" class="outline-2">
+<h2 id="org4afd3e6"><span class="section-number-2">7.</span> Première partition \(C_{\text{A}}\)</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-orgbfde15b" class="outline-3">
-<h3 id="orgbfde15b"><span class="section-number-3">7.1.</span> Construction des classes</h3>
+<div id="outline-container-org0daef18" class="outline-3">
+<h3 id="org0daef18"><span class="section-number-3">7.1.</span> Construction des classes</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Nous allons nous donner une première partition arbitraire, notée \(C_{\text{A}}\), consistant à affecter :
@@ -377,8 +382,8 @@ N_cls_A
 </div>
 </div>
 
-<div id="outline-container-org81c9965" class="outline-3">
-<h3 id="org81c9965"><span class="section-number-3">7.2.</span> Inertie intra-classe</h3>
+<div id="outline-container-org02d3f7b" class="outline-3">
+<h3 id="org02d3f7b"><span class="section-number-3">7.2.</span> Inertie intra-classe</h3>
 <div class="outline-text-3" id="text-7-2">
 <ol class="org-ol">
 <li><p>
@@ -441,8 +446,8 @@ variables au sein de chaque classe et l'effectif de chaque classe ?</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgf1c45c4" class="outline-3">
-<h3 id="orgf1c45c4"><span class="section-number-3">7.3.</span> Inertie inter-classe</h3>
+<div id="outline-container-org9f8e2dc" class="outline-3">
+<h3 id="org9f8e2dc"><span class="section-number-3">7.3.</span> Inertie inter-classe</h3>
 <div class="outline-text-3" id="text-7-3">
 <ol class="org-ol">
 <li>Calculer le carré des distances entre le centre de gravité des classes et le centre de gravité
@@ -452,8 +457,8 @@ des données.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-orgee9bc77" class="outline-2">
-<h2 id="orgee9bc77"><span class="section-number-2">8.</span> Seconde partition \(C_{\text{B}}\)</h2>
+<div id="outline-container-org53a5d34" class="outline-2">
+<h2 id="org53a5d34"><span class="section-number-2">8.</span> Seconde partition \(C_{\text{B}}\)</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Reprendre les questions de la partie précédente en construisant une partition \(C_{\text{B}}\) au

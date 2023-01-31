@@ -320,6 +320,8 @@ Rappel : code d'import des modules :
 import pandas as pd
 import numpy as np
 import plotly as pl
+import plotly.io as pio           # Nécessaire avec Spyder
+pio.renderers.default = 'browser' # Nécessaire avec Spyder
 import plotly.express as px
 import scipy as sc
 import scipy.spatial.distance as scd
@@ -368,6 +370,9 @@ data_corr_df = data_df.corr()
 
 6. Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
+px.scatter_matrix(data_df, 
+                 title="Diagramme en paires des données origiales")
+
 px.imshow(data_df.corr(), 
           color_continuous_midpoint=0, 
           title="Corrélations linéaires des données sous forme de carte de chaleur (heatmap)")

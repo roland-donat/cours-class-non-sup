@@ -389,18 +389,18 @@ précédemment dans le =DataFrame= =data_scaled_df=.*
 1. Calculer la distance euclidienne entre les deux premiers individus en utilisant la méthode =sum=
    des =DataFrame=. 
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
-d2_ind_12 = ((data_scaled_df.loc[0] - data_scaled_df.loc[1])**2).sum()
-d_ind_12 = d2_ind_12**(0.5)
-d_ind_12
+d2_ind_01 = ((data_scaled_df.loc[0] - data_scaled_df.loc[1])**2).sum()
+d_ind_01 = d2_ind_01**(0.5)
+d_ind_01
    #+END_SRC
 2. Calculer la distance euclidienne entre le premier individu et le troisième, puis entre le
    deuxième et le troisième.
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-d2_ind_13 = ((data_scaled_df.loc[0] - data_scaled_df.loc[2])**2).sum()
-d_ind_13 = d2_ind_13**(0.5)
-d_ind_13
+d2_ind_02 = ((data_scaled_df.loc[0] - data_scaled_df.loc[2])**2).sum()
+d_ind_02 = d2_ind_02**(0.5)
+d_ind_02
    #+END_SRC
 
 3. Calculer la matrice des distances euclidiennes. Aide : utilisez les fonctions =pdist= et

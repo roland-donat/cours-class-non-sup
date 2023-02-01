@@ -356,7 +356,8 @@ px.box(data_df, title="Boxplot de chaque variable (donnée originale)")
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
 data_ctr_df = data_df - data_df.mean()
    #+END_SRC
-4. Réduisez les données centrées précédemment. Aide : utilisez la méthode =.std= des =DataFrame=.
+4. Réduisez les données centrées précédemment et stocker le résultat dans un nouveau =DataFrame=
+   nommé =data_scaled_df=. Aide : utilisez la méthode =.std= des =DataFrame=.
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
@@ -368,11 +369,12 @@ data_scaled_df = data_ctr_df/data_df.std()
 data_corr_df = data_df.corr()
    #+END_SRC
 
-6. Afficher un diagramme en paire et une carte de chaleur des corrélations linéaires.
+6. Afficher un diagramme en paires et une carte de chaleur des corrélations linéaires.
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
+# Diagramme en paires
 px.scatter_matrix(data_df, 
                  title="Diagramme en paires des données origiales")
-
+# Carte de chaleur
 px.imshow(data_df.corr(), 
           color_continuous_midpoint=0, 
           title="Corrélations linéaires des données sous forme de carte de chaleur (heatmap)")

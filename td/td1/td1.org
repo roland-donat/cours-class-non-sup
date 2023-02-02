@@ -504,6 +504,13 @@ px.scatter(data_scaled_df,
 N_cls_A = data_scaled_df["cls_A"].value_counts()
 N_cls_A
    #+END_SRC
+2. Réaliser les boxplot de chaque variable en fonction de leur classe.
+   #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
+px.box(data_scaled_df.select_dtypes(include=np.number),
+       color=data_scaled_df["cls_A"],
+       title="Visualisation de la partition A sur les données",
+       labels={"cls_A": "Partition"})
+   #+END_SRC
 
 ** Inertie intra-classe
 

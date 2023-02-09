@@ -230,7 +230,7 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige nil)
+(setq td_corrige t)
 #+END_SRC
 
 #+LATEX: \clearpage
@@ -654,3 +654,10 @@ data_scaled_df["cls_B"] = np.random.choice(["c1", "c2", "c3"],
 N_cls_B = data_scaled_df["cls_B"].value_counts()
 N_cls_B
 #+END_SRC
+
+#+BEGIN_SRC python :session :results silent :tangle td1.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+# Dérouler tous les traitements de la partie précédente en changeant "cls_A" par "cls_B" ;)
+#+END_SRC
+

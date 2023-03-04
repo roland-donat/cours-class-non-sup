@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</title>
+<title>TD3: Classification hiérarchique ascendante</title>
 <meta name="author" content="Roland Donat" />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
@@ -18,34 +18,34 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</h1>
+<h1 class="title">TD3: Classification hiérarchique ascendante</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgeeef2cf">Introduction</a></li>
-<li><a href="#org6f78397">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org730df22">Exercice 1 : CAH et données <code>wine</code></a>
+<li><a href="#org569a22e">Introduction</a></li>
+<li><a href="#orgb6debb6">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgb232e83">Exercice 1 : CAH et données <code>wine</code></a>
 <ul>
-<li><a href="#org742e3f2">Chargement des données</a></li>
-<li><a href="#org382ebd1">CAH avec paramètres par défaut</a></li>
-<li><a href="#orgafc71c5">Influence de la distance entre groupe</a></li>
+<li><a href="#org1ad0094">Chargement des données</a></li>
+<li><a href="#orgd32b8cb">CAH avec paramètres par défaut</a></li>
+<li><a href="#orgc54f3e9">Influence de la distance entre groupe</a></li>
 </ul>
 </li>
-<li><a href="#orga2bd5cc">Exercice 2 : Analyse de profils d'équipes de football</a>
+<li><a href="#orgf849ec6">Exercice 2 : Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#orgc46a6d5">Préparation des données</a></li>
-<li><a href="#org662f9d8">Détection de profils</a></li>
+<li><a href="#orgccc77bf">Préparation des données</a></li>
+<li><a href="#org42f601b">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#org8906f4a">Exercice 3 : Programmation des distances entre classes</a></li>
+<li><a href="#orgeb05dd2">Exercice 3 : Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgeeef2cf" class="outline-2">
-<h2 id="orgeeef2cf">Introduction</h2>
-<div class="outline-text-2" id="text-orgeeef2cf">
+<div id="outline-container-org569a22e" class="outline-2">
+<h2 id="org569a22e">Introduction</h2>
+<div class="outline-text-2" id="text-org569a22e">
 <p>
 Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
 (CAH) sur différents jeux de données afin d'évaluer les propriétés de cette méthode.
@@ -63,9 +63,9 @@ compétence sur le langage <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-org6f78397" class="outline-2">
-<h2 id="org6f78397">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org6f78397">
+<div id="outline-container-orgb6debb6" class="outline-2">
+<h2 id="orgb6debb6">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orgb6debb6">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -121,17 +121,17 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org730df22" class="outline-2">
-<h2 id="org730df22">Exercice 1 : CAH et données <code>wine</code></h2>
-<div class="outline-text-2" id="text-org730df22">
+<div id="outline-container-orgb232e83" class="outline-2">
+<h2 id="orgb232e83">Exercice 1 : CAH et données <code>wine</code></h2>
+<div class="outline-text-2" id="text-orgb232e83">
 <p>
 Dans cet exercice, nous reprenons les données <code>wine</code> afin d'y appliquer une CAH..
 </p>
 </div>
 
-<div id="outline-container-org742e3f2" class="outline-3">
-<h3 id="org742e3f2">Chargement des données</h3>
-<div class="outline-text-3" id="text-org742e3f2">
+<div id="outline-container-org1ad0094" class="outline-3">
+<h3 id="org1ad0094">Chargement des données</h3>
+<div class="outline-text-3" id="text-org1ad0094">
 <ol class="org-ol">
 <li><p>
 Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
@@ -154,9 +154,9 @@ centré-réduit).
 </div>
 </div>
 
-<div id="outline-container-org382ebd1" class="outline-3">
-<h3 id="org382ebd1">CAH avec paramètres par défaut</h3>
-<div class="outline-text-3" id="text-org382ebd1">
+<div id="outline-container-orgd32b8cb" class="outline-3">
+<h3 id="orgd32b8cb">CAH avec paramètres par défaut</h3>
+<div class="outline-text-3" id="text-orgd32b8cb">
 <p>
 Nous allons utiliser l'algorithme CAH afin de construire une hiérarchie sur nos vins à
 partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
@@ -263,19 +263,8 @@ Calculer l'inertie expliquée par la partition <code>cah_cr_def</code>. <b>Aide 
 <li>Étudier l'aide de la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>AgglomerativeClustering</code></a> afin de comprendre le rôle des
 principaux paramètres de la classe, à savoir <code>n_clusters</code>, <code>metric</code> et <code>lingkage</code>.</li>
 
-<li><p>
-Construire une nouvelle hiérarchie <code>cah_cr_ward</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
-groupes en utilisant la distance de Ward.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">cah_cr_ward</span> = skc.AgglomerativeClustering(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"ward"</span>).fit(wine_cr_df)
-</pre>
-</div></li>
-
+<li>Construire une nouvelle hiérarchie <code>cah_cr_ward</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
+groupes en utilisant la distance de Ward.</li>
 <li><p>
 Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
 distance de Ward. Pour ce faire, utiliser la fonction <code>create_dendrogram</code> du package
@@ -290,7 +279,7 @@ distance de Ward. Pour ce faire, utiliser la fonction <code>create_dendrogram</c
 
 cah_cr_ward_dendro_fig.update_layout(
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation Ward et distance entre individus euclidienne"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900).show()
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
 </pre>
 </div></li>
 </ol>
@@ -298,9 +287,9 @@ cah_cr_ward_dendro_fig.update_layout(
 </div>
 
 
-<div id="outline-container-orgafc71c5" class="outline-3">
-<h3 id="orgafc71c5">Influence de la distance entre groupe</h3>
-<div class="outline-text-3" id="text-orgafc71c5">
+<div id="outline-container-orgc54f3e9" class="outline-3">
+<h3 id="orgc54f3e9">Influence de la distance entre groupe</h3>
+<div class="outline-text-3" id="text-orgc54f3e9">
 <p>
 Dans cette section, nous allons observer l'influence de la distance entre groupe dans le processus
 de construction de la CAH.
@@ -318,123 +307,38 @@ groupes en utilisant la distance du lien minimum (<i>single link</i>).
 </pre>
 </div></li>
 
-<li><p>
-Calculer l'inertie expliquée par la partition <code>cah_cr_single</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">cah_cr_single_iw</span>, <span style="color: #DFAF8F;">cah_cr_single_ie</span> = eval_partition(wine_cr_df, cah_cr_single.labels_)
-</pre>
-</div></li>
-
-<li><p>
-Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_1</code> à l'aide d'un diagramme
-en paires et analyser le résultat.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-px.scatter_matrix(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_single.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_single"</span>)
-</pre>
-</div></li>
-
-<li><p>
-Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
-distance du lien minimum.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">cah_cr_single_dendro_fig</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"single"</span>))
-
-cah_cr_single_dendro_fig.update_layout(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien minimum"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
-</pre>
-</div></li>
-
+<li>Calculer l'inertie expliquée par la partition <code>cah_cr_single</code>.</li>
+<li>Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_1</code> à l'aide d'un diagramme
+en paires et analyser le résultat.</li>
+<li>Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
+distance du lien minimum.</li>
 <li>Interpréter les résultats obtenus.</li>
 
-<li><p>
-Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
+<li>Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
 en utilisant la distance du lien maximum (<i>complete link</i>). Le modèle CAH sera nommé
-<code>cah_cr_complete</code>. Comparer les résultats obtenus avec les CAH précédentes.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">cah_cr_complete</span> = skc.AgglomerativeClustering(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"complete"</span>).fit(wine_cr_df)
-<span style="color: #DFAF8F;">cah_cr_complete_iw</span>, <span style="color: #DFAF8F;">cah_cr_complete_ie</span> = eval_partition(wine_cr_df, cah_cr_complete.labels_)
-px.scatter_matrix(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_complete.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_complete"</span>)
-<span style="color: #DFAF8F;">cah_cr_complete_dendro_fig</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"complete"</span>))
-
-cah_cr_complete_dendro_fig.update_layout(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien maximum"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
-</pre>
-</div></li>
-
-<li><p>
-Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
+<code>cah_cr_complete</code>. Comparer les résultats obtenus avec les CAH précédentes.</li>
+<li>Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
 en utilisant la distance du lien moyen (<i>average link</i>). Le modèle CAH sera nommé
-<code>cah_cr_average</code>. Comparer les résultats obtenus avec les CAH précédentes.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">cah_cr_average</span> = skc.AgglomerativeClustering(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"average"</span>).fit(wine_cr_df)
-<span style="color: #DFAF8F;">cah_cr_average_iw</span>, <span style="color: #DFAF8F;">cah_cr_average_ie</span> = eval_partition(wine_cr_df, cah_cr_average.labels_)
-px.scatter_matrix(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_average.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_average"</span>)
-<span style="color: #DFAF8F;">cah_cr_average_dendro_fig</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"average"</span>))
-
-cah_cr_average_dendro_fig.update_layout(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien moyen"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
-</pre>
-</div></li>
+<code>cah_cr_average</code>. Comparer les résultats obtenus avec les CAH précédentes.</li>
 </ol>
 </div>
 </div>
 </div>
-
-<div id="outline-container-orga2bd5cc" class="outline-2">
-<h2 id="orga2bd5cc">Exercice 2 : Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-orga2bd5cc">
+<div id="outline-container-orgf849ec6" class="outline-2">
+<h2 id="orgf849ec6">Exercice 2 : Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-orgf849ec6">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent les deux premières divisions de différents championnats européens.
 </p>
 
 <p>
-Le Tableau <a href="#org17e634e">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org7a43e39">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="org17e634e" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <a href="data_soccer_fixtures_columns_desc">data_soccer_fixtures_columns_desc</a></caption>
+<table id="org7a43e39" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables des du jeu de données.</caption>
 
 <colgroup>
 <col  class="org-left" />
@@ -571,56 +475,73 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-orgc46a6d5" class="outline-3">
-<h3 id="orgc46a6d5">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgc46a6d5">
+<div id="outline-container-orgccc77bf" class="outline-3">
+<h3 id="orgccc77bf">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgccc77bf">
 <ol class="org-ol">
-<li>Chargez les données à partir de l'adresse suivante :
-<a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
-est ";".</li>
-
 <li><p>
-Faites une extraction des données de la division 1 française (<code>league_id = fra_l1</code>) sur la saison
-2018-2019.
+Charger les données à partir de l'adresse suivante :
+<a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
+est ";".
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">idx_selection</span> = (data_soccer_df[<span style="color: #CC9393;">"league_id"</span>] == <span style="color: #CC9393;">"fra_l1"</span>) &amp; (data_soccer_df[<span style="color: #CC9393;">"season_id"</span>] == <span style="color: #CC9393;">"2018-2019"</span>)
-<span style="color: #DFAF8F;">data_soccer_sel_df</span> = data_soccer_df.loc[idx_selection]
-data_soccer_sel_df.head()
+<pre class="src src-python"><span style="color: #DFAF8F;">soccer_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv"</span>
+<span style="color: #DFAF8F;">soccer_df</span> = pd.read_csv(soccer_path, sep=<span style="color: #CC9393;">";"</span>)
+soccer_df.head()
 </pre>
 </div></li>
 
-<li>Sélectionnez les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST',
-   'HC', 'HF', 'HY', 'HR']</code>.</li>
+<li><p>
+Faire une extraction des données de la division 1 française (<code>league_id = fra_l1</code>) sur la saison
+2018-2019.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">idx_selection</span> = (soccer_df[<span style="color: #CC9393;">"league_id"</span>] == <span style="color: #CC9393;">"fra_l1"</span>) &amp; (soccer_df[<span style="color: #CC9393;">"season_id"</span>] == <span style="color: #CC9393;">"2018-2019"</span>)
+<span style="color: #DFAF8F;">soccer_sel_df</span> = soccer_df.loc[idx_selection]
+soccer_sel_df.head()
+</pre>
+</div></li>
 
-<li>Regroupez les données par équipe et calculez la moyenne des faits de jeu par équipe. Le résultat
-sera stocké dans un <code>DataFrame</code> <code>data_soccer_mean_df</code>.</li>
+<li><p>
+Sélectionner les données des équipes à domicile, i.e. <code>['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST',
+   'HC', 'HF', 'HY', 'HR']</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">col_selection</span> = [<span style="color: #CC9393;">'HomeTeam'</span>, <span style="color: #CC9393;">'FTHG'</span>, <span style="color: #CC9393;">'HTHG'</span>, <span style="color: #CC9393;">'HS'</span>, <span style="color: #CC9393;">'HST'</span>, <span style="color: #CC9393;">'HC'</span>, <span style="color: #CC9393;">'HF'</span>, <span style="color: #CC9393;">'HY'</span>, <span style="color: #CC9393;">'HR'</span>]
+<span style="color: #DFAF8F;">soccer_sel_df</span> = soccer_sel_df[col_selection]
+soccer_sel_df.head()
+</pre>
+</div></li>
 
-<li>Réalisez une ACP sur les données précédentes et stockez le résultat dans un <code>DataFrame</code> <code>data_soccer_acp_df</code>.</li>
+<li><p>
+Regrouper les données par équipe et calculer la moyenne des faits de jeu par équipe.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">soccer_mean_df</span> = soccer_sel_df.groupby(<span style="color: #CC9393;">"HomeTeam"</span>).mean()
+soccer_mean_df
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-org662f9d8" class="outline-3">
-<h3 id="org662f9d8">Détection de profils</h3>
-<div class="outline-text-3" id="text-org662f9d8">
+<div id="outline-container-org42f601b" class="outline-3">
+<h3 id="org42f601b">Détection de profils</h3>
+<div class="outline-text-3" id="text-org42f601b">
 <ol class="org-ol">
-<li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_acp_df</code>. Appliquez la
+<li>Réaliser une CAH sur les données <code>soccer_mean_df</code> avec la distance de Ward afin de partitionner
+les équipes en 4 groupes. Essayer d'interpreter les groupes obtenus.</li>
+<li>Appliquer la
 méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
-
-<li>Utilisez une CAH sur les données <code>data_soccer_acp_df</code>. Appliquez la
-méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
-
-<li>Tentez d'interpréter les partitions obtenues.</li>
+<li>Refaire les traitements précédents en utilisant la méthode des moyennes mobiles. Comparer les
+résultats obtenus.</li>
 </ol>
 </div>
 </div>
 </div>
-
-
-<div id="outline-container-org8906f4a" class="outline-2">
-<h2 id="org8906f4a">Exercice 3 : Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-org8906f4a">
+<div id="outline-container-orgeb05dd2" class="outline-2">
+<h2 id="orgeb05dd2">Exercice 3 : Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-orgeb05dd2">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :

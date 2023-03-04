@@ -6,179 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Roland Donat" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
-</style>
+<meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
 <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -186,89 +15,37 @@
 <script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
 <script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
 <link rel="stylesheet" type="text/css" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">TD3: Classification hiérarchique et comparaison avec les méthodes de partitionnement</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table des matières</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0781219">Introduction</a></li>
-<li><a href="#orgaf5cb41">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org53a52ab">Analyse de la méthode CAH sur des données synthétiques</a>
+<li><a href="#orgeeef2cf">Introduction</a></li>
+<li><a href="#org6f78397">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org730df22">Exercice 1 : CAH et données <code>wine</code></a>
 <ul>
-<li><a href="#orge0e18f3">Chargement des données</a></li>
-<li><a href="#org269c4c3">CAH</a></li>
-<li><a href="#orga307cd6">Autres modèles</a></li>
+<li><a href="#org742e3f2">Chargement des données</a></li>
+<li><a href="#org382ebd1">CAH avec paramètres par défaut</a></li>
+<li><a href="#orgafc71c5">Influence de la distance entre groupe</a></li>
 </ul>
 </li>
-<li><a href="#org9efc863">Analyse de profils d'équipes de football</a>
+<li><a href="#orga2bd5cc">Exercice 2 : Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#orge14f739">Préparation des données</a></li>
-<li><a href="#org190caa8">Détection de profils</a></li>
+<li><a href="#orgc46a6d5">Préparation des données</a></li>
+<li><a href="#org662f9d8">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#org7ddc1b1">Compression d'images</a>
-<ul>
-<li><a href="#org186c73b">Chargement d'une image</a></li>
-<li><a href="#org97c7e29">Application des moyennes mobiles</a></li>
-</ul>
-</li>
-<li><a href="#org0e7897f">Programmation des distances entre classes</a></li>
+<li><a href="#org8906f4a">Exercice 3 : Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0781219" class="outline-2">
-<h2 id="org0781219">Introduction</h2>
-<div class="outline-text-2" id="text-org0781219">
+<div id="outline-container-orgeeef2cf" class="outline-2">
+<h2 id="orgeeef2cf">Introduction</h2>
+<div class="outline-text-2" id="text-orgeeef2cf">
 <p>
 Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
 (CAH) sur différents jeux de données afin d'évaluer les propriétés de cette méthode.
@@ -286,9 +63,9 @@ compétence sur le langage <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-orgaf5cb41" class="outline-2">
-<h2 id="orgaf5cb41">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-orgaf5cb41">
+<div id="outline-container-org6f78397" class="outline-2">
+<h2 id="org6f78397">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org6f78397">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -344,180 +121,320 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org53a52ab" class="outline-2">
-<h2 id="org53a52ab">Analyse de la méthode CAH sur des données synthétiques</h2>
-<div class="outline-text-2" id="text-org53a52ab">
+<div id="outline-container-org730df22" class="outline-2">
+<h2 id="org730df22">Exercice 1 : CAH et données <code>wine</code></h2>
+<div class="outline-text-2" id="text-org730df22">
 <p>
-Ce premier exercice consiste à utiliser des données générées comportant des distributions
-d'individus remarquables permettant d'illustrer les propriétés des différents algorithmes de
-partitionnement vu en cours.
+Dans cet exercice, nous reprenons les données <code>wine</code> afin d'y appliquer une CAH..
 </p>
 </div>
 
-<div id="outline-container-orge0e18f3" class="outline-3">
-<h3 id="orge0e18f3">Chargement des données</h3>
-<div class="outline-text-3" id="text-orge0e18f3">
-<p>
-Nous travaillerons sur les quatre jeux de données suivants :
-</p>
-<ul class="org-ul">
-<li>Patches circulaires : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv</a> ;</li>
-<li>Patches elliptiques : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv</a>;</li>
-<li>Cercles : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv</a></li>
-<li>Croissants de lune : <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv</a></li>
-</ul>
-
-<p>
-Notes : ces exemples synthétiques ont été inspirés par ceux du <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html">manuel en ligne de <code>Scikit-learn</code></a>.
-</p>
-
+<div id="outline-container-org742e3f2" class="outline-3">
+<h3 id="org742e3f2">Chargement des données</h3>
+<div class="outline-text-3" id="text-org742e3f2">
 <ol class="org-ol">
 <li><p>
-Chargez tous ces jeux de données avec <code>Pandas</code>.
+Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">data_patches_circ_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv"</span>
-<span style="color: #DFAF8F;">data_patches_ellip_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv"</span>
-<span style="color: #DFAF8F;">data_circles_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv"</span>
-<span style="color: #DFAF8F;">data_moons_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv"</span>
-
-<span style="color: #DFAF8F;">data_patches_circ_df</span> = pd.read_csv(data_patches_circ_path, sep=<span style="color: #CC9393;">";"</span>)
-<span style="color: #DFAF8F;">data_patches_ellip_df</span> = pd.read_csv(data_patches_ellip_path, sep=<span style="color: #CC9393;">";"</span>)
-<span style="color: #DFAF8F;">data_circles_df</span> = pd.read_csv(data_circles_path, sep=<span style="color: #CC9393;">";"</span>)
-<span style="color: #DFAF8F;">data_moons_df</span> = pd.read_csv(data_moons_path, sep=<span style="color: #CC9393;">";"</span>)
+<pre class="src src-python"><span style="color: #DFAF8F;">wine_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv"</span>
+<span style="color: #DFAF8F;">wine_ori_df</span> = pd.read_csv(wine_path, sep=<span style="color: #CC9393;">","</span>)
 </pre>
 </div></li>
-</ol>
 
-
-<ol class="org-ol">
 <li><p>
-Visualisez les nuages de points correspondant. 
+Centrer et réduire les données afin d'obtenir un nouveau DataFrame <code>wine_cr_df</code> (<code>cr</code> pour
+centré-réduit).
 </p>
 <div class="org-src-container">
-<pre class="src src-python">px.scatter(data_patches_circ_df, x=<span style="color: #CC9393;">"X1"</span>, y=<span style="color: #CC9393;">"X2"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Donn&#233;es patches circulaires"</span>, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  width=750, height=750)
-
-&lt;&#224; compl&#233;ter pour les autres donn&#233;es&gt;
+<pre class="src src-python"><span style="color: #DFAF8F;">wine_cr_df</span> = (wine_ori_df - wine_ori_df.mean())/wine_ori_df.std()
 </pre>
 </div></li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-org269c4c3" class="outline-3">
-<h3 id="org269c4c3">CAH</h3>
-<div class="outline-text-3" id="text-org269c4c3">
+<div id="outline-container-org382ebd1" class="outline-3">
+<h3 id="org382ebd1">CAH avec paramètres par défaut</h3>
+<div class="outline-text-3" id="text-org382ebd1">
+<p>
+Nous allons utiliser l'algorithme CAH afin de construire une hiérarchie sur nos vins à
+partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
+<code>skc</code> pour nous) de la librairie <code>sklearn</code> propose une implémentation de l'algorithme CAH dans
+la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>skc.AgglomerativeClustering</code></a>.
+</p>
+
 <ol class="org-ol">
 <li><p>
-Construisez un modèle de classification ascendante hiérarchique (CAH) avec la classe
-<a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>AgglomerativeClustering</code></a> du package <code>sklearn.cluster</code> (ou <code>skc</code> pour nous) en utilisant les
-paramètres par défaut et ajustez le sur les données de patches circulaires. Aide : utilisez .  
+Construire un modèle CAH avec la classe
+<a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>skc.AgglomerativeClustering</code></a> en utilisant les
+paramètres par défaut.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">cah_patches_circ</span> = skc.AgglomerativeClustering()
-cah_patches_circ.fit(data_patches_circ_df)
-</pre>
-</div></li>
-
-<li>Explorez les attributs de l'objet <code>cah_patches_circ</code> afin de trouver la partition produite et
-représentez sur le nuage de points.</li>
-
-<li>Évaluez la partition avec la fonction <code>eval_partition</code> (cf. TD2).</li>
-
-<li>Étudiez l'aide de la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>AgglomerativeClustering</code></a> afin de comprendre le rôle des
-principaux paramètres et attributs de la classe.</li>
-
-<li><p>
-Construisez une hiérarchie sur les données de patches circulaires en utilisant la distance de
-Ward.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">cah_patches_circ_2</span> = skc.AgglomerativeClustering(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=4,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   compute_full_tree=<span style="color: #BFEBBF;">True</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   compute_distances=<span style="color: #BFEBBF;">True</span>, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   affinity=<span style="color: #CC9393;">"euclidean"</span>, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"ward"</span>).fit(data_patches_circ_df)
+<pre class="src src-python"><span style="color: #DFAF8F;">cah_cr_def</span> = skc.AgglomerativeClustering()
 </pre>
 </div></li>
 
 <li><p>
-Visualisez le dendrogramme associé. Aide : étudiez la fonction <code>create_dendrogram</code> du package
+Utiliser ensuite la méthode <code>fit</code> pour construire la hiérarchie sur les données <code>wine_cr_df</code> :
+</p>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.fit(wine_cr_df)
+</pre>
+</div></li>
+
+<li><p>
+Explorer l'objet <code>cah_cr_def</code> et déterminer la signification des attributs suivants :
+</p>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.n_clusters_
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.labels_
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.n_leaves_
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.n_connected_components_
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python">cah_cr_def.children_
+</pre>
+</div></li>
+
+<li><p>
+Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_def</code> à l'aide d'un diagramme
+en paires et analyser le résultat.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">px.scatter_matrix(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_def.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_def"</span>)
+</pre>
+</div></li>
+
+<li>Que peut-on dire du comportement par défaut de la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>skc.AgglomerativeClustering</code></a> en termes,
+de partitionnement réalisé, de distance entre individus et entre groupes utilisée ?</li>
+
+<li><p>
+Calculer l'inertie expliquée par la partition <code>cah_cr_def</code>. <b>Aide :</b> Utiliser la fonction
+<code>eval_partition</code> du <a href="../td2/td2.html">TD2</a>.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">eval_partition</span>(data_df, partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #9FC59F;">"""</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   Entr&#233;es :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - data_df (pandas.DataFrame) : Donn&#233;es quantitatives</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - partition (list, numpy.array ou pandas.Series) : partition des donn&#233;es</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   Sortie :</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - inertie_intra : inertie intra-classe de la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - inertie_score : Inertie expliqu&#233;e par la partition entre 0 et 1</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   """</span>
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">mu_data</span> = data_df.mean()
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">d2_data_mu</span> = ((data_df - mu_data)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_totale</span> = d2_data_mu.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie interne aux classes (cf. TD1)</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_intra</span> = 0
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_df.groupby(partition):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Centre de gravit&#233; de la classe cls</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">mu_cls</span> = data_cls_df.mean()
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Distances au carr&#233; entre les donn&#233;es de la classe et le centre de la classe</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">d2_data_cls</span> = ((data_cls_df - mu_cls)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Sommation pour obtenir l'inertie interne &#224; la classe</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_intra</span> += d2_data_cls.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Inertie expliqu&#233;e par la partition</span>
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_score</span> = 1 - inertie_intra/inertie_totale
+
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">return</span> inertie_intra, inertie_score
+
+<span style="color: #DFAF8F;">cah_cr_def_iw</span>, <span style="color: #DFAF8F;">cah_cr_def_ie</span> = eval_partition(wine_cr_df, cah_cr_def.labels_)
+</pre>
+</div></li>
+
+<li>Étudier l'aide de la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>AgglomerativeClustering</code></a> afin de comprendre le rôle des
+principaux paramètres de la classe, à savoir <code>n_clusters</code>, <code>metric</code> et <code>lingkage</code>.</li>
+
+<li><p>
+Construire une nouvelle hiérarchie <code>cah_cr_ward</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
+groupes en utilisant la distance de Ward.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">cah_cr_ward</span> = skc.AgglomerativeClustering(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"ward"</span>).fit(wine_cr_df)
+</pre>
+</div></li>
+
+<li><p>
+Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
+distance de Ward. Pour ce faire, utiliser la fonction <code>create_dendrogram</code> du package
 <code>plotly.figure_factory</code> (ou <code>plf</code> pour nous).
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">data_patches_circ_dendro_fig</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(data_patches_circ_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=data_patches_circ_df.index,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=50,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> distfun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: scd.pdist(x, metric=<span style="color: #CC9393;">"euclidean"</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"ward"</span>, metric=<span style="color: #CC9393;">"euclidean"</span>))
+<pre class="src src-python"><span style="color: #DFAF8F;">cah_cr_ward_dendro_fig</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"ward"</span>))
 
-data_patches_circ_dendro_fig.update_layout(
+cah_cr_ward_dendro_fig.update_layout(
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation Ward et distance entre individus euclidienne"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1000, height=600)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900).show()
 </pre>
 </div></li>
-
-<li>Construisez différentes hiérarchies sur les données de patches circulaires en modifiant la
-distance entre classes (distance d'agrégation) et visualisez les dendrogrammes associés.</li>
-
-<li>Appliquez la méthodes CAH sur les autres jeux de données synthétiques et analysez l'influence de
-la distance d'agrégation choisie.</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-orga307cd6" class="outline-3">
-<h3 id="orga307cd6">Autres modèles</h3>
-<div class="outline-text-3" id="text-orga307cd6">
+
+<div id="outline-container-orgafc71c5" class="outline-3">
+<h3 id="orgafc71c5">Influence de la distance entre groupe</h3>
+<div class="outline-text-3" id="text-orgafc71c5">
+<p>
+Dans cette section, nous allons observer l'influence de la distance entre groupe dans le processus
+de construction de la CAH.
+</p>
+
 <ol class="org-ol">
 <li><p>
-Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
-circulaires et en croissant de lune. 
+Construire une CAH <code>cah_cr_single</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
+groupes en utilisant la distance du lien minimum (<i>single link</i>).
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">km_circles</span> = skc.KMeans(n_clusters=2, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_init=1, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   init=<span style="color: #CC9393;">'random'</span>, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   random_state=20000).fit(data_circles_df)
-px.scatter(data_circles_df, x=<span style="color: #CC9393;">"X1"</span>, y=<span style="color: #CC9393;">"X2"</span>, color=km_circles.labels_, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  width=750, height=750)
-</pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">gmm_circles</span> = skm.GaussianMixture(n_components=2).fit(data_circles_df)
-<span style="color: #DFAF8F;">gmm_circles_cls</span> = gmm_circles.predict(data_circles_df)
-px.scatter(data_circles_df, x=<span style="color: #CC9393;">"X1"</span>, y=<span style="color: #CC9393;">"X2"</span>, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  color=gmm_circles_cls, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  width=750, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  height=750)
+<pre class="src src-python"><span style="color: #DFAF8F;">cah_cr_single</span> = skc.AgglomerativeClustering(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"single"</span>).fit(wine_cr_df)
 </pre>
 </div></li>
 
-<li>Expliquez les résultats.</li>
+<li><p>
+Calculer l'inertie expliquée par la partition <code>cah_cr_single</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">cah_cr_single_iw</span>, <span style="color: #DFAF8F;">cah_cr_single_ie</span> = eval_partition(wine_cr_df, cah_cr_single.labels_)
+</pre>
+</div></li>
+
+<li><p>
+Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_1</code> à l'aide d'un diagramme
+en paires et analyser le résultat.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+px.scatter_matrix(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_single.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_single"</span>)
+</pre>
+</div></li>
+
+<li><p>
+Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
+distance du lien minimum.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">cah_cr_single_dendro_fig</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"single"</span>))
+
+cah_cr_single_dendro_fig.update_layout(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien minimum"</span>,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
+</pre>
+</div></li>
+
+<li>Interpréter les résultats obtenus.</li>
+
+<li><p>
+Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
+en utilisant la distance du lien maximum (<i>complete link</i>). Le modèle CAH sera nommé
+<code>cah_cr_complete</code>. Comparer les résultats obtenus avec les CAH précédentes.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">cah_cr_complete</span> = skc.AgglomerativeClustering(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"complete"</span>).fit(wine_cr_df)
+<span style="color: #DFAF8F;">cah_cr_complete_iw</span>, <span style="color: #DFAF8F;">cah_cr_complete_ie</span> = eval_partition(wine_cr_df, cah_cr_complete.labels_)
+px.scatter_matrix(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_complete.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_complete"</span>)
+<span style="color: #DFAF8F;">cah_cr_complete_dendro_fig</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"complete"</span>))
+
+cah_cr_complete_dendro_fig.update_layout(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien maximum"</span>,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
+</pre>
+</div></li>
+
+<li><p>
+Faire une CAH sur les données <code>wine_cr_df</code> en réalisant les mêmes analyses que précédemment mais
+en utilisant la distance du lien moyen (<i>average link</i>). Le modèle CAH sera nommé
+<code>cah_cr_average</code>. Comparer les résultats obtenus avec les CAH précédentes.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">cah_cr_average</span> = skc.AgglomerativeClustering(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   linkage=<span style="color: #CC9393;">"average"</span>).fit(wine_cr_df)
+<span style="color: #DFAF8F;">cah_cr_average_iw</span>, <span style="color: #DFAF8F;">cah_cr_average_ie</span> = eval_partition(wine_cr_df, cah_cr_average.labels_)
+px.scatter_matrix(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_average.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_average"</span>)
+<span style="color: #DFAF8F;">cah_cr_average_dendro_fig</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pff.create_dendrogram(wine_cr_df,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> labels=wine_cr_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_threshold=15,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> linkagefun=<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: sch.linkage(x, <span style="color: #CC9393;">"average"</span>))
+
+cah_cr_average_dendro_fig.update_layout(
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   title_text=f<span style="color: #CC9393;">"CAH avec distance d'aggr&#233;gation du lien moyen"</span>,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   width=1600, height=900)
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9efc863" class="outline-2">
-<h2 id="org9efc863">Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-org9efc863">
+<div id="outline-container-orga2bd5cc" class="outline-2">
+<h2 id="orga2bd5cc">Exercice 2 : Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-orga2bd5cc">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent les deux premières divisions de différents championnats européens.
 </p>
 
 <p>
-Le Tableau <a href="#org1ff188d">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org17e634e">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="org1ff188d" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <div id="data_soccer_fixtures_columns_desc"></div></caption>
+<table id="org17e634e" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables. <a href="data_soccer_fixtures_columns_desc">data_soccer_fixtures_columns_desc</a></caption>
 
 <colgroup>
 <col  class="org-left" />
@@ -654,9 +571,9 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-orge14f739" class="outline-3">
-<h3 id="orge14f739">Préparation des données</h3>
-<div class="outline-text-3" id="text-orge14f739">
+<div id="outline-container-orgc46a6d5" class="outline-3">
+<h3 id="orgc46a6d5">Préparation des données</h3>
+<div class="outline-text-3" id="text-orgc46a6d5">
 <ol class="org-ol">
 <li>Chargez les données à partir de l'adresse suivante :
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv">https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv</a>. Le séparateur
@@ -684,9 +601,9 @@ sera stocké dans un <code>DataFrame</code> <code>data_soccer_mean_df</code>.</l
 </div>
 </div>
 
-<div id="outline-container-org190caa8" class="outline-3">
-<h3 id="org190caa8">Détection de profils</h3>
-<div class="outline-text-3" id="text-org190caa8">
+<div id="outline-container-org662f9d8" class="outline-3">
+<h3 id="org662f9d8">Détection de profils</h3>
+<div class="outline-text-3" id="text-org662f9d8">
 <ol class="org-ol">
 <li>Utilisez la méthode des moyennes mobiles sur les données <code>data_soccer_acp_df</code>. Appliquez la
 méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.</li>
@@ -701,86 +618,9 @@ méthode du coude afin d'évaluer un compromis entre nombre de classes et inerti
 </div>
 
 
-<div id="outline-container-org7ddc1b1" class="outline-2">
-<h2 id="org7ddc1b1">Compression d'images</h2>
-<div class="outline-text-2" id="text-org7ddc1b1">
-<p>
-Cette exercice propose d'explorer comment les méthodes de classification non supervisée peuvent être
-appliquées à la compression d'images et en particulier à la problématique de quantification en
-couleurs (<i>color quantization</i> en anglais). Ce traitement d'image vise à réduire le nombre de
-couleur dans une image sans pour autant changer son aspect visuel général.
-</p>
-
-<p>
-D'un point de vue informatique, une image est une série de pixels représentés par trois coordonnées
-associées à leur niveau de rouge, vert et bleu. Une image peut donc être considérée comme un tableau
-de données quantitatives à trois dimensions.
-</p>
-</div>
-
-<div id="outline-container-org186c73b" class="outline-3">
-<h3 id="org186c73b">Chargement d'une image</h3>
-<div class="outline-text-3" id="text-org186c73b">
-<ol class="org-ol">
-<li>Installez et importez la <a href="https://scikit-image.org/docs/dev/user_guide/getting_started.html">librairie <code>skimage</code> </a> permettant de faire du traitement d'image : <code>import
-   skimage.io</code>.</li>
-</ol>
-<div class="org-src-container">
-<pre class="src src-python">!pip install scikit-image
-</pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> skimage                        <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie de traitement d'image</span>
-<span style="color: #F0DFAF; font-weight: bold;">import</span> skimage.io                     <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package skimage d&#233;di&#233; au chargement et la sauvegarde des images</span>
-</pre>
-</div>
-
-<ol class="org-ol">
-<li>Utiliser la fonction <code>skimage.io.imread</code> pour lire ce <a href="https://roland-donat.github.io/cours-class-non-sup/td/td3/streetball.jpg">fichier image</a>.</li>
-</ol>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">image_path</span> = <span style="color: #CC9393;">"https://roland-donat.github.io/cours-class-non-sup/td/td3/streetball.jpg"</span>
-<span style="color: #DFAF8F;">image_data</span> = skimage.io.imread(image_path)
-
-px.imshow(image_data)
-</pre>
-</div>
-
-<ol class="org-ol">
-<li>Transformez l'image en un <code>DataFrame</code> à trois variables. Aide : utilisez la méthode <code>.reshape</code>
-des <code>numpy.array</code>.</li>
-</ol>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #DFAF8F;">image_nb_pixels</span> = image_data.shape[0]*image_data.shape[1]
-<span style="color: #DFAF8F;">image_data_2d</span> = image_data.reshape((image_nb_pixels, 3))
-<span style="color: #DFAF8F;">image_data_df</span> = pd.DataFrame(image_data_2d, columns=[<span style="color: #CC9393;">"R"</span>, <span style="color: #CC9393;">"G"</span>, <span style="color: #CC9393;">"B"</span>])
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org97c7e29" class="outline-3">
-<h3 id="org97c7e29">Application des moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org97c7e29">
-<ol class="org-ol">
-<li>Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en quatre
-classes.</li>
-
-<li>Reconstruire une image en remplaçant chaque pixel par le centre de sa classe.</li>
-
-<li>Afficher l'image obtenue sans oublier de retransformer les données de pixels dans la forme de
-l'image originale.</li>
-
-<li>Recommencez le traitement en jouant sur le nombre de classes de la partition et tentez
-d'interprétez les résultats.</li>
-</ol>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org0e7897f" class="outline-2">
-<h2 id="org0e7897f">Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-org0e7897f">
+<div id="outline-container-org8906f4a" class="outline-2">
+<h2 id="org8906f4a">Exercice 3 : Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-org8906f4a">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :
@@ -814,7 +654,7 @@ Le travail consiste alors à créer les quatre fonctions suivantes :
 </ol>
 
 <p>
-*Aide : vous pouvez utiliser la fonction <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html"><code>cdist</code></a> du package <code>scipy.spatial.distance</code>.
+<b>Aide :</b> vous pouvez utiliser la fonction <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html"><code>cdist</code></a> du package <code>scipy.spatial.distance</code>.
 </p>
 </div>
 </div>

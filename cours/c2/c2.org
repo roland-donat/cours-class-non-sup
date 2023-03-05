@@ -1,0 +1,1009 @@
+# -*- coding: utf-8 -*-
+
+#+TITLE: Classification non supervisée - Clustering {{{NEWLINE}}}{{{NEWLINE}}} {{{HTMLFONTSIZE(Méthodes de partitionnement et algorithme k-Means, 10)}}}
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+#+DATE: {{{NEWLINE}}}BUT Science des Données
+
+* Configuration                                                    :noexport:
+** Orgmode
+# Org-mode general options
+# ------------------------
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:nil toc:1 \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+DRAWERS: OPTIONS CACHE MACROS
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+#+MACRO: BLOCKTITLE @@html:<h4>$1</h4>@@ 
+
+** Reveal
+:OPTIONS:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+# #+REVEAL_ROOT: /home/roland/Work/Dev/Langages/javascript/reveal.js/
+#+REVEAL_INIT_OPTIONS: controlsLayout: 'edges', slideNumber:"c/t", center: false, transition: 'fade'
+#+REVEAL_EXTRA_CSS: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_reveal.css
+# #+REVEAL_EXTRA_CSS: ubs_iut_vannes_reveal.css
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 2
+#+REVEAL_TITLE_SLIDE_BACKGROUND: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg
+#+OPTIONS: reveal_single_file:nil
+:END:
+
+** LaTeX
+*** Class parameters
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+
+*** Packages
+#+LATEX_HEADER: \usepackage[french]{babel}
+
+#+LATEX_HEADER: \usepackage{graphicx}
+
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+
+#+LATEX_HEADER: \usepackage{minted}
+
+*** Document layout
+**** Graphics path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+**** Colors
+
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+**** Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+**** Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+**** Geometry
+
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+**** References
+
+#+LATEX: \renewcommand*{\refname}{}*
+
+*** Compilator
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+** Publishing configuration
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+        
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+         ("td-attach"
+         :base-directory "./td/"
+         :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("cours-attach"
+         :base-directory "./cours/"
+         :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ("projet-attach"
+         :base-directory "./projet/"
+         :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+         
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+         ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+
+
+
+
+
+* Notes perso                                                      :noexport:
+** DONE Renommer le cours 2 en C2
+   CLOSED: [2022-03-03 jeu. 17:03]
+** DONE Faire un schéma de la procédure itérative générale de partitionnement
+   CLOSED: [2022-03-10 jeu. 22:39]
+** TODO Faire un schéma de la procédure itérative déclinée sur kmeans et mélange
+** DONE Faire un schéma sur le principe d'optimisation locale
+   CLOSED: [2022-03-11 ven. 22:22]
+** DONE Faire un cours spécifiques mélanges Gaussiens
+CLOSED: [2023-02-09 jeu. 09:28]
+** TODO Ajouter des exemples de code =Python= pour k-means
+** TODO Evo clust_util :
+- Mettre Kmeans sous forme de la classe à la mode sklearn
+- Développer l'algo EM du mélange gaussien à la mode sklearn
+  - Source : https://xavierbourretsicotte.github.io/gaussian_mixture.html
+  - Permettre de faire des animations comme pour kmeans
+
+** TODO Ajouter une section sur les outils logiciels
+** TODO Faire une section spécifique sur la formalisation des méthodes de partitionnement
+** TODO Ajouter une biblio
+** TODO Harmoniser la présentation kmeans et mélange gaussien
+** TODO Faire le lien entre Inertie intra-classe et Trace de la matrice de covariance d'un groupe
+
+* Objectifs de la séance
+
+1. Rappeler la problématique de partitionnement des données
+2. Présenter la méthode des centres mobiles (k-/Means/)
+
+* Généralités
+
+#+ATTR_HTML: :width 85% :alt Star clusters
+[[https://roland-donat.github.io/cours-class-non-sup/commons/SPoW_Oct14_12.jpg]]
+
+
+** Rappels
+
+#+begin_block-definition
+{{{BLOCKTITLE(Qu'est ce qu'une classification non supervisée)}}}
+
+- C'est rechercher des regroupements "naturels" entre des individus
+- Le nombre de groupes n'est pas connu /a priori/
+- Aucune connaissance sur les classes des individus n'est disponible /a priori/
+- Il s'agit d'une méthode de statistique exploratoire permettant de comprendre les données
+#+end_block-definition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Objectifs de la classification non supervisée)}}}
+
+- Construire des groupes homogènes et *interprétables* vis-à-vis de l'objectif recherché
+- Les individus au sein d'un groupe doivent être aussi semblables que possible au sens d'un ou plusieurs critères donnés
+- Les individus de groupes distincts doivent être aussi différents que possible au sens des mêmes
+  critères
+#+end_block-definition
+
+** Qu'est qu'une partition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Partition d'un ensemble d'individus)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$. 
+- Les ensembles d'indices $C_{1}, \ldots, C_{k}, \ldots, C_{K} \subseteq \{1, 2, \ldots, N\}$
+  forment une *partition*, notée $C$, des données $\boldsymbol{X}$ en $K$ classes 
+  si : 
+  - Pour tout $k$, $C_{k} \neq \varnothing$, i.e. aucune classe n'est vide
+  - $\bigcup_{k=1}^{K} C_{k} = \{1, \ldots, N \}$, i.e. la réunion des classes contient les indidces
+    de tous les individus du jeu de données $\boldsymbol{X}$
+  - Pour tout $k_{1}, k_{2}$, $C_{k_{1}} \cap C_{k_{2}} = \varnothing$ si $k_{1} \neq k_{2}$, i.e. les classes
+    sont deux à deux disjointes
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-example
+{{{BLOCKTITLE(Exemples)}}}
+
+- Considérons un jeu de données à 5 individus $\boldsymbol{X} = \{\boldsymbol{x}_{1}, \boldsymbol{x}_{2}, \boldsymbol{x}_{3}, \boldsymbol{x}_{4}, \boldsymbol{x}_{5}\}$
+- L'ensemble $C_{1} = \{1, 2, 3, 4, 5\}$ est une partition à une classe, 
+  i.e. $K = 1$
+- Les ensembles  
+  $C_{1} = \{1, 3, 5\}$ et 
+  $C_{2} = \{2, 4\}$
+  forment une partition à deux classes, i.e. $K = 2$
+- Les ensembles 
+  $C_{1} = \{4, 5\}$,
+  $C_{2} = \{1\}$,
+  $C_{3} = \{3\}$ et
+  $C_{4} = \{2\}$
+  forment une partition à quatre classes, i.e. $K = 4$
+#+end_block-example
+
+
+** Résumé statistique d'une partition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Résumé statistique d'une classe)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ définis dans $\mathbb{R}^{D}$
+
+- Considérons une partition à $K$ classes, notée $C = \{C_{1},\ldots,C_{K}\}$
+
+- Chaque classe $C_{k}$ peut, entre autres, être caractérisée par :
+#+ATTR_REVEAL: :frag (appear appear appear appear) :frag_idx (1 2 3 4)
+  - son effectif : $N_{k} = \text{Card}(C_{k})$
+  - son centre (point moyen, centre de gravité) : 
+    $$
+    \boldsymbol{\mu}_{k} = \frac{1}{N_{k}}\sum_{n \in C_{k}} \boldsymbol{x}_{n} =
+    \left(\frac{1}{N_{k}}\sum_{n \in C_{k}} x_{n, 1}, \ldots, \frac{1}{N_{k}}\sum_{n \in C_{k}} x_{n, D}\right)
+    $$
+  - la dispersion autour de son centre caractérisée par la matrice de variance-covariance empirique de la classe :
+    $$
+    \boldsymbol{W}_{k} = \frac{1}{N_{k} - 1}\sum_{n \in C_{k}} (\boldsymbol{x}_{n} -
+    \boldsymbol{\mu}_{k})(\boldsymbol{x}_{n} - \boldsymbol{\mu}_{k})^{T}
+    $$
+  - son inertie de classe (cas équipondéré) : $I_{\boldsymbol{\mu}_{k}}(C_{k}) = \sum_{n \in C_{k}}
+    d(\boldsymbol{x}_{n}, \boldsymbol{\mu}_{k})^{2}$
+#+end_block-definition
+
+*** Résumé statistique d'une partition
+{{{SUBTITLE(Exemple (1/2))}}}
+
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results silent :exports results 
+import plotly.io as pio
+import c2_ex_stats_cls_kmeans as ex                                                
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 45%">
+
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '13px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.data_sel_df.style\
+              .format(format_dict)\
+              .set_table_styles(data_styles, overwrite=False)\
+              .render()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+- Effectifs dans chaque classe :
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results html :exports results 
+cls_count_df = ex.cls_count.to_frame().transpose()
+format_dict = {var: '{:.2f}' for var
+               in cls_count_df.select_dtypes(float).columns}
+props = [('font-size', '14px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+cls_count_df.style\
+            .format(format_dict)\
+            .set_table_styles(data_styles, overwrite=False)\
+            .render()
+#+END_SRC
+
+
+- Centres de gravité des classes :
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_mean.select_dtypes(float).columns}
+props = [('font-size', '14px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_mean.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .render()
+#+END_SRC
+
+
+- Matrices de variances des classes :
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_cov.select_dtypes(float).columns}
+props = [('font-size', '14px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_cov.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+*** Résumé statistique d'une partition
+{{{SUBTITLE(Exemple (2/2))}}}
+
+#+BEGIN_SRC python :session c2_ex_stats_cls_kmeans :results html :exports results 
+pio.to_html(ex.data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+** Formalisation du problème de partitionnement
+  :PROPERTIES:
+  :CUSTOM_ID: nb-part
+  :END:
+{{{SUBTITLE(Un problème complexe...)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Nombre de partitions possibles)}}}
+
+- Dans la suite, nous noterons $\mathcal{C}_{K}(\boldsymbol{X})$ l'ensemble de toutes les partitions
+  possibles de $\boldsymbol{X}$ en $K$ classes
+- Le nombre de partitions à $K$ classes possibles pour un jeu de données $\boldsymbol{X}$ contenant
+  $N$ individus est donnée par
+  $$
+  S(N, K) = \frac{1}{K!} \sum_{j=0}^{K} (-1)^{K-j} \binom{K}{j} j^{N} =
+  \text{Card}(\mathcal{C}_{K}(\boldsymbol{X}))
+  $$ 
+- L'ordre de grandeur est donc $\text{Card}(\mathcal{C}_{K}(\boldsymbol{X})) \simeq \frac{K^{N}}{K!}$
+- Pour $N=19$ et $K=4$, il existe plus de $10^{10}$ possibilités !
+#+end_block-example
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Qualité d'une partition)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Critère de qualité d'une partition)}}}
+- Soit $\boldsymbol{X}$ un ensemble d'individus
+- On définit un critère de qualité sur une partition $C = \{C_{1}, \ldots, C_{K}\} \in
+  \mathcal{C}_{K}(\boldsymbol{X})$ comme étant une fonction de la forme : 
+  $$
+  Q : \mathcal{C}_{K}(\boldsymbol{X}) \rightarrow \mathbb{R}^{+}
+  $$
+- Plusieurs critères de qualité $Q$ peuvent être définis mais tous partagent en général le point
+  commun de mesurer l'homogénéité des classes
+- Rappel : $\mathcal{C}_{K}(\boldsymbol{X})$ est l'ensemble de toutes les partitions
+  possibles de $\boldsymbol{X}$ en $K$ classes
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-example
+{{{BLOCKTITLE(Exemples de critère de qualité)}}}
+
+- Inertie intra-classe : $Q(C) = \sum_{k=1}^{K} \sum_{i \in C_{k}} d(\boldsymbol{x}_{i},
+  \boldsymbol{\mu}_{k})^{2}$ (cas équipondéré)
+- Vraisemblance des individus au sein de chaque classe compte tenu du modèle de partitionnement choisi  (critère probabiliste)
+#+end_block-example
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Le partitionnement comme problème d'optimisation)}}}
+- Soit $\boldsymbol{X}$ un ensemble d'individus
+- Soit $Q$ un critère de qualité de partitionnement en $K$ classes
+- Résoudre le problème de partitionnement des données $\boldsymbol{X}$ en $K$ classes revient à
+  trouver la partition optimale $C^{*} \in \mathcal{C}_{K}(\boldsymbol{X})$ qui maximise le critère
+  de qualité $Q$  
+- Il s'agit donc d'un problème d'optimisation classique que l'on peut écrire
+  formellement :
+  $$
+  C^{*}_{K} = \arg\max_{C \in \mathcal{C}_{K}(\boldsymbol{X})} Q(C)
+  $$
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-alert
+{{{BLOCKTITLE(Problème combinatoire)}}}
+- La formulation du problème d'optimisation relatif au partitionnement d'individus est simple
+- Sa résolution exacte est toutefois inenvisageable en pratique de par la [[#nb-part][combinatoire des
+  solutions à explorer]]
+- Les méthodes de partitionnement ne cherchent donc pas à trouver la meilleur partition au sens du
+  critère choisi (*i.e. l'optimum global*) mais plutôt à limiter l'exploration des partitions tout en assurant de
+  trouver une "bonne" partition pour ce critère (*i.e. un optimum local*)
+#+end_block-alert
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+ATTR_HTML: :width 100% :alt problème optimisation
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/part_opt_0.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+ATTR_HTML: :width 100% :alt problème optimisation
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/part_opt_1.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+ATTR_HTML: :width 100% :alt problème optimisation
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/part_opt_glob.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+ATTR_HTML: :width 100% :alt problème optimisation
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/part_opt_locale_1.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Problème d'optimisation)}}}
+
+#+ATTR_HTML: :width 100% :alt problème optimisation
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/part_opt_locale_2.png]]
+
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Principe général des algorithmes de partitionnement)}}}
+- Soit $\boldsymbol{X}$ un ensemble d'individus
+- Soit $Q$ un critère de qualité de partitionnement en $K$ classes
+- Les algorithmes de partitionnement reposent sur le schéma itératif général suivant :
+  - Initialisation ($t=0$): on part d'une partition initiale $C^{(0)}$ (choisi arbitrairement)
+  - À l'étape $t + 1$, on cherche la partition $C^{(t+1)} = f(C^{(t)})$ telle que $Q(C^{(t+1)}) \ge
+    Q(C^{(t)})$
+  - On arrête l'algorithme dès que le critère de qualité a convergé, i.e. qu'il ne varie plus
+    suffisamment d'une itération à l'autre
+- La plupart des méthodes utilisées aujourd'hui reposent sur ce schéma et ne diffèrent donc qu'au
+  niveau de la fonction $f$ permettant d'améliorer la classification des individus à partir d'une
+  partition donnée
+#+end_block-definition
+
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_0.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_1.png]]
+
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_2.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_3.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_4.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_5.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_6.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part_7.png]]
+*** Formalisation du problème de partitionnement
+{{{SUBTITLE(Résolution itérative)}}}
+
+#+ATTR_HTML: :width 100% :alt principe algo itératif
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c2/fig/algo_part.png]]
+
+
+* Méthode des moyennes mobiles (k-Means)
+
+#+ATTR_HTML: :width 85% :alt Kmeans image segmentation
+[[https://roland-donat.github.io/cours-class-non-sup/commons/kmeans_img_seg.jpg]]
+
+** Principe général
+
+#+begin_block-example
+{{{BLOCKTITLE(Principe de la méthode)}}}
+
+- Objectif : on cherche à partitionner un ensemble d'individus $\boldsymbol{X}$ dans
+  $\mathbb{R}^{D}$ en $K$ classes $C_{1}, \dots, C_{K}$
+- Procédure :
+  - _Initialisation_ : On commence par affecter (arbitrairement ou aléatoirement) une classe à chaque individu
+  - _Étape de calcul des centres_ : On calcule les centres des classes $\boldsymbol{\mu}_{1}, \ldots,
+    \boldsymbol{\mu}_{K}$ sur la base de la partition de $\boldsymbol{X}$ courante
+  - _Étape d'affectation des classes_ : On met à jour la classe de chaque individu
+    $\boldsymbol{x}_{n}$ en choisissant celle dont le centre est le plus proche au
+    sens d'une distance donnée (par exemple la distance euclidienne)
+  - _Critère d'arrêt de la procédure_ : On retourne à l'étape de calcul des centres tant que la
+    partition change d'une itération à l'autre 
+#+end_block-example
+
+*** Principe général
+{{{SUBTITLE(Exemple)}}}
+
+
+#+BEGIN_SRC python :session c2_ex_kmeans_country_sample :results html :exports results 
+import plotly.io as pio
+import c2_ex_kmeans_country_sample as ex                                                
+
+pio.to_html(ex.data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+** Caractéristiques
+
+#+begin_block-example
+{{{BLOCKTITLE(Paramètres de la méthode)}}}
+
+La méthode des centres mobiles nécessite de choisir :
+- Le nombre de classes $K$ à construire
+- Une première partition des individus pour initialiser la méthode
+- Une distance pour évaluer la proximité entre les individus et le centre des classes
+#+end_block-example
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-alert
+{{{BLOCKTITLE(Point de vigilance 1)}}}
+
+- Le partition construite par la méthode dépend des deux éléments suivants : 
+  - La partition initiale choisie
+  - La distance utilisée
+- En fonction de ces deux choix, la méthode n'aboutira pas forcément aux mêmes résultats
+#+end_block-alert
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-alert
+{{{BLOCKTITLE(Point de vigilance 2)}}}
+
+- En grande dimension (i.e. quand il y a beaucoup de variables), la distance euclidienne entre les
+  individus tend à grandir et à perdre son caractère discriminant
+- Autrement dit, tous les individus se retrouvent très éloignés les uns des autres
+- Réduire au préalable le nombre de dimensions (e.g. par ACP) peut donc s'avérer pertinent dans ce cas
+#+end_block-alert
+
+
+*** Caractéristiques
+{{{SUBTITLE(Exemple - influence de l'initialisation)}}}
+
+#+BEGIN_SRC python :session c2_ex_kmeans_init :results silent :exports results 
+import plotly.io as pio
+import c2_ex_kmeans_init as ex                                                
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+BEGIN_SRC python :session c2_ex_kmeans_init :results html :exports results 
+pio.to_html(ex.data_classif_dfig["1"], include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+BEGIN_SRC python :session c2_ex_kmeans_init :results html :exports results 
+pio.to_html(ex.data_classif_dfig["2"], include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+*** Caractéristiques
+{{{SUBTITLE(Exemple - influence de la distance)}}}
+
+#+BEGIN_SRC python :session c2_ex_kmeans_dist :results silent :exports results 
+import plotly.io as pio
+import c2_ex_kmeans_dist as ex                                                
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+BEGIN_SRC python :session c2_ex_kmeans_dist :results html :exports results 
+pio.to_html(ex.data_classif_dfig["euc"], include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+BEGIN_SRC python :session c2_ex_kmeans_dist :results html :exports results 
+pio.to_html(ex.data_classif_dfig["mah"], include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+** Algorithme des centres mobiles
+
+*Entrée :* $\boldsymbol{X} = \{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ un ensemble d'individus dans $\mathbb{R}^{D}$
+
+*Paramètres :*
+- $K$ : Nombre de classe à construire
+- $C^{(0)} = \{C^{(0)}_{1}, \ldots, C^{(0)}_{K}\}$ : Une première partition des individus
+- $d$ : Une distance définie sur $\mathbb{R}^{D}$
+
+*Sortie :* Une partition $C^{*} = \{C^{*}_{1}, \ldots, C^{*}_{K}\}$ des individus
+
+*Itération $(t)$ :*
+- Calcul des centres des classes :
+  $\displaystyle \boldsymbol{\mu}^{(t)}_{k} = \frac{1}{\left|C^{(t-1)}_{k}\right|} \sum_{i \in C^{(t-1)}_{k}}
+  \boldsymbol{x}_{i}, ~\forall k = 1, \ldots, K$
+- Affectation de la classe de chaque individu $n \in \{1, \ldots, N\}$ : 
+  $$
+  \left\{
+  \begin{array}{l}
+  k^{*} = \arg\min_{k \in {1, \ldots, K}} d(\boldsymbol{x}_{n}, \boldsymbol{\mu}^{(t)}_{k}) \\
+  C^{(t)}_{k^{*}} \leftarrow C^{(t)}_{k^{*}} \cup \{n\} 
+  \end{array} \right.
+  $$
+
+*Critère d'arrêt :* [[#kmeans-remarques][Plusieurs choix possibles]]
+
+
+*** Algorithme des centres mobiles
+  :PROPERTIES:
+  :CUSTOM_ID: kmeans-remarques
+  :END:
+{{{SUBTITLE(Remarques)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Plusieurs critères d'arrêt possibles)}}}
+
+1. Si l'algorithme dépasse un nombre d'itérations limite $T$, i.e. si $t > T$
+2. Si la partition n'évolue plus d'une itération à l'autre, i.e. si pour tout $k \in \{1, \ldots, K\}$,
+  $C^{(t)}_{k} = C^{(t-1)}_{k}$ 
+3. Si l'inertie intra-classe descend sous un certain seuil $\epsilon$, i.e. si
+   $I_{\text{W}}(C^{(t)}) < \epsilon$
+4. Si l'inertie intra-classe ne décroît pas suffisamment entre deux itérations, i.e. si
+   $I_{\text{W}}(C^{(t)}) - I_{\text{W}}(C^{(t-1)}) < \epsilon$
+#+end_block-example
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-example
+{{{BLOCKTITLE(Convergence de l'algorithme et complexité)}}}
+
+- La méthode des centres mobiles converge vers une partition qui *optimise localement l'inertie
+  intra-classe* 
+- La méthode ne trouve donc pas forcément la meilleur partition, i.e. celle qui minimise globalement
+  l'inertie intra-classe
+- La vitesse de convergence de l'algorithme est de l'ordre $\mathcal{O}(T K N D)$, $T$ étant le
+  nombre maximal d'itérations autorisé 
+- Il s'agit donc d'un algorithme de complexité polynomial - donc plutôt rapide
+#+end_block-example
+
+# Détail pour la complexité : https://fr.slideshare.net/annafensel/kmeans-clustering-122651195
+
+*** Algorithme des centres mobiles
+{{{SUBTITLE(Exemple : Déroulé de la méthode)}}}
+
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results html :exports results 
+pio.to_html(ex.data_classif_dfig["euc"], include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+*** Algorithme des centres mobiles
+{{{SUBTITLE(Exemple : Déroulé de la méthode)}}}
+
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results silent :exports results 
+import plotly.io as pio
+import c2_ex_kmeans_country_tiny as ex                                                
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 33%">
+*Données*
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '12px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.data_sel_df.sort_index()\
+              .style\
+              .format(format_dict)\
+              .set_table_styles(data_styles, overwrite=False)\
+              .render()
+#+END_SRC
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 66%">
+
+*Évolution au cours des itérations*
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+Partition
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results html :exports results 
+data_cls_iter = ex.data_cls.unstack(0)
+format_dict = {var: '{:.2f}' for var
+               in data_cls_iter.select_dtypes(float).columns}
+props = [('font-size', '12px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_cls_iter.style\
+            .format(format_dict)\
+            .set_table_styles(data_styles, overwrite=False)\
+            .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Position du centre de classes
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results html :exports results 
+cls_centers_iter = ex.cls_centers.unstack()
+format_dict = {var: '{:.2f}' for var
+               in cls_centers_iter.select_dtypes(float).columns}
+props = [('font-size', '12px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+cls_centers_iter.style\
+            .format(format_dict)\
+            .set_table_styles(data_styles, overwrite=False)\
+            .render()
+#+END_SRC
+
+Inertie intra-classe et % d'inertie expliquée
+#+BEGIN_SRC python :session c2_ex_kmeans_country_tiny :results html :exports results 
+cls_iw_iter = ex.cls_iw
+format_dict = {"IW": '{:.2f}', "PctI": '{:.1%}'}
+props = [('font-size', '12px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+cls_iw_iter.style\
+            .format(format_dict)\
+            .set_table_styles(data_styles, overwrite=False)\
+            .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: </div>
+
+** Avantages/Limitations de la méthode
+
+#+begin_block-example
+{{{BLOCKTITLE(Avantages)}}}
+
+- Méthode facile à comprendre et à implémenter
+- Algorithme rapide et adapté au traitement d'un grand nombre de données
+- *Convergence* vers une partition localement optimale 
+#+end_block-example
+
+
+#+begin_block-example
+{{{BLOCKTITLE(Limitations)}}}
+
+- *l'algorithme recherche des classes de forme sphérique et de même taille*
+- Difficulté à fonctionner en grande dimension (Comme toutes les méthodes reposant sur une distance)
+- Convergence vers une partition *localement* optimale 
+#+end_block-example
+
+
+** Choix du nombre de classes
+
+#+begin_block-alert
+{{{BLOCKTITLE(Rappel)}}}
+
+- Plus on augmente le nombre de classes et plus l'inertie intra-classe diminue
+- Nous avons même $I_{\text{W}} = 0$, si le nombre de classes $K$ est identique au nombre
+  d'individus $N$ 
+#+end_block-alert
+
+#+begin_block-definition
+{{{BLOCKTITLE(Stratégies possibles)}}}
+
+1. *Expertise* : Vous avez une idée plus ou moins précise sur le nombre de groupes à former
+2. *Tests automatiques* : On réalise différents partitionnements en faisant varier le nombre de
+   classes et on utilise un critère pour sélectionner la valeur optimale, e.g. :
+   - [[#kmeans-coude][Méthode du "coude", approche visuelle]]
+   - Critère AIC (/Akaïke Information Criterion/) ou BIC (/Bayesian Information Criterion/),
+     approche plus formelle nécessitant une reformulation du problème de classification automatique
+     dans le cadre probabiliste
+   - Stabilité des partitions, on retient le nombre de classes qui permet d'obtenir les partitions
+     les plus stables malgré une initialisation aléatoire
+#+end_block-definition
+
+*** Choix du nombre de classes
+  :PROPERTIES:
+  :CUSTOM_ID: kmeans-coude
+  :END:
+{{{SUBTITLE(Exemple : méthode du "coude")}}}
+
+#+BEGIN_SRC python :session c2_ex_kmeans_country_coude :results html :exports results 
+import plotly.io as pio
+import c2_ex_kmeans_country_coude as ex                                                
+
+pio.to_html(ex.IW_k_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+** TODO Implémentation logicielle                                  :noexport:
+
+Parler de sklearn KMeans
+
+Dire un mot sur kmeans en R
+
+
+* Résumé de la séance
+
+#+begin_block-definition
+{{{BLOCKTITLE(Points clés)}}}
+
+- Le problème de partition des données est un problème combinatoire extrêmement complexe 
+- Les algorithmes de partitionnement usuels ne cherchent pas à construire la partition optimale mais
+  plutôt une bonne partition
+- La méthode des moyennes mobiles est une méthode de partitionnement géométrique simple à mettre en
+  oeuvre permettant de classer les individus dans des groupes ayant des caractérisques homogènes
+ 
+#+end_block-definition
+
+# - Formalisation de la problématique de classification non supervisée pour le traitement des *données
+#   quantitatives*
+# - Définition des notions de classe, partition et hiérarchie
+# - Définition de la notion de distance et calcul pratique
+# - Introduction du concept d'inertie et étude de ses propriétés dans le cadre de la classification
+# - Application de l'inertie pour évaluer la qualité d'une classification
+
+
+** Merci pour votre attention !
+{{{SUBTITLE(Des questions ?)}}}
+
+
+#+ATTR_HTML: :width 85% :alt FAQ
+[[https://roland-donat.github.io/cours-class-non-sup/commons/undraw_Faq_re_31cw.png]]

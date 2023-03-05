@@ -1,0 +1,900 @@
+# -*- coding: utf-8 -*-
+#+TITLE: TD2: Partitionnement avec l'algorithme des k-Means
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+# #+DATE: 
+
+# ==============================================
+# Document Configuration
+# ======================
+# Orgmode
+:CONFIG:
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:nil toc:t \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+DRAWERS: CONFIG OPTIONS CACHE MACROS
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+:END:
+
+# LaTeX
+# -----
+# Class parameters
+:CONFIG:
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+:END:
+# Packages
+:CONFIG:
+#+LATEX_HEADER: \usepackage[french]{babel}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{minted}
+:END:
+# Layout
+:CONFIG:
+# Figures path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+# Colors
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+# Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+# Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+# Geometry
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+# References
+#+LATEX: \renewcommand*{\refname}{}*
+:END:
+# LaTeX Compilator
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+:END:
+
+# HTML
+# ----
+:CONFIG:
+# Org HTML Macros
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+
+# HTML options
+# ------------
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes.css" />
+# #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./ubs_iut_vannes.css" />
+:END:
+
+# Publishing
+# ----------
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+	
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+	 :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+	 ("td-attach"
+	 :base-directory "./td/"
+	 :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("cours-attach"
+	 :base-directory "./cours/"
+	 :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ("projet-attach"
+	 :base-directory "./projet/"
+	 :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+	 
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+	 ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+:END:
+
+# ==============================================
+# Document starts here
+# ====================
+
+#+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
+(setq td_corrige nil)
+#+END_SRC
+
+#+ATTR_HTML: :width 50%
+#+CAPTION: /An abstract painting of k Means algorithm/ (source: générée par [[https://openai.com/dall-e-2/][DALL-E]])
+[[./kmeans.png]]
+
+
+* Notes perso                                                      :noexport:
+** TODO Faire un autre exo en faisant une ACP dans l'exercice 1 
+
+* Introduction
+
+L'objectif de ce TD est d'expérimenter les méthodes de partitionnement en utilisant en particulier
+l'algorithme des moyennes mobiles (k-/Means/).
+
+Nous testerons ces méthodes avec différents jeux de données afin d'illustrer leurs propriétés
+caractéristiques. 
+
+Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-/Means/ en =Python=.
+
+* Modules =Python= utilisés dans ce TD
+
+Dans ce TD, nous utiliserons les modules =Python= suivants :
+- =pandas=, pour la manipulation des données ;
+- =plotly=, pour les représentations graphiques ;
+- =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
+  nombres aléatoires ;
+- =scikit-learn=, pour les algorithmes de /machine learning/ (dont k-/Means/).
+
+Ces modules ne sont pas forcément installés dans votre environnement local ou distant. Vous pouvez
+donc utiliser la commande =!pip install <nom_module>= pour les installer : 
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :results silent :exports code
+# À décommenter si besoin
+#!pip install pandas=='1.1.5'
+#!pip install plotly=='4.14.3'
+#!pip install scikit-learn=='0.24.1'
+#+END_SRC
+ 
+
+Rappel : code d'import des modules :
+#+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+import pandas as pd  # Manipulation des données
+import numpy as np # Calcul numérique
+import plotly as pl # Librairie principale pour avoir le n° de version
+import plotly.express as px # Package plotly pour utiliser les visualisations de haut niveau
+import sklearn as sk # Librairie principale pour avoir le n° de version
+import sklearn.cluster as skc # Package sklearn dédié au clustering
+import sklearn.decomposition as skd   # Package sklearn dédié aux méthodes factorielles
+
+# Vérification des versions des librairies utilisées
+{"plotly": pl.__version__, 
+ "pandas": pd.__version__, 
+ "numpy": np.__version__, 
+ "sklearn": sk.__version__}
+#+END_SRC
+
+* Exercice 1 : Données =Wine=
+
+Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
+[[https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv][disponibles à ici]].
+
+** Chargement des données
+
+1. Chargez les données =Wine= dans un =DataFrame= nommé =wine_ori_df= (=ori= pour originales).
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+wine_path = "https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv"
+wine_ori_df = pd.read_csv(wine_path, sep=",")
+   #+END_SRC
+
+
+# 2. Créez le =DataFrame= =data_wine_df= correspondant aux données =Wine= centrées et réduites.
+#    *Note:* On rappelle que l'étape de centrage et de réduction n'est pas obligatoire pour faire un
+#    partitionnement. En revanche, ce traitement est ici utile pour limiter l'influence de l'echelle
+#    de certaines variables.
+
+ 
+** Moyennes mobiles
+
+Nous allons utiliser l'algorithme des moyennes mobiles (k-Means) afin de partitionner automatiquement nos vins à
+partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package =sklearn.cluster= (ou
+=skc= pour nous) de la librairie =sklearn= propose une implémentation de l'algorithme k-Means dans
+la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html][=skc.KMeans=]].
+
+La grande majorité des algorithmes/modèles de /machine learning/ disponibles dans la librairie =sklearn=
+fonctionne sur le principe suivant :
+1. Initialisation de la classe de l'algorithme avec les paramètres nécessaires.
+1. Utilisation de la méthode =fit= pour ajuster l'algorithme/modèle avec les données disponibles.
+1. Utilisation optionnelle de la méthode =predict= pour les méthodes permettant de faire des
+   prédictions. 
+
+Dans la suite, nous déclinerons la démarche précédente dans le cas particulier de l'algorithme
+k-Means :
+1. Initialiser l'algorithme des moyennes mobiles sur les données =wine_ori_df= :
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1 = skc.KMeans(n_clusters=3)
+   #+END_SRC
+   - L'objet =km_ori_1= représente l'algorithme des moyennes mobiles. 
+   - Le paramètre =n_clusters= permet
+     de configurer le nombre de groupes recherché. Dans cet exemple, l'algorithme est prêt pour
+     partitionner en 3 groupes. 
+   - Notons que pour l'instant, aucun traitement n'a été réalisé puisqu'aucune données n'a été mise
+     en relation avec notre objet =km_ori_1=.
+   - *Question :* D'après le cours, ne faut-il pas fournir un élément supplémentaire pour
+     initialiser l'algorithme ?  
+
+2. Utiliser ensuite la méthode =fit= pour lancer le partitionnement sur les données =wine_ori_df= :
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1.fit(wine_ori_df)
+   #+END_SRC
+   - La méthode =fit= exécute l'algorithme des k-Means tel que vu en cours. Des partitionnements
+     alternés avec le calcul des centres associés sont effectués successivement jusqu'à la convergence de
+     l'algorithme.
+   - Selon votre version de =sklearn=, un message =Warning= concernant l'initialisation de
+     l'algorithme peut apparaître. Ce message est à ignorer pour l'instant, nous reviendrons sur ce
+     sujet ultérieurement.
+   - *Note :* On pourra également désigner l'objet =km_ori_1= comme le *modèle* =km_ori_1=. En effet, on
+     rappelle que la méthode k-Means (et plus largement les méthodes de classification non
+     supervisée) servent à modéliser un ensemble d'individus à partir d'un ensemble restreint de
+     groupes d'individus.
+
+1. Après partitionnement, l'objet =km_ori_1= possède de nouveaux attributs. Déduire (si besoin avec
+   l'aide de la documentation) la signification des attributs suivants :
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1.labels_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1.cluster_centers_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1.inertia_
+   #+END_SRC
+
+1. Calculer l'initie expliquée par la partition obtenue avec le modèle =km_ori_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+# Calcul de l'inertie totale des données
+wine_ori_it = ((wine_ori_df - wine_ori_df.mean())**2).sum(axis=1).sum()
+km_ori_1_ie = 1 - km_ori_1.inertia_/wine_ori_it
+   #+END_SRC
+
+1. Représenter graphiquement la partition obtenue avec le modèle =km_ori_1= à l'aide d'un diagramme
+   en paires et analyser le résultat.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.scatter_matrix(wine_ori_df,
+                  color=km_ori_1.labels_.astype(str), 
+                  title="Partition km_ori_1")
+   #+END_SRC
+
+1. Analyser le profil des groupes obtenus avec la partition =km_ori_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_1_prof = \
+    pd.DataFrame(km_ori_1.cluster_centers_,
+                 columns=wine_ori_df.columns)
+km_ori_1_prof
+   #+END_SRC
+
+1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.box(wine_ori_df, color=km_ori_1.labels_.astype(str))
+   #+END_SRC
+
+1. Étudier les paramètres de la classe =skc.kMeans=. Donner en particulier la signification des
+   paramètres :
+   - =init= ;
+   - =n_init= ;
+   - =max_iter= ;
+   - =tol= ;
+   - =random_state=.
+     
+1. Réalisez un second modèle =km_ori_2= paramétré comme suit :
+   - recherche de 3 groupes ;
+   - initialisation aléatoire (cf. paramètre =init=) contrôlée en fixant le paramètre =random_state= à la valeur
+     =12345= ;
+   - initialisation unique, cf. paramètre =n_init=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_ori_2 = skc.KMeans(
+    n_clusters=3,
+    init="random",
+    n_init=1,
+    random_state=12345,
+    )
+km_ori_2.fit(wine_ori_df)
+   #+END_SRC
+
+1. Calculer l'initie expliquée par la partition obtenue avec le modèle =km_ori_2=. Comparer ce
+   résultat avec l'initie expliquée par le modèle =km_ori_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_ori_2_ie = 1 - km_ori_2.inertia_/wine_ori_it
+   #+END_SRC
+   
+1. Représenter graphiquement la partition obtenue avec le modèle =km_ori_2= à l'aide d'un diagramme
+   en paires et comparer le résultat obtenu.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.scatter_matrix(wine_ori_df,
+                  color=km_ori_2.labels_.astype(str), 
+                  title="Partition km_ori_2")
+   #+END_SRC
+
+
+** Partitionnement sur données centrées-réduites
+
+Dans la section précédente, nous avons constaté que les partitions obtenues avec k-Means ne
+reposaient uniquement que sur les valeurs de la variable =Proline=. L'échelle de cette variable
+étant significativement supérieure à celle des autres variables, les calculs de distances entre les
+individus réalisés en dimension 13 au cours de la procédure k-Means sont approximativement
+identiques à des calculs de distance en dimension 1 sur la variable =Proline=. Ceci
+explique pourquoi les partitions élaborées font ressortir des groupes sur les nuages de points
+faisant intervenir la variable =Proline= uniquement.
+
+Par conséquent, afin de limiter l'influence des échelles des variables, nous proposons de travailler
+dans la suite sur des données centrées et réduites.à
+
+1. Centrer et réduire les données afin d'obtenir un nouveau DataFrame =wine_cr_df= (=cr= pour
+   centré-réduit).
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+wine_cr_df = (wine_ori_df - wine_ori_df.mean())/wine_ori_df.std()
+   #+END_SRC
+
+2. Créer un modèle k-Means, nommé =km_cr_1=, permettant de partitionner les données en 3 groupes en
+   utilisant le paramétrage par défaut de la classe =skc.kMeans=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_cr_1 = skc.KMeans(n_clusters=3)
+   #+END_SRC
+
+3. Utiliser ensuite la méthode =fit= pour lancer le partitionnement sur les données =wine_cr_df= :
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_cr_1.fit(wine_cr_df)
+   #+END_SRC
+
+4. Calculer l'initie expliquée par la parition obtenue avec le modèle =km_cr_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+# Calcul de l'inertie totale des données
+wine_cr_it = ((wine_cr_df - wine_cr_df.mean())**2).sum(axis=1).sum()
+km_cr_1_ie = 1 - km_cr_1.inertia_/wine_cr_it
+   #+END_SRC
+
+5. Représenter graphiquement la partition obtenue avec le modèle =km_cr_1= à l'aide d'un diagramme
+   en paires, analyser le résultat obtenu et comparer avec les partitions précédentes.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.scatter_matrix(wine_cr_df,
+                  color=km_cr_1.labels_.astype(str), 
+                  title="Partition km_cr_1")
+   #+END_SRC
+
+1. Mettre sous la forme d'un DataFrame le profil moyen des groupes obtenus avec la partition =km_cr_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_cr_1_prof = \
+    pd.DataFrame(km_cr_1.cluster_centers_,
+                 columns=wine_cr_df.columns)
+km_cr_1_prof
+   #+END_SRC
+
+1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.box(wine_cr_df, color=km_cr_1.labels_.astype(str))
+   #+END_SRC
+
+
+** Partitionnement dans l'espace de l'ACP
+
+3. Réaliser une Analyse en Composantes Principales (ACP) sur les données centrées-réduites =wine_cr_df= en utilisant
+   la classe =PCA= du /package/ =sklearn.decomposition= (ou =skd= pour nous).
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+wine_acp = skd.PCA().fit(wine_cr_df)
+wine_acp.explained_variance_ratio_
+   #+END_SRC
+
+3. Projeter les données dans l'espace de l'ACP en utilisant la méthode =transform=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+wine_acp_df = pd.DataFrame(wine_acp.transform(wine_cr_df)) 
+wine_acp_df
+   #+END_SRC
+   
+4. Créer un DataFrame =wine_acp_2d_df= correspondant aux données centrées-réduites
+   projetées sur les deux premiers axes de l'ACP.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+wine_acp_2d_df = wine_acp_df[[0, 1]]
+   #+END_SRC
+
+5. Représenter graphiquement le nuage de points des données =wine_acp_2d_df=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.scatter(wine_acp_2d_df,
+           x=0, y=1,
+           labels={"0":"Axe ACP 1", "1":"Axe ACP 2"},
+           title="Projection des données sur les deux premiers axes de l'ACP")
+   #+END_SRC
+
+2. Réaliser un modèle k-Means, nommé =km_acp_1=, permettant de partitionner les données =wine_acp_2d_df=
+   en 3 groupes. Visualiser la partition obtenue.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_acp_1 = skc.KMeans(n_clusters=3).fit(wine_acp_2d_df)
+px.scatter(wine_acp_2d_df,
+           x=0, y=1,
+           color=km_acp_1.labels_,
+           labels={"0":"Axe ACP 1", "1":"Axe ACP 2"},
+           title="Partition km_acp_1")
+   #+END_SRC
+
+2. En déduire le profil moyen des groupes obtenus dans l'espace centré-réduit.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_acp_1_prof = wine_cr_df.groupby(km_acp_1.labels_).mean()
+   #+END_SRC
+
+1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.box(wine_cr_df, color=km_acp_1.labels_.astype(str))
+   #+END_SRC
+
+2. Calculer l'inertie expliquée par la partition =km_acp_1=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+# Création d'une fonction permettant d'évaluer une partition
+def eval_partition(data_df, partition):
+    """
+    Entrées :
+    - data_df (pandas.DataFrame) : Données quantitatives
+    - partition (list, numpy.array ou pandas.Series) : partition des données
+    Sortie :
+    - inertie_intra : inertie intra-classe de la partition
+    - inertie_score : Inertie expliquée par la partition entre 0 et 1
+    """
+
+    # Calcul de l'inertie totale des données (cf. TD1)
+    mu_data = data_df.mean()
+    d2_data_mu = ((data_df - mu_data)**2).sum(axis=1)
+    inertie_totale = d2_data_mu.sum()
+
+    # Calcul de l'inertie interne aux classes (cf. TD1)
+    inertie_intra = 0
+    for cls, data_cls_df in data_df.groupby(partition):
+        # Centre de gravité de la classe cls
+        mu_cls = data_cls_df.mean()
+        # Distances au carré entre les données de la classe et le centre de la classe
+        d2_data_cls = ((data_cls_df - mu_cls)**2).sum(axis=1)
+        # Sommation pour obtenir l'inertie interne à la classe
+        inertie_intra += d2_data_cls.sum()
+  
+    # Inertie expliquée par la partition
+    inertie_score = 1 - inertie_intra/inertie_totale
+
+    return inertie_intra, inertie_score
+
+
+# Utilisation de la fonction pour calculer l'inertie expliquée de la partition km_acp_1
+km_acp_1_iw, km_acp_1_ie = eval_partition(wine_cr_df, km_acp_1.labels_)
+   #+END_SRC
+
+
+
+* Exercice 2 : Compression d'images
+
+Cet exercice propose d'explorer la façon dont les méthodes de classification non supervisée
+peuvent être 
+appliquées pour la compression d'images et en particulier à la problématique de quantification en
+couleurs (/color quantization/ en anglais). Ce traitement d'image vise à réduire le nombre de
+couleurs dans une image sans pour autant changer son aspect visuel général.
+
+D'un point de vue informatique, une image est une série de pixels représentés par trois coordonnées
+associées à leur niveau de rouge, vert et bleu. Une image peut donc être considérée comme un tableau
+de données quantitatives à trois dimensions.
+
+** Chargement d'une image
+
+1. Installer et importer la [[https://scikit-image.org/docs/dev/user_guide/getting_started.html][librairie =skimage= ]] permettant de faire du traitement d'image : =import
+   skimage.io=. 
+   #+BEGIN_SRC python :results silent :exports code
+!pip install scikit-image
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+import skimage                        # Librairie de traitement d'image
+import skimage.io                     # Package skimage dédié au chargement et la sauvegarde des images
+   #+END_SRC
+
+2. Utiliser la fonction =skimage.io.imread= pour lire ce [[https://roland-donat.github.io/cours-class-non-sup/td/td3/streetball.jpg][fichier image]].
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+image_path = "https://roland-donat.github.io/cours-class-non-sup/td/td2/streetball.jpg"
+image_data = skimage.io.imread(image_path)
+px.imshow(image_data)
+   #+END_SRC
+
+3. Transformer l'image en un =DataFrame= à trois variables en utilisant la méthode =.reshape=
+   des =numpy.array=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+image_nb_pixels = image_data.shape[0]*image_data.shape[1]
+image_data_2d = image_data.reshape((image_nb_pixels, 3))
+image_data_df = pd.DataFrame(image_data_2d, columns=["R", "G", "B"])
+   #+END_SRC
+
+** Application des moyennes mobiles
+
+1. Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en 4
+   classes. Le modèle k-Means utilisé sera appelé =km_image=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_image = skc.KMeans(n_clusters=4).fit(image_data_df)
+   #+END_SRC
+
+2. Reconstruire une image en remplaçant chaque pixel par le centre de sa classe.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+image_data_clust = km_image.cluster_centers_[km_image.labels_]
+   #+END_SRC
+
+3. Afficher l'image obtenue sans oublier de retransformer les données de pixels dans la forme de
+   l'image originale.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.imshow(image_data_clust.reshape(image_data.shape))
+   #+END_SRC
+
+4. Recommencer le traitement en jouant sur le nombre de classes de la partition et tenter
+   d'interpréter les résultats.
+
+** Méthode du coude
+
+6. Partitionner l'image en faisant varier le nombre de classes et en calculant
+   les inerties expliquées correspondantes.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+# Calcul de l'inertie totale
+image_data_it = ((image_data_df - image_data_df.mean())**2).sum(axis=1).sum()
+
+# Méthode du coude
+inertie_ie = []
+K_list = range(2, 20)
+for k in K_list:
+    print(f"# groupes = {k}")
+    # Calcul d'une partition à k classes
+    km_image = skc.KMeans(n_clusters=k, n_init='auto').fit(image_data_df)
+    inertie_ie.append(1 - km_image.inertia_/image_data_it)
+   #+END_SRC
+   
+6. Représenter graphiquement l'évolution de l'inertie expliquée en fonction du nombre de
+   classes. Comment interpréter l'inertie expliquée dans cette application ?
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+# Représentation graphique des résultats
+px.line(x=K_list, y=inertie_ie, 
+        title="Inertie expliquée vs nb de classes (méthode du coude)",
+        markers=True,
+        width=800, height=800)
+   #+END_SRC
+
+
+* Exercice 3 : Implémentation des moyennes mobiles
+
+Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
+dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.
+
+Pour ce faire, il vous faudra créer les trois fonctions suivantes :
+
+1. La fonction =calcule_centres= qui calcule le centre de chaque classe à partir de données
+   quantitative et d'une partition.
+   #+BEGIN_SRC python :results silent :exports code
+def calcule_centres(data, partition):
+  
+  <à compléter>
+
+  return centres
+   #+END_SRC
+2. La fonction =affecte_classe= qui prend en entrée des données et les centres des classes et qui
+   affecte à chaque individu la classe ayant le centre le plus proche au sens de la distance euclidienne.
+   #+BEGIN_SRC python :results silent :exports code
+def affecte_classe(data, centres):
+
+  <à compléter>
+
+  return partition
+  #+END_SRC
+3. La fonction =mon_kmeans= qui prend en entrée des données et un nombre de classes et qui applique
+   la méthode des moyennes mobiles. L'initialisation est supposée aléatoire et on arrêtera
+   l'algorithme dès que la partition construite n'évolue plus entre deux itérations.
+   #+BEGIN_SRC python :results silent :exports code
+def my_kmeans(data, K):
+  
+  # Partition initiale
+  partition = np.random.choice(K, len(data))
+  
+  critere_arret = False
+  
+  while critere_arret:
+    
+    # Affectation des classes
+    centres = <à compléter>
+
+    # Calcul des nouveaux centres
+    partition = <à compléter>
+    
+    # Calcul du critère d'arrêt
+    critere_arret = <à compléter>
+
+  return partition, centres
+   #+END_SRC
+4. Utiliser votre algorithme sur les données des exercices précédents et comparer vos résultats avec
+   la méthode =KMeans= de =scikit-learn=.
+
+
+
+* Exercice : Données synthétiques                                  :noexport:
+
+Afin de mieux appréhender les propriétés des différentes méthodes de partitionnement, nous allons
+utiliser des données générées pour lesquelles nous avons contrôlé la forme de la distribution des
+groupes. 
+
+Nous pourrons ainsi évaluer les avantages et les limitations des méthodes sur des données dont on
+maîtrise le partitionnement /a priori/.
+
+** Données circulaires
+
+1. Chargez les données =data_circ.csv= à partir de l'adresse :
+   [[https://roland-donat.github.io/cours-class-non-sup/td/td2/data_circ.csv]]. Le séparateur utilisé
+   est le ";". 
+
+2. Visualisez les données. Combien de groupes identifiez vous ? Faites un résumé statistique visuel
+   des groupes.
+
+3. Appliquez un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.
+
+4. Appliquez un partitionnement avec un mélange gaussien et affichez le résultat.
+
+5. Évaluez les deux partitionnements obtenus et interprétez les résultats.
+
+** Données elliptiques
+
+1. Chargez les données =data_ellipse.csv= à partir de l'adresse :
+   [[https://roland-donat.github.io/cours-class-non-sup/td/td2/data_ellipse.csv]]. Le séparateur utilisé
+   est le ";". 
+
+2. Visualisez les données. Combien de groupes identifiez vous ? Faites un résumé statistique visuel
+   des groupes.
+
+3. Appliquez un partitionnement avec la méthode des moyennes mobiles et affichez le résultat.
+
+4. Appliquez un partitionnement avec un mélange gaussien et affichez le résultat.
+
+5. Évaluez les deux partitionnements obtenus et interprétez les résultats.
+
+6. Appliquez de nouveau la méthode du mélange gaussien en modifiant le paramètre
+   =covariance_type=. Visualisez et interprétez les résultats. 
+
+
+
+* TODO Influence de l'initialistaion  ???                          :noexport:
+6. Lancez la méthode =KMeans= en faisant varier le nombre d'initialisations (paramètre =n_init=) et
+   représentez graphiquement les inerties intra-classe obtenues en fonction du nombre
+   d'initialisations.
+
+
+* Mélange gaussien                                                 :noexport:
+
+1. Estimez un modèle gaussien à trois classes sur les données en utilisant les paramètres par
+   défaut. Ce modèle sera notée =gmm_1=. Aide : utilisez la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html][classe
+   =GaussianMixture= ]]du package =sklearn.mixture= (ou =skm= pour nous). 
+#+BEGIN_SRC python :results silent :exports code
+gmm_1 = skm.GaussianMixture(n_components=3)
+gmm_1.fit(data_wine_acp_2d_df)
+#+END_SRC
+
+2. Affichez les paramètres du modèle =gmm_1=. Aide : consultez les attributs =means_=,
+   =covariances_=, =weights_=.
+
+3. Calculez la partition des données =data_wine_acp_2d_df= à partir du modèle =gmm_1=.
+#+BEGIN_SRC python :results silent :exports code
+gmm_1_cls_pred = gmm_1.predict(data_wine_acp_2d_df)
+#+END_SRC
+
+4. Représenter graphiquement la partition =gmm_1_cls_pred=.
+
+5. Comparez vos résultats avec les partitions obtenues avec les moyennes mobiles. Que constatez vous ?
+
+6. Adaptez à la méthode des mélanges le principe de la méthode du coude vue pour le choix du nombre
+   de classes dans le cas des moyennes mobiles. Aide : utilisez l'attribut =bic= comme critère de
+   qualité sans oublier bien sûr de comprendre à quoi correspond ce critère.
+#+BEGIN_SRC python :results silent :exports code
+# Méthode du coude
+score = []
+K_list = range(2, 50)
+for k in K_list:
+  gmm_k_test = <à compléter>
+  score.append(gmm_k_test.bic(data_wine_acp_2d_df))
+
+# Représentation graphique des résultats
+px.line(x=K_list, y=score, 
+        title="BIC vs nb de classes (méthode du coude)",
+        width=500, height=500)
+#+END_SRC
+
+4. Créez une fonction =eval_partition= ayant les caractéristiques suivantes :
+   - Entrées :
+     - des données quantitatives sous forme de =DataFrame= =Pandas= ;
+     - une partition sous forme de =Series= =Pandas=.
+   - Retourne :
+     - l'inertie intra-classe de la partition dans le cas de données équipondérées de poids 1 ;
+     - le pourcentage d'inertie expliquée par la partition.
+#+BEGIN_SRC python :results silent :exports code
+def eval_partition(data_df, partition):
+    """
+    Entrées :
+    - data_df (pandas.DataFrame) : Données quantitatives
+    - partition (list, numpy.array ou pandas.Series) : partition des données
+    Sortie :
+    - inertie_intra : inertie intra-classe de la partition
+    - inertie_score : Inertie expliquée par la partition entre 0 et 1
+    """
+
+    # Calcul de l'inertie totale des données (cf. TD1)
+    # -> Calcul du centre de gravité des données
+    <à compléter>
+    # -> Calcul des distances au carré entre les données et le centre de gravité
+    <à compléter>
+    # -> Déduction de l'inertie totale
+    inertie_totale = <à compléter>
+
+    # Calcul de l'inertie interne aux classes (cf. TD1)
+    inertie_intra = 0
+    for cls, data_cls_df in data_df.groupby(partition):
+        # On rappelle que dans la boucle :
+        # - la variable cls contient le label de chaque classe
+        # - la variable data_cls_df est un DataFrame contenant les individus
+        #   de la classe cls
+        
+        # Calcul de l'inertie interne à la classe cls
+        # -> Calcul du centre de gravité des données de la classe cls
+        <à compléter>
+        # -> Calcul des distances au carré entre les données de la classe cls et 
+        #    le centre de gravité de la classe
+        <à compléter>
+        # -> Déduction de l'inertie interne
+        <à compléter>
+
+        # Ajout de l'inertie interne de la classe cls à l'inertie intra-classe
+        inertie_intra += <à compléter>
+
+    # Inertie expliquée par la partition
+    inertie_score = <à compléter>
+
+    return inertie_intra, inertie_score
+#+END_SRC
+
+4. Utilisez votre fonction =eval_partition= sur la partition du modèle =km_1= et comparez avec les résultats
+   obtenus par la classe =KMeans=.

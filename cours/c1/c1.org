@@ -1,0 +1,1979 @@
+# -*- coding: utf-8 -*-
+
+#+TITLE: Classification non supervisée - Clustering {{{NEWLINE}}}{{{NEWLINE}}} {{{HTMLFONTSIZE(Introduction et notions fondamentales,10)}}}
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+#+DATE: {{{NEWLINE}}}BUT Science des Données
+
+* Configuration                                                    :noexport:
+** Orgmode
+# Org-mode general options
+# ------------------------
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:nil toc:1 \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+DRAWERS: OPTIONS CACHE MACROS
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+#+MACRO: BLOCKTITLE @@html:<h4>$1</h4>@@ 
+
+** Reveal
+:OPTIONS:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+# #+REVEAL_ROOT: /home/roland/Work/Dev/Langages/javascript/reveal.js/
+#+REVEAL_INIT_OPTIONS: controlsLayout: 'edges', slideNumber:"c/t", center: false, transition: 'fade'
+#+REVEAL_EXTRA_CSS: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_reveal.css
+# #+REVEAL_EXTRA_CSS: ubs_iut_vannes_reveal.css
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 2
+#+REVEAL_TITLE_SLIDE_BACKGROUND: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg
+#+OPTIONS: reveal_single_file:nil
+:END:
+
+** LaTeX
+*** Class parameters
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+
+*** Packages
+#+LATEX_HEADER: \usepackage[french]{babel}
+
+#+LATEX_HEADER: \usepackage{graphicx}
+
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+
+#+LATEX_HEADER: \usepackage{minted}
+
+*** Document layout
+**** Graphics path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+**** Colors
+
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+**** Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+**** Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+**** Geometry
+
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+**** References
+
+#+LATEX: \renewcommand*{\refname}{}*
+
+*** Compilator
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+** Publishing configuration
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+        
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+         ("td-attach"
+         :base-directory "./td/"
+         :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("cours-attach"
+         :base-directory "./cours/"
+         :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ("projet-attach"
+         :base-directory "./projet/"
+         :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+         
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+         ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+
+
+
+
+
+* Notes perso                                                      :noexport:
+** DONE Revoir le titre du cours
+** DONE Parler de hiérarchie dans les méthodes 
+** DONE Fixer l'exemple avec les ellipses 
+** DONE Ajouter des exemples sur l'inertie
+** DONE Mettre des notations explicite sur l'inertie
+** DONE Attention le cours est dense, il ne faut pas trop perdre de temps au début
+   CLOSED: [2022-03-03 jeu. 10:29]
+** DONE Enlever le préambule sur A. Antoni
+   CLOSED: [2022-03-03 jeu. 10:29]
+** DONE Compléter faire/une nouvelle slide sur le process de segmentation
+   CLOSED: [2022-03-03 jeu. 10:29]
+Data -> (Réduc dim) -> seg -> interprétation/validation des classes (on passe en supervisé) ->
+classif nouvel indiv  
+
+** TODO Faire une illustration de la distance de mahalanobis, slide matrice de distance
+
+* Objectifs de la séance
+
+#+begin_block-definition
+{{{BLOCKTITLE(Objectifs de la séance)}}}
+
+- Définir la problématique de classification non supervisée
+- Replacer cette technique dans le paysage méthodologique de l'analyse de données
+- Rappeler et généraliser la notion de distance
+- Introduire le concept d'inertie dans le cadre d'une partition des données
+- Comprendre comment évaluer la qualité d'une partition
+ 
+#+end_block-definition
+
+# #+begin_block-definition
+# {{{BLOCKTITLE(Crédit)}}}
+
+# Ces slides sont inspirés du cours de [[https://moodle.univ-ubs.fr/mod/resource/view.php?id=147633][classification non supervisées 2019-2020 élaboré
+# par Mme. Arlette ANTONI]]
+# #+end_block-definition
+
+* Généralités et mise en contexte
+
+# #+ATTR_HTML: :width 80% :alt Légumes en vrac
+# [[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/vegetables.jpeg]]
+
+#+ATTR_HTML: :width 60% :alt Légumes en vrac
+[[./fig/tableau_légumes.png]]
+
+
+** Principes et objectifs
+
+#+begin_block-definition
+{{{BLOCKTITLE(Principes d'une classification)}}}
+
+Construire des groupes d'individus homogènes et différenciés à partir de leurs caractéristiques.
+
+Autrement dit, après classification, on souhaite que :
+- Les individus au sein d'un groupe soient aussi semblables que possible
+- Les groupes soient aussi différents que possible
+- Les groupes puissent être interprétés eu égard de l'objectif (métier) recherché 
+#+end_block-definition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Objectifs)}}}
+
+- Affecter à chaque individu une et une seule classe
+- Le résultat d'une classification est donc une nouvelle variable qualitative contenant le label (ou
+  numéro) de la classe pour chaque individu
+#+end_block-definition
+
+#+begin_block-alert
+{{{BLOCKTITLE(Périmètre du cours)}}}
+
+- Nous nous limiterons ici au problème de classification sur des *données quantitatives*
+- Toutefois, des méthodes existent pour traiter le cas des données qualitatives et mixtes
+#+end_block-alert
+ 
+
+*** Principes et objectifs
+{{{SUBTITLE(Exemple (1/3))}}}
+
+Considérons les données suivantes proposant des indicateurs socio-économiques de différents pays :
+#+BEGIN_SRC python :session principes_objectifs :results html :exports results 
+import pandas as pd
+
+data_filename = os.path.join("data", "country_data.csv")
+data_df = pd.read_csv(data_filename,
+                        sep=",")
+
+data_sel_df = data_df.head(6)[["country", "exports", "health", "income"]]
+
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '20px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+#+RESULTS:
+
+
+#+begin_block-example
+{{{BLOCKTITLE(Vocabulaire et conventions)}}}
+- Une colonne du tableau correspond aux valeurs prises par une des variables observées pour chacun
+  des individus
+- Une ligne du tableau correspond aux valeurs de chacune des variables pour un individu donné
+- La première colonne sans entête correspond aux identifiants des observations
+- Les identifiants sont ici des entiers positifs ou nuls mais nous pourrions aussi bien avoir des
+  labels textuels
+#+end_block-example
+
+*** Principes et objectifs
+{{{SUBTITLE(Exemple (2/3))}}}
+
+Classer des individus revient à ajouter une nouvelle variable qualitative donnant leur classe :
+
+#+BEGIN_SRC python :session principes_objectifs :results html :exports results 
+data_sel_df["class"] = ["C3", "C3", "C1", "C2", "C2", "C3"]
+
+props = [('font-size', '16px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_styles_class = {"class": [dict(selector="td", props=[("color", "#7a1d90")])]}
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .set_table_styles(data_styles_class, overwrite=False)\
+           .render()
+#+END_SRC
+
+#+begin_block-example
+{{{BLOCKTITLE(Exemple de classification/partition)}}}
+
+- Dans cet exemple, la classification/partition effectuée est :
+  - classe $C_{1}$ pour l'individu 2, notée $C_{1} = \{\boldsymbol{x}_{2}\}$
+  - classe $C_{2}$ pour les individus 3 et 4, notée $C_{2} = \{\boldsymbol{x}_{3}, \boldsymbol{x}_{4}\}$
+  - classe $C_{3}$ pour les individus 0, 1 et 5, notée $C_{3} = \{\boldsymbol{x}_{0},
+    \boldsymbol{x}_{1}, \boldsymbol{x}_{5}\}$
+- On pourra alors noter $C = \{C_{1}, C_{2}, C_{3}\}$ la partition précédente
+- Il est à noter que le nom des classes $C_{1}$, $C_{2}$ et $C_{3}$ a été choisi arbitrairement
+- Une classification étant un ensemble d'ensembles d'individus, l'ordre des classes n'a pas
+  d'importance, e.g. $C^{\prime} = \left\{\{\boldsymbol{x}_{3}, \boldsymbol{x}_{4}\}, \{\boldsymbol{x}_{0}, \boldsymbol{x}_{1},
+  \boldsymbol{x}_{5}\}, \{\boldsymbol{x}_{2}\}\right\} = C$
+#+end_block-example
+
+*** Principes et objectifs                                  
+{{{SUBTITLE(Exemple (3/3))}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_1.png]]
+
+*** Principes et objectifs                                  
+{{{SUBTITLE(Exemple (3/3))}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_2.png]]
+
+*** Principes et objectifs                                  
+{{{SUBTITLE(Exemple (3/3))}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_3.png]]
+*** Principes et objectifs                                  
+{{{SUBTITLE(Exemple (3/3))}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif.png]]
+
+*** Principes et objectifs                                         :noexport:
+{{{SUBTITLE(Exemple (3/3))}}}
+
+#+BEGIN_SRC python :session c1_ex_pairs_cls_kmeans :results html :exports results 
+import plotly.io as pio
+from c1_ex_pairs_cls_kmeans import data_classif_fig
+
+pio.to_html(data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+
+** Classification supervisée vs non supervisée
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 45%">
+
+#+begin_block-definition
+{{{BLOCKTITLE(Classification supervisée)}}}
+- On classe les individus en ayant à disposition des individus déjà classés
+- Le nombre de classes/groupes est connu
+- *Méthode d'aide à la décision*
+#+end_block-definition
+{{{NEWLINE}}}
+
+#+BEGIN_SRC python :session c1_ex_csup_vs_nsup :results html :exports results 
+import pandas as pd
+
+data_filename = os.path.join("data", "country_data.csv")
+data_df = pd.read_csv(data_filename, sep=",")
+
+data_sel_df = \
+    data_df.head(6)[["country", "exports", "health", "income"]]\
+           .set_index("country")
+
+data_sel_df["class"] = ["C3", "C3", "C1", "C2", "?", "?"]
+
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '16px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_styles_class = {"class": [dict(selector="td", props=[("color", "#7a1d90")])]}
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .set_table_styles(data_styles_class, overwrite=False)\
+           .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 45%">
+
+#+begin_block-definition
+{{{BLOCKTITLE(Classification non supervisée)}}}
+
+- On classe les individus sans observer d'individu classé
+- Le nombre de classes/groupes n'est pas connu
+- *Méthode d'analyse descriptive*
+#+end_block-definition
+{{{NEWLINE}}}
+
+#+BEGIN_SRC python :session c1_ex_csup_vs_nsup :results html :exports results 
+data_sel_df["class"] = ["?", "?", "?", "?", "?", "?"]
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .set_table_styles(data_styles_class, overwrite=False)\
+           .render()
+#+END_SRC
+
+#+RESULTS:
+
+
+#+REVEAL_HTML: </div>
+
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_sup_1.png]]
+
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_sup_2.png]]
+
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_sup_3.png]]
+
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_sup.png]]
+
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche non supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_nonsup_1.png]]
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche non supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_nonsup_2.png]]
+*** Classification supervisée vs non supervisée
+{{{SUBTITLE(Démarche non supervisée)}}}
+
+#+ATTR_HTML: :width 100% :alt Principe de partitionnement
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/principe_classif_nonsup.png]]
+
+
+** Applications de la classification non supervisée
+{{{SUBTITLE(Exemples)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Marketing)}}}
+
+- Segmenter les clients par rapport à leurs comportements de consommation
+- Analyser les liens entre différents profils clients
+
+#+end_block-example
+
+#+begin_block-example
+{{{BLOCKTITLE(Sport)}}}
+
+- Identifier des groupes d'athlètes en fontion de leurs caractéristiques et objectifs
+- Élaborer des programmes d'entraînements adaptés aux différents profils d'athlètes
+#+end_block-example
+
+#+begin_block-example
+{{{BLOCKTITLE("Intelligence artificielle")}}}
+
+- Traitement naturel du langage (identification de thématiques, génération de contenu, etc)
+- Traitement et génération d'images
+  
+#+end_block-example
+
+*** Applications de la classification non supervisée
+
+#+begin_block-example
+{{{BLOCKTITLE(Terminologie)}}}
+
+La classification non supervisée, /clustering/ ou classification automatique sont les termes les
+plus utilisés par le monde académique.
+
+En entreprise, on rencontre plutôt les appellations suivantes :
+- Segmentation, typologie, en marketing
+- Taxinomie, plutôt dans les domaines du vivant, e.g. biologie, zoologie, etc.
+- Nosologie, en médecine
+#+end_block-example
+
+
+** Classification automatique vs Analyses factorielles
+
+#+ATTR_HTML: :width 100% :alt Classification vs ACP
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/classif_vs_af_1.png]]
+
+*** Classification automatique vs Analyses factorielles
+
+#+ATTR_HTML: :width 100% :alt Classification vs ACP
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/classif_vs_af_2.png]]
+
+
+*** Classification automatique vs Analyses factorielles
+
+#+ATTR_HTML: :width 100% :alt Classification vs ACP
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/classif_vs_af_3.png]]
+
+
+*** Classification automatique vs Analyses factorielles
+
+#+ATTR_HTML: :width 100% :alt Classification vs ACP
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/classif_vs_af.png]]
+
+
+** Grands principes méthodologiques
+
+#+begin_block-definition
+{{{BLOCKTITLE(Principe général)}}}
+
+- Classer des individus, c'est regroupé des individus qui "se ressemblent"
+- On doit donc définir :
+  1. La notion d'"individus semblables"
+  2. Le nombre de groupes/classes à construire
+#+end_block-definition
+
+#+begin_block-example
+{{{BLOCKTITLE(Approches possibles pour déterminer la classe d'un individu)}}}
+
+1. *Approches géométriques* : deux individus sont dans le même groupe/partagent
+   la même la classe s'ils sont proches géométriquement (distance à définir)
+2. *Approches probabilistes* : on affecte la classe en choisissant celle qui maximise la
+   probabilité d'observer l'individu (loi de probabilité à définir)
+#+end_block-example
+
+#+begin_block-example
+{{{BLOCKTITLE(Méthodes de classification classiques)}}}
+
+1. *Méthodes de partitionnement* : on cherche à partitionner l'ensemble des individus en groupes
+   distincts, e.g. moyennes mobiles, modèles de mélange
+2. *Méthodes hiérarchiques/agglomératives* : on cherche à construire une structure de classes emboîtées que l'on
+   représente souvent sous la forme d'un arbre, e.g. classification ascendante hiérarchique
+#+end_block-example
+
+** Espaces de classification
+{{{SUBTITLE(Les partitions)}}}
+
+*Nous reparlerons plus en détails des partitions lors du cours sur les méthodes de partitionnement*
+
+#+BEGIN_SRC python :session c1_ex_stats_cls_kmeans :results html :exports results 
+import plotly.io as pio
+import c1_ex_stats_cls_kmeans as ex                                                
+
+pio.to_html(ex.data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+** Espaces de classification
+{{{SUBTITLE(La hiérarchie)}}}
+
+*Nous reparlerons plus en détails des hiérarchies lors du cours sur les méthodes agglomératives*
+
+#+BEGIN_SRC python :session c1_ex_dendrogram :results html :exports results 
+import plotly.io as pio
+import c1_ex_dendrogram as ex                                                
+
+pio.to_html(ex.data_dendro_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+
+
+* Éléments de formalisation
+
+#+ATTR_HTML: :width 80% :alt Maths
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/maths.jpg]]
+# [[./fig/maths.jpg]]
+
+
+** Représentation des données
+{{{SUBTITLE(Représentation matricielle)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Représentation matricielle des données)}}}
+
+Mathématiquement, il est commode de représenter un tableau de données par une matrice de $N$ lignes et $D$ colonnes :
+
+\begin{equation*}
+\boldsymbol{X} = 
+\left [
+\begin{array}{ccccc}
+x_{1,1} & \ldots & x_{1,d} & \ldots & x_{1,D} \\
+\vdots  &        & \vdots  &        & \vdots \\
+x_{n,1} & \ldots & x_{n,d} & \ldots & x_{n,D} \\
+\vdots  &        & \vdots  &        & \vdots \\  
+x_{N,1} & \ldots & x_{N,d} & \ldots & x_{N,D} \\
+\end{array}
+\right ]
+\end{equation*}
+
+- $N$ correspond au nombre d'individus/observations contenus dans les données
+- $D$ correspond à la dimension des données, autrement dit le nombre de variables observées
+- Le vecteur colonne $\boldsymbol{x}_{\cdot, d}=(x_{1,d}, \ldots, x_{n,d}, \ldots, x_{N,d})$
+  représente les valeurs prises par la variable $d$ de chaque individu/observation
+- Le vecteur ligne $\boldsymbol{x}_{n} = \boldsymbol{x}_{n, \cdot}=(x_{n,1}, \ldots, x_{n,d}, \ldots, x_{n,D})$
+  représente le $n$ -ème individu/observation
+#+end_block-definition
+
+*** Représentation des données
+{{{SUBTITLE(Exemple)}}}
+
+#+BEGIN_SRC python :session repr_data :results html :exports results 
+import pandas as pd
+
+data_filename = os.path.join("data", "country_data.csv")
+data_df = pd.read_csv(data_filename, sep=",")
+
+data_sel_df = data_df.head(3)[["country", "exports", "health", "income"]].set_index("country")
+
+props = [('font-size', '14px')]
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+- Ces données contiennent $N=3$ observations caractérisés par $D=3$ variables
+- =exports=, =health= et =income= sont les noms des variables
+- Les données sont indexées par des labels correspondant à des noms de pays (=country=)
+- $\boldsymbol{x}_{\text{Albania}} = \boldsymbol{x}_{2} = \boldsymbol{x}_{2,\cdot}=(28.0, 6.55, 9930)$ est le second individu/observation
+- $\boldsymbol{x}_{\cdot,\text{health}} = \boldsymbol{x}_{\cdot,2}=(7.58, 6.55, 4.17)$ sont les valeurs observées de la variable =health=
+- $x_{1,1} = 10.00$, $x_{2,3} = 9930$, $x_{\text{Algeria},\text{exports}} = 38.40$
+
+#+begin_block-alert
+{{{BLOCKTITLE(Logiciels et indexation)}}}
+
+- Dans les notations précédentes, nous avons indexé nos matrices et vecteurs à 1
+- Cela signifie que la première observation est référencée par l'indice 1, la seconde par l'indice 2,
+  etc. (idem pour les variables)
+- Toutefois, certains logiciels indexent les listes, vecteurs, matrices à partir de 0 (e.g. =Python=)
+- Avec une indexation à 0, $x_{0,0} = x_{\text{Afghanistan},\text{exports}} = 10.00$ et $x_{1,2} =
+  x_{\text{Albania},\text{health}} = 9930$  
+- *Il faudra donc être vigilant en se souvenant du décalage d'indice*
+#+end_block-alert
+
+
+
+* Notion de proximité
+
+# #+ATTR_HTML: :width 60% :alt Dissimilarity
+# [[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/dissimilarity.jpg]]
+# # [[./fig/distance.jpg]]
+
+#+ATTR_HTML: :width 60% :alt Dissimilarity
+[[./fig/fruits.png]]
+
+
+** Principe général
+
+#+begin_block-definition
+{{{BLOCKTITLE(Notion de proximité)}}}
+
+- Deux individus sont semblables s'ils sont proches au sens d'une mesure de proximité
+- La proximité géométrique entre deux individus est généralement mesurée à l'aide d'une
+  dissimilarité ou d'une distance
+- Par extension, il est possible de définir et calculer des distances entre classes, entre
+  individus et classes, entre groupes d'individus, etc. 
+#+end_block-definition
+
+{{{NEWLINE}}}
+
+#+BEGIN_SRC python :session c1_ex_distances :results silent :exports results 
+import pandas as pd
+import plotly.io as pio
+import c1_ex_distances as ex
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 30%">
+
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '14px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_2d_df.select_dtypes(float).columns}
+
+ex.data_2d_df.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 70%">
+
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+pio.to_html(ex.data_2d_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="375",
+            default_width="750",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+#+REVEAL_HTML: </div>
+
+
+** Distance euclidienne
+
+#+begin_block-definition
+{{{BLOCKTITLE(Distance euclidienne)}}}
+
+La distance euclidienne est une fonction $d$ définie pour tous vecteurs $\boldsymbol{x}_{\ell} = (x_{\ell, 1}, \ldots,
+x_{\ell, D}) \in \mathbb{R}^{D}$ et
+$\boldsymbol{x}_{m} = (x_{m, 1}, \ldots,
+x_{m, D}) \in \mathbb{R}^{D}$ :
+$$
+d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sqrt{\sum_{d = 1}^{D} \left(x_{\ell,d} - x_{m,d}\right)^{2}}
+$$
+#+end_block-definition
+
+#+begin_block-example
+{{{BLOCKTITLE(Distance euclienne en dimensions 2 et 3)}}}
+- Si $D=2$, on a $\boldsymbol{x}_{\ell} = (x_{\ell, 1}, x_{\ell, 2}) \in
+  \mathbb{R}^{2}$, $\boldsymbol{x}_{m} = (x_{m, 1}, x_{m, 2}) \in \mathbb{R}^{2}$ et :
+$$
+d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sqrt{\left(x_{\ell,1} -
+x_{m,1}\right)^{2} + \left(x_{\ell,2} -
+x_{m,2}\right)^{2}}
+$$
+- Si $D=3$, on a $\boldsymbol{x}_{\ell} = (x_{\ell, 1}, x_{\ell, 2}, x_{\ell, 3})$, $\boldsymbol{x}_{m} = (x_{m, 1}, x_{m, 2}, , x_{m, 3})$ et :
+$$
+d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sqrt{\left(x_{\ell,1} -
+x_{m,1}\right)^{2} + \left(x_{\ell,2} -
+x_{m,2}\right)^{2} + \left(x_{\ell,3} -
+x_{m,3}\right)^{2}}
+$$
+
+#+end_block-example
+
+
+*** Distance euclidienne
+{{{SUBTITLE(Exemple en dimension 2)}}}
+
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '18px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_2d_df.select_dtypes(float).columns}
+
+ex.data_2d_df.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+
+{{{NEWLINE}}}
+
+- $d(\text{Albania},\text{Australia}) = \sqrt{(28-19.8)^{2} + (48.6-20.9)^{2}} = \sqrt{834.53} \simeq 28.89$
+- $d(\text{Afghanistan},\text{Angola}) = \sqrt{(10-62.3)^{2} + (44,9-42,9)^{2}} \simeq 52.33$
+
+
+*** Distance euclidienne
+{{{SUBTITLE(Exemple en dimension 3)}}}
+
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '18px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_3d_df.select_dtypes(float).columns}
+
+ex.data_3d_df.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+{{{NEWLINE}}}
+
+- $d(\text{Albania},\text{Australia}) = \sqrt{(28-19.8)^{2} + (48.6-20.9)^{2} + (9930-41400)^{2}} \simeq 31470.01$
+- $d(\text{Afghanistan},\text{Angola}) = \sqrt{(10-62.3)^{2} + (44,9-42,9)^{2} + (1610-5900)^{2}} \simeq 4290.32$
+
+
+** Définition formelle d'une distance
+
+#+begin_block-definition
+{{{BLOCKTITLE(Distance)}}}
+
+Soit $d$ une distance définie sur $\mathbb{R}^{D}$. Nous avons alors pour tout $\boldsymbol{x}_{\ell},
+\boldsymbol{x}_{m} \in \mathbb{R}^{D}$, les propriétés suivantes :
+- (positivité) $d$ est une application $\mathbb{R}^{D} \times \mathbb{R}^{D}$ dans $\mathbb{R}^{+}$,
+  i.e. 
+  $$
+  d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) \ge 0
+  $$ 
+- (symétrie) $d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = d(\boldsymbol{x}_{m}, \boldsymbol{x}_{\ell})$ 
+- (séparation) $d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = 0 \iff \boldsymbol{x}_{\ell} = \boldsymbol{x}_{m}$
+- (inégalité triangulaire)
+  Pour tout $\boldsymbol{x}_{p} \in \mathbb{R}^{D}$, ${x}_{p} \neq {x}_{\ell}, {x}_{m}$
+  $$
+  d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) < d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{p}) + d(\boldsymbol{x}_{p}, \boldsymbol{x}_{m})
+  $$
+#+end_block-definition
+
+** Autres distances usuelles
+
+Il existe d'autres distances classiquement utilisées en statistiques permettant de mettre en
+évidence ou limiter certaines propriétés des données considérées :
+
+- *Distance de Manhattan* :
+  $$
+  d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sum_{d=1}^{D} |x_{\ell,d} - x_{m,d}|
+  $$
+- *Distance euclidienne pondérée par la variance des variables* :
+  $$
+  d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sqrt{\sum_{d=1}^{D} \frac{1}{S^{2}_{d}} \left(x_{\ell,d} - x_{m,d}\right)^{2}}
+  $$
+  avec $S^{2}_{d}$ la variance empirique de la variable $d$ calculée à partir des données
+- *Distance de Mahalanobis* (pondérations avec les corrélations linéaires) :
+  $$
+  d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m}) = \sqrt{\left(\boldsymbol{x}_{\ell} - \boldsymbol{x}_{m}\right)^{T}
+  \Sigma^{-1} \left(\boldsymbol{x}_{\ell} - \boldsymbol{x}_{m}\right)}
+  $$
+  avec $\Sigma^{-1}$ la matrice de variance-covariance empirique calculée à partir des données
+
+** Importance du choix de la distance
+
+- Choisir une distance, c'est mettre en avant certaines caractéristiques des données, certains
+  individus ou groupes d'individus
+- Analogie avec la technique d'anamorphose en géomatique :
+
+#+ATTR_HTML: :width 95% :alt Anamorphose
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/Emissions_CO2Total_2016_relativeemissions.png]]
+
+** Matrice de distances
+
+#+begin_block-definition
+{{{BLOCKTITLE(Matrice de distances)}}}
+
+Soit $\boldsymbol{X}$ un tableau de données contenant un ensemble de $N$ individus
+$\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$. En choisissant une distance $d$, nous pouvons
+regrouper les distances de tous les couples $(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m})$ dans une
+matrice $\boldsymbol{\Delta}_{d}$ de taille $N \times N$ telle que :
+$$
+\boldsymbol{\Delta}_{d}(\ell, m) = d(\boldsymbol{x}_{\ell}, \boldsymbol{x}_{m})
+$$
+
+La matrice $\boldsymbol{\Delta}_{d}$ est appelée matrice de distances des données $\boldsymbol{X}$ par
+rapport à la distance $d$ (e.g. distance euclidienne, Mahalanobis, etc.)
+#+end_block-definition
+
+*** Matrice de distances
+{{{SUBTITLE(Exemple)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 30%">
+
+Données :
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_3d_df.select_dtypes(float).columns}
+
+ex.data_3d_df.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 60%">
+
+Distances euclidiennes :
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_3d_euc_dmat.select_dtypes(float).columns}
+
+ex.data_3d_euc_dmat.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+Distances de Mahalanobis :
+#+BEGIN_SRC python :session c1_ex_distances :results html :exports results 
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+format_dict = {var: '{:.2f}' for var
+               in ex.data_3d_mah_dmat.select_dtypes(float).columns}
+
+ex.data_3d_mah_dmat.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .render()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+* Notion d'inertie
+
+#+ATTR_HTML: :height 80% :alt artwork
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c1/fig/inertia.jpg]]
+
+
+** Inertie d'un nuage d'individus
+
+#+begin_block-example
+{{{BLOCKTITLE(Intuition)}}}
+
+- L'inertie d'un nuage d'individus par rapport à un point de l'espace correspond à la somme des carrés des distances
+  (pondérées) des individus par rapport à ce point
+- Le calcul d'une inertie dépend donc :
+  - de la distance utilisée
+  - des pondérations des individus
+- L'inertie permet de mesurer l'éloignement d'un groupe d'individus par
+  rapport à un point donné 
+- *Interprétation : Si l'inertie d'un nuage d'individus par rapport à un point de référence est grande, cela signifie que les
+  individus sont globalement éloignés de ce point*
+#+end_block-example
+
+#+begin_block-example
+{{{BLOCKTITLE(Ok... Mais quel rapport avec la classification ?)}}}
+
+- L'inertie peut être utilisée comme critère de qualité d'une partition des données
+- En effet, plus les individus d'une même classe sont globalement proches les uns des autres, ou autrement dit
+  sont proches du centre de la classe, plus cette classe aura tendance a être homogène donc de
+  bonne qualité.
+- On cherchera donc à minimiser l'inertie dite "intra-classe" afin de produire une "bonne" partition
+#+end_block-example
+
+*** Inertie d'un nuage de points
+  :PROPERTIES:
+  :CUSTOM_ID: inertie-def
+  :END:
+{{{SUBTITLE(Définition générale)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie d'un ensemble d'individus par rapport à un point)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant un ensemble de $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$
+- Chaque individu est défini par $D$ variables, i.e. tout individu $n$ est représenté par un
+  vecteur $\boldsymbol{x}_{n} = (x_{n, 1}, \ldots, x_{n, D}) \in \mathbb{R}^{D}$
+- Nous supposons également que chaque individu $\boldsymbol{x}_{n}$ possède un poids
+  $\omega_{n} \ge 0$ 
+- Considérons ensuite :
+  - un sous groupe d'individus caractérisé par leurs indices $\mathcal{G} \subseteq \{1, 2, \ldots, N\}$
+  - un point/vecteur $\boldsymbol{a} = (a_{1}, \ldots, a_{D})$ de l'espace $\mathbb{R}^{D}$ 
+  - une distance $d$ définie sur l'espace $\mathbb{R}^{D}$
+- L'inertie des individus du groupe $\mathcal{G}$ par rapport au point $\boldsymbol{a}$ est
+  alors :
+  $$
+  I_{\boldsymbol{a}}(\mathcal{G}) = \sum_{i \in \mathcal{G}} \omega_{i}
+  d(\boldsymbol{x}_{i}, \boldsymbol{a})^{2}
+  $$
+#+end_block-definition
+
+#+BEGIN_SRC python :session c1_ex_inertie :results silent :exports results 
+import pandas as pd
+import plotly.io as pio
+import c1_ex_inertie as ex
+#+END_SRC
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 1)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 0
+j = 0
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 2)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 0
+j = 1
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 3)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 0
+j = 2
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 4)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 1
+j = 0
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 5)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 1
+j = 1
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Exemple 6)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left"; width: 60%">
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+i = 1
+j = 2
+
+pio.to_html(ex.inertia_res[i][j]["fig"], 
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="700",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+#+REVEAL_HTML: <div class="column" style="float:right"; width: 40%">
+Point de référence :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '9px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.point_ref_list[j].to_frame()\
+                    .transpose()\
+                    .style\
+                    .format(format_dict)\
+                    .hide_index()\
+                    .set_table_styles(data_styles)\
+                    .render()
+#+END_SRC
+
+Groupe d'individus :
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+data_sel_df = ex.data_extract_df_list[i].assign(poids=ex.data_weights,
+                                                inertie=ex.inertia_res[i][j]["contrib"])
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles)\
+           .render()
+#+END_SRC
+
+
+
+#+REVEAL_HTML: </div>
+
+
+*** Inertie d'un nuage de points
+{{{SUBTITLE(Cas équipondéré)}}} 
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie dans le cas équipondéré)}}}
+
+- Supposons à présent que les individus $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ soient équipondérés
+- La [[#inertie-def][définition générale précédente]] de l'inertie d'un groupe d'individus par rapport à un point
+  devient :
+  - Si $\omega_{n} = 1/N$, pour tout individu $\boldsymbol{x}_{n}$ :
+    $$
+    I_{\boldsymbol{a}}(\mathcal{G}) = \frac{1}{N} \sum_{i \in \mathcal{G}}
+    d(\boldsymbol{x}_{i}, \boldsymbol{a})^{2}
+    $$
+  - Si $\omega_{n} = 1$, pour tout individu $\boldsymbol{x}_{n}$ :
+    $$
+    I_{\boldsymbol{a}}(\mathcal{G}) = \sum_{i \in \mathcal{G}}
+    d(\boldsymbol{x}_{i}, \boldsymbol{a})^{2}
+    $$
+
+#+end_block-definition
+
+
+
+** Centre de gravité
+  :PROPERTIES:
+  :CUSTOM_ID: centre-gravite-def
+  :END:
+{{{SUBTITLE(Définition)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Centre de gravité d'un sous-groupe d'individus)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant un ensemble de $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ caractérisés dans $\mathbb{R}^{D}$ et
+  pondérés par $\omega_{1}, \ldots, \omega_{N}$
+- Considérons un sous groupe d'individus $\mathcal{G} \subseteq \{1, 2, \ldots, N\}$
+- Le centre de gravité du groupe $\mathcal{G}$, noté $\boldsymbol{\mu}_{\mathcal{G}} \in
+  \mathbb{R}^{D}$ est défini par :
+  $$
+  \boldsymbol{\mu}_{\mathcal{G}} = \frac{1}{\Omega_{\mathcal{G}}} \sum_{i \in \mathcal{G}}
+  \omega_{i} \boldsymbol{x}_{i}
+  $$
+  avec $\Omega_{\mathcal{G}} = \sum_{i \in \mathcal{G}} \omega_{i}$
+#+end_block-definition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Cas équipondéré)}}}
+
+- Dans le cas où, pour tout $n$, $\omega_{n} = \omega > 0$, i.e. tous les individus ont le même poids
+- Le centre de gravité du groupe $\mathcal{G}$ devient :
+  $$
+  \boldsymbol{\mu}_{\mathcal{G}} = \frac{1}{N_{\mathcal{G}}} \sum_{i \in \mathcal{G}} \boldsymbol{x}_{i}
+  $$
+  avec $N_{\mathcal{G}} = \text{Card}(\mathcal{G})$
+#+end_block-definition
+
+** Inertie totale
+
+L'inertie totale correspond à l'inertie du nuage d'individus $\boldsymbol{X}$ par rapport à son
+centre de gravité. 
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie totale)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ de $\mathbb{R}^{D}$ et
+  pondérés par $\omega_{1}, \ldots, \omega_{N}$
+- L'inertie totale des individus $\boldsymbol{X}$, notée $I_{\text{T}}$, est :
+  $$
+  I_{\text{T}} = I_{\boldsymbol{\mu}_{\boldsymbol{X}}}(\boldsymbol{X}) = \sum_{n = 1}^{N} \omega_{n}
+  d(\boldsymbol{x}_{n}, \boldsymbol{\mu}_{\boldsymbol{X}})^{2} 
+  $$ 
+  où $\boldsymbol{\mu}_{\boldsymbol{X}} \in \mathbb{R}^{D}$ est le centre de gravité du nuage
+  d'individus $\boldsymbol{X}$
+#+end_block-definition
+
+*** Inertie totale
+{{{SUBTITLE(Exemple)}}}
+
+#+BEGIN_SRC python :session c1_ex_inertie :results html :exports results 
+pio.to_html(ex.data_it_fig,
+            include_plotlyjs="cdn",
+            full_html=False,
+            default_height="550",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+*** Inertie totale
+{{{SUBTITLE(Lien avec la variance)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Cas équipondéré et distance euclidienne)}}}
+
+- Considérons le cas équipondéré dans lequel $\omega_{n} = 1/N$, pour tout $n$
+- Supposons également que la distance $d$ est la distance euclidienne
+- L'inertie totale $I_{\text{T}}$ correspond alors à la *somme des variances empiriques $S^{2}_{d}$
+  des variables* :
+  $$
+  I_{\text{T}} = \sum_{n = 1}^{N} \frac{1}{N} \sum_{d = 1}^{D}
+  (x_{n,d} - \mu_{\boldsymbol{X},d})^{2} =  \sum_{d = 1}^{D} \underbrace{\frac{1}{N} \sum_{n = 1}^{N} 
+  (x_{n,d} - \mu_{\boldsymbol{X},d})^{2}}_{S^{2}_{d}} 
+  $$ 
+
+#+end_block-example
+
+** Inertie intra-classe
+{{{SUBTITLE(Intuition)}}}
+
+- Nous supposons à présent qu'une partition sur le nuage d'individus
+  $\boldsymbol{X}$ a été construite
+- L'inertie intra-classe correspond à la somme des inerties des nuages d'individus de chaque classe
+  par rapport au centre de gravité de la classe 
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_rnd import data_classif_fig
+
+pio.to_html(data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_kmeans import data_classif_fig
+
+pio.to_html(data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+*** Inertie intra-classe
+{{{SUBTITLE(Exemple (1/2))}}}
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_rnd import data_classif_iw_fig
+
+pio.to_html(data_classif_iw_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+*** Inertie intra-classe
+{{{SUBTITLE(Exemple (2/2))}}}
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_kmeans import data_classif_iw_fig
+
+pio.to_html(data_classif_iw_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+*** Inertie intra-classe
+  :PROPERTIES:
+  :CUSTOM_ID: inertie-classe-def
+  :END:
+
+{{{SUBTITLE(Définition)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie intra-classe)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ définis dans $\mathbb{R}^{D}$ et
+  pondérés par $\omega_{1}, \ldots, \omega_{N}$
+
+- Considérons une partition de $\boldsymbol{X}$ à $K$ classes, notée $C = \{C_{1},\ldots,C_{K}\}$
+
+- L'inertie intra-classe de la partition $C$, notée $I_{\text{W}}(C)$ ("W" pour /within/ en anglais), est :
+  $$
+  I_{\text{W}}(C) = \sum_{k=1}^{K} I_{\boldsymbol{\mu}_{k}}(C_{k}) = \sum_{k=1}^{K} \sum_{i \in C_{k}} \omega_{i}
+  d(\boldsymbol{x}_{i}, \boldsymbol{\mu}_{k})^{2} 
+  $$
+  où $I_{\boldsymbol{\mu}_{k}}(C_{k})$ est l'inertie des individus de la classe $k$ par rapport à son centre $\boldsymbol{\mu}_{k}$
+
+- $\boldsymbol{\mu}_{k} \in \mathbb{R}^{D}$ est le centre de gravité du nuage
+  d'individus appartenant à la classe $k$ avec :
+  $$
+  \boldsymbol{\mu}_{k} = \frac{1}{\Omega_{k}} \sum_{i \in C_{k}} \omega_{i} \boldsymbol{x}_{i}
+  $$
+  où $\Omega_{k} = \sum_{i \in C_{k}} \omega_{i}$ correspond au poids de la classe $k$
+#+end_block-definition
+
+*** Inertie intra-classe
+{{{SUBTITLE(Inertie de classe)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie de classe)}}}
+
+- En considérant une partition de $\boldsymbol{X}$ à $K$ classes $\{C_{1},\ldots,C_{K}\}$
+- Le terme $I_{\boldsymbol{\mu}_{k}}(C_{k})$ correspond à l'inertie des individus de la classe $k$ par
+  rapport à son centre $\boldsymbol{\mu}_{k}$
+- On peut désigner le terme $I_{\boldsymbol{\mu}_{k}}(C_{k})$ comme l'inertie interne de la classe
+  $k$ 
+- L'inertie interne de la classe $k$ s'interprète comme la quantité d'information perdue lorsque
+  l'on résume le nuage d'individus de la classe $k$ par le centre de la classe
+- *Une bonne partition pourra donc consister à minimiser les inerties internes de chaque classe de
+  manière à minimiser globalement l'inertie intra-classe du nuage d'individus*
+#+end_block-definition
+
+
+*** Inertie intra-classe
+{{{SUBTITLE(Lien avec la variance)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Cas équipondéré et distance euclidienne)}}}
+
+- Considérons le cas équipondéré dans lequel $\omega_{n} = 1/N$, pour tout $n$
+- Supposons également que la distance $d$ est la distance euclidienne
+- Notons $N_{k} = \text{Card}(C_{k})$, l'effectif de la classe $k$
+- Le poids de la classe $k$ est égale à $\Omega_{k} = \sum_{i \in C_{k}} \omega_{i} = \frac{N_{k}}{N}$
+- L'inertie interne de la classe $k$ se réécrit : 
+  $$
+  I_{\boldsymbol{\mu}_{k}}(C_{k}) = \sum_{i \in C_{k}} \frac{1}{N} \sum_{d = 1}^{D}
+  (x_{i,d} - \mu_{k,d})^{2} = \Omega_{k}  \sum_{d = 1}^{D} \underbrace{\frac{1}{N_{k}} \sum_{i \in C_{k}} 
+  (x_{i,d} - \mu_{k,d})^{2}}_{S^{2}_{k,d}} = \Omega_{k} \sum_{d = 1}^{D} S^{2}_{k,d}
+  $$
+  avec $S^{2}_{k,d}$, la *variance empirique de la variable $d$ pour les individus de la classe $k$*
+- L'inertie intra-classe de la partition $C$ est donné dans ce cas par
+  $$
+  I_{\text{W}}(C) = \sum_{k = 1}^{K} \Omega_{k} \sum_{d = 1}^{D} S^{2}_{k,d}
+  $$ 
+
+#+end_block-example
+
+
+** Inertie inter-classe
+{{{SUBTITLE(Intuition)}}}
+
+L'inertie inter-classe correspond à l'inertie du nuage des centres de gravité des classes par
+  rapport au centre de gravité du nuage d'individus
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_rnd import data_classif_ib_fig
+
+pio.to_html(data_classif_ib_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+*** Inertie inter-classe
+{{{SUBTITLE(Intuition)}}}
+
+L'inertie inter-classe correspond à l'inertie du nuage des centres de gravité des classes par
+  rapport au centre de gravité du nuage d'individus
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_kmeans import data_classif_ib_fig
+
+pio.to_html(data_classif_ib_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+
+
+*** Inertie inter-classe
+{{{SUBTITLE(Définition)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Inertie inter-classe)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus
+  $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ définis dans $\mathbb{R}^{D}$ et
+  pondérés par $\omega_{1}, \ldots, \omega_{N}$
+
+- Considérons une partition de $\boldsymbol{X}$ à $K$ classes, notée $C = \{C_{1},\ldots,C_{K}\}$
+
+- L'inertie inter-classe de la partition $C$, notée $I_{\text{B}}(C)$ ("B" pour /between/ en anglais), est :
+  $$
+  I_{\text{B}}(C) = \sum_{k=1}^{K} \Omega_{k} d(\boldsymbol{\mu}_{k}, \boldsymbol{\mu}_{\boldsymbol{X}})^{2} 
+  $$
+  où $\Omega_{k} = \sum_{i \in C_{k}} \omega_{i}$ correspond au poids de la classe $k$
+#+end_block-definition
+
+*** Inertie inter-classe
+{{{SUBTITLE(Lien avec la variance)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Cas équipondéré et distance euclidienne)}}}
+
+- Considérons le cas équipondéré dans lequel $\omega_{n} = 1/N$, pour tout $n$
+- Supposons également que la distance $d$ est la distance euclidienne
+- Notons $N_{k} = \text{Card}(C_{k})$, l'effectif de la classe $k$
+- Le poids de la classe $k$, $\Omega_{k} = \sum_{i \in C_{k}} \omega_{i} = \frac{N_{k}}{N}$
+- L'inertie inter-classe $I_{\text{B}}(C)$ se réécrit comme suit :
+  $$
+  I_{\text{B}}(C) = \sum_{k = 1}^{K} \frac{N_{k}}{N} \sum_{d = 1}^{D}
+  (\mu_{k,d} - \mu_{\boldsymbol{X},d})^{2} =  \sum_{d = 1}^{D} \underbrace{\frac{1}{N} \sum_{k = 1}^{K} 
+  N_{k} (\mu_{k,d} - \mu_{\boldsymbol{X},d})^{2}}_{S^{2}_{C, d}} 
+  $$ 
+  avec $S^{2}_{C,d}$, la *variance empirique de la variable $d$ en considérant que chaque individu a
+  été remplacé par le centre de sa classe* 
+#+end_block-example
+
+
+
+** Relation entre inertie totale, intra- et inter-classe
+
+#+begin_block-definition
+{{{BLOCKTITLE(Décomposition de l'inertie totale)}}}
+
+- Soient $\boldsymbol{X}$ un tableau de données et une partition $C$ de $\boldsymbol{X}$
+- Nous avons la décomposition suivante de l'inertie totale :
+  $$
+  I_{\text{T}}(\boldsymbol{X}) = I_{\text{W}}(C) + I_{\text{B}}(C)
+  $$
+
+#+end_block-definition
+
+#+begin_block-example
+{{{BLOCKTITLE(Remarques)}}}
+
+- *L'inertie totale est constante et ne dépend pas de la partition choisie*
+- *Minimiser* l'inertie intra-classe est donc équivalent à *Maximiser* l'inertie inter-classe
+- La décomposition précédente découle d'une application du [[https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_K%C3%B6nig-Huygens][théorème de König-Huygens]] 
+- Dans le cas équipondéré, $\omega_{n} = 1/N$, on retrouve la formule de décomposition de la
+  variance en ANOVA
+#+end_block-example
+
+*** Relation entre inertie totale, intra- et inter-classe
+{{{SUBTITLE(Exemple 1/2)}}}
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_rnd import data_classif_inertia_fig
+
+pio.to_html(data_classif_inertia_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+
+*** Relation entre inertie totale, intra- et inter-classe
+{{{SUBTITLE(Exemple 2/2)}}}
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_kmeans import data_classif_inertia_fig
+
+pio.to_html(data_classif_inertia_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+*** Relation entre inertie totale, intra- et inter-classe
+{{{SUBTITLE(Démonstrations)}}}
+
+Pour démontrer la propriété de décomposition de l'inertie totale, commençons par démontrer la
+propriété suivante :
+#+begin_block-definition
+{{{BLOCKTITLE(Théorème de Huygens)}}}
+
+- Soit $\mathcal{C} = \{1, \ldots, N_{\mathcal{C}}\}$, un ensemble d'indices caractérisant $N_{\mathcal{C}}$ individus
+  $\{\boldsymbol{x}_{i} ; i \in \mathcal{C}\}$ définis dans $\mathbb{R}^{D}$
+- Chaque individu $\boldsymbol{x}_{i}$ est pondéré par $\omega_{i} \in \mathbb{R}$ 
+- On note $\boldsymbol{\mu}_{\mathcal{C}} = \frac{1}{\sum_{i \in \mathcal{C}} \omega_{i}} \sum_{i \in \mathcal{C}}
+  \omega_{i} \boldsymbol{x}_{i}$
+- On a alors pour tout $\boldsymbol{a} \in \mathbb{R}^{D}$ :
+  $$
+  I_{\boldsymbol{a}}(\mathcal{C}) = I_{\boldsymbol{\mu}_{\mathcal{C}}}(\mathcal{C}) +
+  (\sum_{i \in \mathcal{C}} \omega_{i}) d(\boldsymbol{a}, \boldsymbol{\mu}_{\mathcal{C}})^{2}
+  $$
+#+end_block-definition
+
+*** Relation entre inertie totale, intra- et inter-classe
+{{{SUBTITLE(Démonstrations)}}}
+
+*Démonstrations du Théorème de Huygens*
+
+Par définition, nous avons :
+\begin{align}
+I_{\boldsymbol{a}}(\mathcal{C}) & = \sum_{i \in \mathcal{C}} \omega_{i} ||\boldsymbol{x}_{i} - \boldsymbol{a}||^{2} \\
+ & = \sum_{i \in \mathcal{C}} \omega_{i} ||\boldsymbol{x}_{i} - \boldsymbol{\mu}_{\mathcal{C}} + \boldsymbol{\mu}_{\mathcal{C}} - \boldsymbol{a}||^{2} \\
+ & = \underbrace{\sum_{i \in \mathcal{C}} \omega_{i} ||\boldsymbol{x}_{i} - \boldsymbol{\mu}_{\mathcal{C}}||^{2}}_{=I_{\boldsymbol{\mu}_{\mathcal{C}}}(\mathcal{C})} 
+     + 2 \sum_{i \in \mathcal{C}} \omega_{i} (\boldsymbol{\mu}_{\mathcal{C}} - \boldsymbol{a}) (\boldsymbol{x}_{i} - \boldsymbol{\mu}_{\mathcal{C}})^{T}
+     + \sum_{i \in \mathcal{C}} \omega_{i} ||\boldsymbol{\mu}_{\mathcal{C}} - \boldsymbol{a}||^{2} \\
+ & = I_{\boldsymbol{\mu}_{\mathcal{C}}}(\mathcal{C}) +  
+     + 2 (\boldsymbol{\mu}_{\mathcal{C}} - \boldsymbol{a}) \underbrace{\left(\sum_{i \in \mathcal{C}} \omega_{i} \boldsymbol{x}_{i} - \boldsymbol{\mu}_{\mathcal{C}}\right)^{T}}_{=0}
+     + ||\boldsymbol{\mu}_{\mathcal{C}} - \boldsymbol{a}||^{2} (\sum_{i \in \mathcal{C}} \omega_{i}) \\
+I_{\boldsymbol{a}}(\mathcal{C}) & = I_{\boldsymbol{\mu}_{\mathcal{C}}}(\mathcal{C}) +
+  (\sum_{i \in \mathcal{C}} \omega_{i}) d(\boldsymbol{a}, \boldsymbol{\mu}_{\mathcal{C}})^{2}
+\end{align}
+
+
+*** Relation entre inertie totale, intra- et inter-classe
+{{{SUBTITLE(Démonstrations)}}}
+
+*Démonstrations de la propriété de décomposition*
+
+- Soit $\boldsymbol{X}$, un ensemble de $N$ individus
+   $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ pondéré par $\omega_{n} \in \mathbb{R}$ 
+# - On note $\boldsymbol{\mu}_{\boldsymbol{X}} = \frac{1}{\sum_{i=1}^{N} \omega_{i}} \sum_{i=1}^{N}
+#   \omega_{i} \boldsymbol{x}_{i}$
+- Considérons une partition de $\boldsymbol{X}$ à $K$ classes, notée $C = \{C_{1},\ldots,C_{K}\}$
+- On note $\boldsymbol{\mu}_{k} \in \mathbb{R}^{D}$ le centre de gravité de la classe $C_{k}$
+- En appliquant le théorème de Huygens sur la classe $C_{k}$ et en considérant $\boldsymbol{a} =
+  \boldsymbol{\mu}_{\boldsymbol{X}}$, le centre de gravité de l'ensemble des individus, on obtient :
+  $$
+  I_{\boldsymbol{\mu}_{\boldsymbol{X}}}(C_{k}) = I_{\boldsymbol{\mu}_{k}}(C_{k}) +
+  \underbrace{(\sum_{i \in C_{k}} \omega_{i})}_{= \Omega_{k}} d(\boldsymbol{\mu}_{\boldsymbol{X}}, \boldsymbol{\mu}_{k})^{2}
+  $$
+  $$
+  \iff \sum_{i \in C_{k}} \omega_{i} d(\boldsymbol{x}_{i}, \boldsymbol{\mu}_{\boldsymbol{X}})^{2} =
+  \sum_{i \in C_{k}} \omega_{i} d(\boldsymbol{x}_{i}, \boldsymbol{\mu}_{k})^{2} + \Omega_{k}
+  d(\boldsymbol{\mu}_{\boldsymbol{X}}, \boldsymbol{\mu}_{k})^{2}
+  $$
+  Enfin, en sommant sur les $K$ classes, il vient :
+  $$
+  \underbrace{\sum_{k=1}^{K} \sum_{i \in C_{k}} \omega_{i} d(\boldsymbol{x}_{i},
+  \boldsymbol{\mu}_{\boldsymbol{X}})^{2}}_{=I_{\text{T}}(\boldsymbol{X})} =
+  \underbrace{\sum_{k=1}^{K} \sum_{i \in C_{k}} \omega_{i} d(\boldsymbol{x}_{i}, \boldsymbol{\mu}_{k})^{2}}_{=I_{\text{W}}(C)} +
+  \underbrace{\sum_{k=1}^{K} \Omega_{k}
+  d(\boldsymbol{\mu}_{\boldsymbol{X}}, \boldsymbol{\mu}_{k})^{2}}_{=I_{\text{B}}(C)}
+  $$
+#  I_{\text{T}}(\boldsymbol{X}) = I_{\text{W}}(C) + I_{\text{B}}(C)
+
+
+** Critères de qualité d'une partition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Pourcentage d'inertie expliquée par une partition)}}}
+
+- Soient $\boldsymbol{X}$ un tableau de données et une partition $C$ de $\boldsymbol{X}$
+- Le pourcentage d'inertie expliquée par $C$ est :
+  $$
+  \%I(\boldsymbol{X}, C) = 100 \times \frac{I_{\text{B}}(C)}{I_{\text{T}}(\boldsymbol{X})} = 100
+  \times \left(1 - \frac{I_{\text{W}}(C)}{I_{\text{T}}(\boldsymbol{X})}\right)
+  $$
+#+end_block-definition
+
+#+begin_block-example
+{{{BLOCKTITLE(Remarques)}}}
+
+- Le pourcentage d'inertie expliquée varie entre 0 et 100
+- Il vaut 100 pour la partition à $N$ classes de singletons et 0 pour l'unique partition réduite au
+  jeu de données
+- Le pourcentage d'inertie expliquée augmente avec le nombre de classes
+- *Ce critère permet donc de comparer uniquement des partitions ayant le même nombre de classes*
+- Soient $C$ et $C^{\prime}$ deux partitions à $K$ classes, si on a $\%I(\boldsymbol{X}, C) >
+  \%I(\boldsymbol{X}, C^{\prime})$ alors on considérera que la partition $C$ est meilleure que la
+  partition $C^{\prime}$
+#+end_block-example
+
+*** Critères de qualité d'une partition
+{{{SUBTITLE(Exemple)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_rnd import data_classif_fig
+
+pio.to_html(data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_rnd :results html :exports results
+from c1_ex_inertie_cls_rnd import cls_summary
+
+cls_summary_df = cls_summary.to_frame().transpose()
+format_dict = {var: '{:.2f}' for var
+               in cls_summary_df.select_dtypes(float).columns}
+props = [('font-size', '16px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+cls_summary_df.style\
+              .format(format_dict)\
+              .set_table_styles(data_styles)\
+              .render()
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+import plotly.io as pio
+from c1_ex_inertie_cls_kmeans import data_classif_fig
+
+pio.to_html(data_classif_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="500",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+BEGIN_SRC python :session c1_ex_inertie_cls_kmeans :results html :exports results
+from c1_ex_inertie_cls_kmeans import cls_summary
+
+cls_summary_df = cls_summary.to_frame().transpose()
+format_dict = {var: '{:.2f}' for var
+               in cls_summary_df.select_dtypes(float).columns}
+props = [('font-size', '16px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+cls_summary_df.style\
+              .format(format_dict)\
+              .set_table_styles(data_styles)\
+              .render()
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+
+* Résumé de la séance
+
+#+begin_block-definition
+{{{BLOCKTITLE(Points clés)}}}
+
+- Formalisation de la problématique de classification non supervisée pour le traitement des *données
+  quantitatives*
+- Introduction des notions de classe, partition et hiérarchie
+- Définition de la notion de distance et calcul pratique
+- Introduction du concept d'inertie et étude de ses propriétés dans le cadre de l'analyse de données
+- Application de l'inertie pour évaluer la qualité d'une partition des données
+
+#+end_block-definition
+
+
+** Merci pour votre attention !
+{{{SUBTITLE(Des questions ?)}}}
+
+
+#+ATTR_HTML: :width 85% :alt FAQ
+[[https://roland-donat.github.io/cours-class-non-sup/commons/undraw_Faq_re_31cw.png]]

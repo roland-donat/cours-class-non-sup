@@ -1,0 +1,1197 @@
+# -*- coding: utf-8 -*-
+
+#+TITLE: Classification non supervisée - Clustering {{{NEWLINE}}}{{{NEWLINE}}} {{{HTMLFONTSIZE(Classification hiérarchique,10)}}}
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+#+DATE: {{{NEWLINE}}}BUT Science des Données
+
+
+* Configuration                                                    :noexport:
+** Orgmode
+# Org-mode general options
+# ------------------------
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:nil toc:1 \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+DRAWERS: OPTIONS CACHE MACROS
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+#+MACRO: BLOCKTITLE @@html:<h4>$1</h4>@@ 
+
+** Reveal
+:OPTIONS:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+# #+REVEAL_ROOT: /home/roland/Work/Dev/Langages/javascript/reveal.js/
+#+REVEAL_INIT_OPTIONS: controlsLayout: 'edges', slideNumber:"c/t", center: false, transition: 'fade'
+#+REVEAL_EXTRA_CSS: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_reveal.css
+# #+REVEAL_EXTRA_CSS: ubs_iut_vannes_reveal.css
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 2
+#+REVEAL_TITLE_SLIDE_BACKGROUND: https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes_couv.jpg
+#+OPTIONS: reveal_single_file:nil
+:END:
+
+** LaTeX
+*** Class parameters
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+
+*** Packages
+#+LATEX_HEADER: \usepackage[french]{babel}
+
+#+LATEX_HEADER: \usepackage{graphicx}
+
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+
+#+LATEX_HEADER: \usepackage{minted}
+
+*** Document layout
+**** Graphics path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+**** Colors
+
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+**** Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+**** Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+**** Geometry
+
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+**** References
+
+#+LATEX: \renewcommand*{\refname}{}*
+
+*** Compilator
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+** Publishing configuration
+#+HEADER: :eval yes
+#+HEADER: :results silent
+#+HEADER: :exports none
+#+BEGIN_SRC emacs-lisp 
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+        
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+         ("td-attach"
+         :base-directory "./td/"
+         :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("cours-attach"
+         :base-directory "./cours/"
+         :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+         ("projet-attach"
+         :base-directory "./projet/"
+         :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+         
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+         ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+         ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+
+
+
+
+
+* TODO Notes perso                                                 :noexport:
+** TODO Creuser cette histoire de hiérarchie indicé (cf. cours_classif_quanti_ref)
+
+** TODO Faire en sorte que toutes les slides soient lisibles en plein écran
+** TODO Evo clust_util :
+
+- Mettre CAH sous forme de classe à la mode sklearn
+  - Sortir les partitions à chaque itération pour visualisation avec =plotly_2d_clust_animation=
+  - Créer une méthode de visualisation du dendrogram
+
+
+* Objectifs de la séance
+
+1. Définition du concept de hiérarchie 
+2. Définir la notion de distance entre classes
+3. Comprendre l'algorithme de classification ascendante hiérarchique (CAH)
+4. Savoir interpréter un dendrogramme
+
+* Généralités
+
+#+ATTR_HTML: :width 100% :alt Classification dinosaures
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/classification_dino.jpg]]
+
+** Rappels et objectifs
+
+#+begin_block-definition
+{{{BLOCKTITLE(Qu'est ce qu'une classification non supervisée)}}}
+
+- C'est rechercher des regroupements "naturels" entre des individus
+- Le nombre de groupes n'est pas connu /a priori/
+- Aucune connaissance sur les individus n'est disponible /a priori/
+- Il s'agit d'une méthode de statistique exploratoire permettant de comprendre les données
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-definition
+{{{BLOCKTITLE(Objectifs des méthodes hiérarchiques)}}}
+
+- Mettre en évidence des relations hiérarchiques entre individus ou groupes d'individus
+- Construction d'une structure arborescente représentant un emboîtement de partitions
+- Chaque niveau de la hiérarchie correspond à une partition particulière des individus
+#+end_block-definition
+
+** Approches possibles
+
+#+begin_block-example
+{{{BLOCKTITLE(Approches possibles)}}}
+
+Une hiérarchie peut être obtenue par deux types de méthodes :
+- la classification ascendante (“agglomérative”),
+- la classification descendante (“divisive” en anglais)
+
+*Mais au fait, qu'est ce qu'une hiérarchie ?*
+
+#+end_block-example
+
+{{{NEWLINE}}}
+{{{NEWLINE}}}
+{{{NEWLINE}}}
+
+#+ATTR_HTML: :width 50% :alt Agglo vs divisive
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/hierarchical_clust_agglo_vs_div.png]]
+
+** Notion de hiérarchie
+
+#+begin_block-definition
+{{{BLOCKTITLE(Hiérarchie sur un ensemble d'individus)}}}
+
+- Soit $\boldsymbol{X}$ un tableau de données contenant $N$ individus $\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$. 
+- Une hiérarchie $H$ est un ensembles de classes $C_{1}, C_{2}, \ldots$, non vides et incluses dans
+  $\{1, 2, \ldots, N\}$ vérifiant :
+  - $\{1, 2, \ldots, N\} \in H$
+  - Pour tout $\ell \in \{1, 2, \ldots, N\}$, $\{\ell\} \in H$, i.e. la hiérarchie contient tous les
+    singletons d'individu
+  - Pour toutes classes $C_{i}, C_{j} \in H$, alors $C_{i} \cap C_{j} \in \{C_{i}, C_{j},
+    \varnothing\}$, i.e. deux classes de la hiérarchie sont soit disjointes soit contenues l'une
+    dans l'autre
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-example
+{{{BLOCKTITLE(Exemples)}}}
+
+- Considérons un jeu de données à 7 individus $\boldsymbol{X} = \{\boldsymbol{x}_{1},
+  \boldsymbol{x}_{2}, \boldsymbol{x}_{3}, \boldsymbol{x}_{4}, \boldsymbol{x}_{5},
+  \boldsymbol{x}_{6}, \boldsymbol{x}_{7}\}$
+- L'ensemble $H = \{\{1\}, \ldots, \{7\}, \{4,5\}, \{2,3\}, \{4,5,6\}, \{1,2,3\}, \{4,5,6,7\}, \{1,
+  2, 3, 4, 5, 6, 7\}\}$ est une hiérarchie sur $\boldsymbol{X}$
+#+end_block-example
+
+
+* Classification Ascendante Hiérarchique
+
+#+ATTR_HTML: :width 80% :alt Classification dinosaures
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/pencils.jpeg]]
+
+
+** Principe général
+{{{SUBTITLE(Principe)}}}
+
+#+begin_block-example
+{{{BLOCKTITLE(Intuition)}}}
+
+- On démarre en considérant une partition dans laquelle il y a autant de classes que d'individus,
+  i.e. chaque individu est seul dans sa classe
+- On regroupe alors les deux classes les plus proches (notion de [[#cls-dist][proximité entre deux classes]] à
+  définir !) créant ainsi une nouvelle classe plus importante
+- On recommence l'opération de regroupement jusqu'à ce qu'il n'y ait plus qu'une seul classe
+  contenant tous les individus 
+- Au final, nous obtenons un emboîtement de classes qui peut se mettre sous la forme d'un
+  arbre hiérarchique appelé *dendrogramme*
+
+#+end_block-example
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_base.png]]
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_indiv.png]]
+
+
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_dist.png]]
+
+
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_dist_cls.png]]
+
+
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_2_cls.png]]
+
+
+
+*** Représentation avec un dendrogramme
+
+#+ATTR_HTML: :width 100% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_country_3_cls.png]]
+
+
+** Distance entre classes
+  :PROPERTIES:
+  :CUSTOM_ID: cls-dist
+  :END:
+
+#+begin_block-example
+{{{BLOCKTITLE(Problématique)}}}
+
+- Nous avons déjà vu comment mesurer la proximité entre deux individus grâce à la notion de distance
+  (ou plus généralement de dissimilarité)
+- On se demande à présent comment *mesurer la ressemblance entre deux groupes d'individus*
+#+end_block-example
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-definition
+{{{BLOCKTITLE(Démarche)}}}
+
+- Dans la suite de cette section, nous allons considérer :
+  - $\boldsymbol{X} = \{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ : un ensemble d'individus
+    définis sur $\mathbb{R}^{D}$ 
+  - Une distance $d$ définie sur $\mathbb{R}^{D}$ (e.g. distance euclidienne).
+
+- Dans les sections suivantes, nous introduisons différentes "distances" entre classes, notées $\Delta_{d}$, qui permettront de mesurer le degré de ressemblance entre deux
+  groupes (classes) distincts $C, C^{\prime} \subset \{1, \ldots, N\}$ d'individus
+#+end_block-definition
+
+*** Distance entre classes
+{{{SUBTITLE(Exemple)}}}
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results silent :exports results 
+import pandas as pd
+import c3_ex_dist_cls as ex                                                
+#+END_SRC
+
+- Données avec partition :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_sel_df = pd.concat([ex.data_sel_df, ex.data_cls_s], axis=1)
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+- Calcul de la matrice des distances euclidiennes entre individus qui servira pour le calcul des
+  distances entre classes :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.data_dist_mat_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.data_dist_mat_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+
+*** Distance entre classes
+{{{SUBTITLE(Lien minimum)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 60%">
+
+#+begin_block-definition
+{{{BLOCKTITLE(Lien minimum)}}}
+La distance du lien minimum (/single link/ en anglais) entre $C$ et $C^{\prime}$ est définie par :
+$$
+\Delta_{d}(C, C^{\prime}) = \underset{\ell \in C,~ m \in C^{\prime}}{\min} d(\boldsymbol{x}_{\ell},\boldsymbol{x}_{m})
+$$
+#+end_block-definition
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 35%">
+#+ATTR_HTML: :width 100% :alt Distance lien minimum
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/dist_agreg_lien_min.png]]
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 100%">
+
+#+begin_block-example
+{{{BLOCKTITLE(Exemple)}}}
+
+- Distances entre les individus des classes $C_{1}$ et $C_{2}$ :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.dsl_12_mat_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+def styling_specific_cell(x):
+    color = 'background-color: #ff8e71'
+    df_styler = pd.DataFrame('', index=x.index, columns=x.columns)
+    df_styler.loc[ex.dsl_12_idx[0], ex.dsl_12_idx[1]] = color
+    return df_styler
+
+ex.dsl_12_mat_df.style\
+             .apply(styling_specific_cell, axis=None)\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .to_html()
+#+END_SRC
+
+
+- $\Delta_{d}(C_{1}, C_{2}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dsl_12:.2f}"} 
+
+#+end_block-example
+
+
+#+REVEAL_HTML: </div>
+
+*** Distance entre classes
+{{{SUBTITLE(Lien maximum)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 60%">
+
+#+begin_block-definition
+{{{BLOCKTITLE(Lien maximum)}}}
+La distance du lien maximum (/complete link/ en anglais) entre $C$ et $C^{\prime}$ est définie par :
+$$
+\Delta_{d}(C, C^{\prime}) = \underset{\ell \in C,~ m \in C^{\prime}}{\max} d(\boldsymbol{x}_{\ell},\boldsymbol{x}_{m})
+$$
+#+end_block-definition
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 35%">
+#+ATTR_HTML: :width 100% :alt Distance lien maximum
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/dist_agreg_lien_max.png]]
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 100%">
+
+#+begin_block-example
+{{{BLOCKTITLE(Exemple)}}}
+
+- Distances entre les individus des classes $C_{1}$ et $C_{3}$ :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.dcl_13_mat_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+def styling_specific_cell(x):
+    color = 'background-color: #ff8e71'
+    df_styler = pd.DataFrame('', index=x.index, columns=x.columns)
+    df_styler.loc[ex.dcl_13_idx[0], ex.dcl_13_idx[1]] = color
+    return df_styler
+
+ex.dcl_13_mat_df.style\
+             .apply(styling_specific_cell, axis=None)\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .to_html()
+#+END_SRC
+
+- $\Delta_{d}(C_{1}, C_{3}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dcl_13:.2f}"}
+
+#+end_block-example
+
+
+#+REVEAL_HTML: </div>
+
+
+*** Distance entre classes
+{{{SUBTITLE(Distance moyenne)}}}
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 60%">
+
+#+begin_block-definition
+{{{BLOCKTITLE(Distance moyenne)}}}
+La distance moyenne (/group average/ en anglais) entre $C$ et $C^{\prime}$ est définie par :
+$$
+\Delta_{d}(C, C^{\prime}) = \frac{1}{N_{C} \cdot N_{C^{\prime}}} \sum_{\ell \in C} \sum_{m \in
+C^{\prime}} d(\boldsymbol{x}_{\ell},\boldsymbol{x}_{m})
+$$
+avec $N_{C} = \text{Card}(C)$ et $N_{C^{\prime}} = \text{Card}(C^{\prime})$
+#+end_block-definition
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 35%">
+#+ATTR_HTML: :width 100% :alt Distance lien maximum
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/dist_agreg_moy.png]]
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 100%">
+
+#+begin_block-example
+{{{BLOCKTITLE(Exemple)}}}
+
+- Distances entre les individus des classes $C_{2}$ et $C_{3}$ :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.dga_23_mat_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.dga_23_mat_df.style\
+             .format(format_dict)\
+             .set_table_styles(data_styles, overwrite=False)\
+             .to_html()
+#+END_SRC
+
+- $\Delta_{d}(C_{2}, C_{3}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dga_23:.2f}"}
+
+#+end_block-example
+
+
+#+REVEAL_HTML: </div>
+
+
+
+*** Distance entre classes
+{{{SUBTITLE(Distance de Ward - Définition)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Distance de Ward)}}}
+- La distance de Ward entre $C$ et $C^{\prime}$ est définie par :
+  $$
+  \Delta_{\text{ward}}(C, C^{\prime}) = \frac{N_{C} \cdot N_{C^{\prime}}}{N_{C} + N_{C^{\prime}}}
+  d(\boldsymbol{\mu}_{C}, \boldsymbol{\mu}_{C^{\prime}})^{2}
+  $$
+  - $N_{C} = \text{Card}(C)$ et $N_{C^{\prime}} = \text{Card}(C^{\prime})$
+  - $\boldsymbol{\mu}_{C}, \boldsymbol{\mu}_{C^{\prime}}$, les centres de gravité des classe $C$ et
+    $C^{\prime}$
+- Cette distance correspond à la *distance euclidienne* entre les barycentres au carré des deux
+  classes, pondérée par leur effectif 
+#+end_block-definition
+
+#+begin_block-example
+{{{BLOCKTITLE(Exemple)}}}
+
+- Centres de gravité de chaque classe :
+
+#+BEGIN_SRC python :session c3_ex_dist_cls :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.data_mu_cls_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.data_mu_cls_df.style\
+                 .format(format_dict)\
+                 .set_table_styles(data_styles, overwrite=False)\
+                 .to_html()
+#+END_SRC
+
+
+- $\Delta_{\text{ward}}(C_{1}, C_{2}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dward_12:.2f}"}
+- $\Delta_{\text{ward}}(C_{1}, C_{3}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dward_13:.2f}"}
+- $\Delta_{\text{ward}}(C_{2}, C_{3}) \simeq$ src_python[:session c3_ex_dist_cls]{f"{ex.dward_23:.2f}"}
+
+#+end_block-example
+
+
+*** Distance entre classes
+{{{SUBTITLE(Distance de Ward - Propriété)}}}
+
+#+begin_block-definition
+{{{BLOCKTITLE(Propriété)}}}
+- Soient $\boldsymbol{X}$ un tableau de données contenant $N$ individus et $C, C^{\prime} \subset
+  \{1, \ldots, N\}$ deux groupes (classes) distincts d'individus
+- Nous avons alors la relation suivante :
+  $$
+  I_{\boldsymbol{\mu}_{C \cup C^{\prime}}}(C \cup C^{\prime}) = I_{\boldsymbol{\mu}_{C}}(C) +
+  I_{\boldsymbol{\mu}_{C^{\prime}}}(C^{\prime}) + \Delta_{\text{ward}}(C, C^{\prime})
+  $$
+#+end_block-definition
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_block-example
+{{{BLOCKTITLE(Interprétation)}}}
+
+- La distance de Ward représente l'augmentation de l'inertie intra-classe induite par le
+  regroupement (la fusion) de deux classes au sein d'une partition donnée
+- Utiliser la distance de Ward pour regrouper les classes permet donc d'assurer que l'augmentation
+  de l'inertie intra-classe soit minimum (ou de manière équivalente que l'augmentation de l'inertie inter-classe soit
+  maximum) à chaque regroupement
+#+end_block-example
+
+# WHAT ?
+# - La pondération utilisant les effectifs a tendance à produire des classes de taille comparable
+
+** Exemple : déroulement d'une CAH
+
+#+BEGIN_SRC python :session c3_ex_cah :results silent :exports results 
+import plotly.io as pio
+import c3_ex_cah as ex                                                
+#+END_SRC
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Données :
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+data_sel_df = ex.data_sel_df.copy()
+format_dict = {var: '{:.2f}' for var
+               in data_sel_df.select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+data_sel_df.style\
+           .format(format_dict)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+#+REVEAL_HTML: </div>
+
+
+*** Exemple : CAH - Initialisation
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_0.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_0.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition initiale à $K = 7$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[0].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[0].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+REVEAL_HTML: </div>
+
+
+*** Exemple : CAH - Itération 1
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_1.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_1.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition à $K = 6$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[1].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[1].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+
+*** Exemple : CAH - Itération 2
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_2.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_2.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition à $K = 5$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[2].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[2].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+
+
+
+*** Exemple : CAH - Itération 3
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_3.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_3.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition à $K = 4$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[3].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[3].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+
+
+*** Exemple : CAH - Itération 4
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_4.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_4.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition à $K = 3$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[4].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[4].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+
+
+*** Exemple : CAH - Itération 5
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_5.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_5.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+Partition à $K = 2$ classes
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+Distances entre classes (Ward) : 
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+format_dict = {var: '{:.2f}' for var
+               in ex.cls_dist_mat_list[5].select_dtypes(float).columns}
+props = [('font-size', '10px')]
+data_styles = [dict(selector="th", props=props),
+               dict(selector="td", props=props)]
+
+ex.cls_dist_mat_list[5].style\
+           .format(format_dict, na_rep="")\
+           .highlight_null("lightgrey")\
+           .highlight_min(color="#ff8e71", axis=None)\
+           .set_table_styles(data_styles, overwrite=False)\
+           .to_html()
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+
+
+*** Exemple : CAH - Fin
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH data 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_data_5.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+ATTR_HTML: :width 75% :alt CAH dendrogram 0
+[[https://roland-donat.github.io/cours-class-non-sup/cours/c3/fig/cah_dendro_conv.png]]
+
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+- L'algorithme a regroupé tous les individus en deux classes
+- Il suffit d'ajouter la partition trivial à une classe contenant tous les individus pour achever la
+  hiérarchie 
+- Calcul du nombre de classes pertinent par expertise et en utilisant la méthode du "coude"
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+
+#+BEGIN_SRC python :session c3_ex_cah :results html :exports results 
+pio.to_html(ex.inertia_within_k_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="300",
+            default_width="500",
+            config={'displayModeBar': False})
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+#+REVEAL_HTML: </div>
+
+** Algorithme formel
+
+#+begin_block-definition
+{{{BLOCKTITLE(Entrées/Sorties)}}}
+
+- *Entrée :* $\boldsymbol{X} = \{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{N}\}$ un ensemble d'individus dans $\mathbb{R}^{D}$
+
+- *Paramètres :*
+  - $\Delta_{d}$ : Une distance entre deux classes, appelée distance d'agrégation, reposant sur la
+    distance entre individus notée $d$
+
+- *Sortie :* Une hiérarchie $H$ sur les individus $\boldsymbol{X}$
+
+#+end_block-definition
+
+#+begin_block-definition
+{{{BLOCKTITLE(Initialisation)}}}
+
+- On part de la partition des singletons à $N$ classes $C^{(0)} = \{C^{(0)}_{1}, \ldots,
+  C^{(0)}_{N}\}$ où pour tout $n$, la classe $C^{(0)}_{n} = \{n\}$
+- On initialise la hiérarchie $H^{(0)}$ avec cette première partition, i.e. $H^{(0)} \leftarrow
+  \{C^{(0)}\}$ 
+
+#+end_block-definition
+
+*** Algorithme formel
+
+#+begin_block-definition
+{{{BLOCKTITLE(Itérations)}}}
+- Calculer la distance d'agrégation entre chaque paire de classes de la partition $C^{(t-1)}$
+  afin de trouver les deux classes les plus proches, notées $C^{(t-1)}_{\ell^{*}}$ et
+  $C^{(t-1)}_{m^{*}}$ :
+  $$
+  C^{(t-1)}_{\ell^{*}}, C^{(t-1)}_{m^{*}} = \underset{C^{(t-1)}_{\ell},
+  C^{(t-1)}_{m} \in C^{(t-1)}}{\operatorname{arg min}} \Delta_{d}(C^{(t-1)}_{\ell}, C^{(t-1)}_{m})
+  $$
+- Regrouper les deux classes les plus proches :
+  $$
+  C^{(t)}_{*} \leftarrow C^{(t-1)}_{\ell^{*}} \cup C^{(t-1)}_{m^{*}}
+  $$
+- Mettre à jour la partition courante en ajoutant la classe formée du regroupement des deux classes
+  les plus proches et en supprimant ces deux classes individuellement :
+  $$
+  C^{(t)} \leftarrow C^{(t-1)} \cup C^{(t)}_{*} \setminus \{C^{(t-1)}_{\ell^{*}}, C^{(t-1)}_{m^{*}}\}
+  $$
+- Mise à jour de la hiérarchie courante avec la classe formée du regroupement des deux classes
+  les plus proches :
+  $$
+  H^{(t)} \leftarrow H^{(t - 1)} \cup C^{(t)}_{*}
+  $$ 
+- Continuer *tant que* la partition courante $C^{(t)}$ contient au moins deux classes 
+#+end_block-definition
+
+** Influence de la distance d'agrégation
+{{{SUBTITLE(Distance de lien minimum)}}}
+
+#+BEGIN_SRC python :session c3_ex_dendrogram :results silent :exports results 
+import plotly.io as pio
+import c3_ex_dendrogram as ex                                                
+#+END_SRC
+
+#+BEGIN_SRC python :session c3_ex_dendrogram :results html :exports results 
+pio.to_html(ex.data_dendro_single_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+*** Influence de la distance d'agrégation
+{{{SUBTITLE(Distance de lien maximum)}}}
+
+#+BEGIN_SRC python :session c3_ex_dendrogram :results html :exports results 
+pio.to_html(ex.data_dendro_complete_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+*** Influence de la distance d'agrégation
+{{{SUBTITLE(Distance moyenne)}}}
+
+#+BEGIN_SRC python :session c3_ex_dendrogram :results html :exports results 
+pio.to_html(ex.data_dendro_average_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+*** Influence de la distance d'agrégation
+{{{SUBTITLE(Distance de Ward)}}}
+
+#+BEGIN_SRC python :session c3_ex_dendrogram :results html :exports results 
+pio.to_html(ex.data_dendro_ward_fig, include_plotlyjs="cdn",
+            full_html=False,
+            default_height="600",
+            default_width="1000",
+            config={'displayModeBar': False})
+#+END_SRC
+
+
+** Forces et Faiblesses
+
+#+begin_block-definition
+{{{BLOCKTITLE(Forces)}}}
+
+- Méthode "facile" à comprendre et à implémenter
+- L'algorithme fonctionne sans /a priori/ sur le nombre de classes
+- La méthode converge toujours vers la même hiérarchie (en fixant la distance d'agrégation)
+- Visualisation efficace sous forme de dendrogramme quand le nombre de données n'est pas trop grand
+
+#+end_block-definition
+
+
+#+begin_block-definition
+{{{BLOCKTITLE(Faiblesses)}}}
+
+- La méthode dépend fortement du choix de la distance d'agrégation choisie (même si la distance de Ward est
+  recommandée) 
+- La hiérarchie ne peut être modifiée au cours des itérations
+- La méthode n'optimise pas de critère particulier
+- Lorsque le nombre d'individus est grand, le dendrogramme est difficile à lire
+- Complexité calculatoire fortement dépendante du nombre de données
+
+#+end_block-definition
+
+
+* Résumé de la séance
+
+#+begin_block-definition
+{{{BLOCKTITLE(Points clés)}}}
+
+- Découverte de la notion de classification hiérarchique
+- Introduction au concept de distance entre classes
+- Étude de l'algorithme CAH et de ses principales caractéristiques
+- Interprétation et construction pratique d'un dendrogramme
+ 
+#+end_block-definition
+
+# - Formalisation de la problématique de classification non supervisée pour le traitement des *données
+#   quantitatives*
+# - Définition des notions de classe, partition et hiérarchie
+# - Définition de la notion de distance et calcul pratique
+# - Introduction du concept d'inertie et étude de ses propriétés dans le cadre de la classification
+# - Application de l'inertie pour évaluer la qualité d'une classification
+
+
+** Merci pour votre attention !
+{{{SUBTITLE(Des questions ?)}}}
+
+
+#+ATTR_HTML: :width 85% :alt FAQ
+[[https://roland-donat.github.io/cours-class-non-sup/commons/undraw_Faq_re_31cw.png]]

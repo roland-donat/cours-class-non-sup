@@ -1,0 +1,843 @@
+# -*- coding: utf-8 -*-
+#+TITLE: TD3: Classification hiérarchique ascendante
+#+AUTHOR: Roland Donat
+#+EMAIL: roland.donat@univ-ubs.fr
+# #+DATE: 
+
+# ==============================================
+# Document Configuration
+# ======================
+# Orgmode
+:CONFIG:
+#+LANGUAGE: fr
+#+OPTIONS: H:3 num:nil toc:t \n:nil @:t ::t |:t ^:{} f:t TeX:t author:t d:nil timestamp:nil
+#+OPTIONS: html-postamble:nil
+#+STARTUP: content 
+#+STARTUP: hidestars
+#+DRAWERS: CONFIG OPTIONS CACHE MACROS
+#+TODO: TODO(t) INPROGRESS(p) | DONE(d)
+#+BIND: org-latex-table-scientific-notation "{%s}E{%s}"
+:END:
+
+# LaTeX
+# -----
+# Class parameters
+:CONFIG:
+#+LaTeX_CLASS: ubs-note
+#+LaTeX_CLASS_OPTIONS: [a4paper,twoside,11pt]
+#+LATEX_HEADER: \thelang{FR}
+#+LATEX_HEADER: \thesubtitle{}
+#+LATEX_HEADER: \institution{IUT Vannes}
+#+LATEX_HEADER: \course{Classification non supervisée}
+#+LATEX_HEADER: \cursus{STID 2 - 2020-2021}
+#+LATEX_HEADER: \version{1.0}
+:END:
+# Packages
+:CONFIG:
+#+LATEX_HEADER: \usepackage[french]{babel}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{tabularx}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \usepackage{subfig}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{minted}
+:END:
+# Layout
+:CONFIG:
+# Figures path
+#+LATEX_HEADER: % Graphics path
+#+LATEX_HEADER: \graphicspath{ 
+#+LATEX_HEADER:   {./fig/}
+#+LATEX_HEADER: }
+
+# Colors
+#+LATEX_HEADER: \definecolor{almostwhite}        {rgb}{0.85,0.85,0.85}
+
+# Minted
+# To control spaces between minted block
+#+LATEX_HEADER: \AtBeginEnvironment{snugshade*}{\vspace{-1.25\FrameSep}}
+#+LATEX_HEADER: \AfterEndEnvironment{snugshade*}{\vspace{-2\FrameSep}}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+# #+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily \footnotesize {\color{EMLogoBlue}\oldstylenums{\arabic{FancyVerbLine}}}}
+
+# Captions
+#+LATEX_HEADER: \captionsetup[table]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[figure]{position=bottom,margin=90pt,font=small,labelfont=bf,labelsep=endash,format=plain}
+#+LATEX_HEADER: \captionsetup[subfloat]{margin=0pt,font=footnotesize}
+
+# Geometry
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{
+#+LATEX_HEADER: %  nohead,
+#+LATEX_HEADER:   top=2.25cm, 
+#+LATEX_HEADER:   bottom=2.25cm, 
+#+LATEX_HEADER:  left=2.5cm, 
+#+LATEX_HEADER:  right=2.5cm}
+
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \onehalfspacing
+#+LATEX_HEADER: % Supprime l'indentation
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: % Espacement entre les paragraphes
+#+LATEX_HEADER: \setlength{\parskip}{2ex}
+
+# List layout
+#+LATEX_HEADER: \frenchbsetup{ListOldLayout=true} %FBReduceListSpacing=true,CompactItemize=false}
+
+# References
+#+LATEX: \renewcommand*{\refname}{}*
+:END:
+# LaTeX Compilator
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+(setq org-latex-listings 'minted
+      org-latex-minted-options nil ;; '(("frame" "lines")))
+      org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+:END:
+
+# HTML
+# ----
+:CONFIG:
+# Org HTML Macros
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+MACRO: HTMLFONTSIZE @@html:<font size="$2">$1</font>@@
+#+MACRO: SUBTITLE @@html:<div class="slidesubtitle">$1</div>@@
+
+# HTML options
+# ------------
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://roland-donat.github.io/ubs/Charte_graphique/IUT/ubs_iut_vannes.css" />
+# #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./ubs_iut_vannes.css" />
+:END:
+
+# Publishing
+# ----------
+:CONFIG:
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+;; Define some export options here since in org-publish-project-alist some of them are not taken into account
+;; e.g. with-toc nil
+(defun my-html-export-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil)
+     (plist-put plist :with-author t)
+     (plist-put plist :with-email t)
+     (plist-put plist :with-date t)
+     ))
+  plist)
+
+(setq org-publish-project-alist
+      '(
+	
+        ("main"
+         :base-directory "./"
+         :include ("rb_mod_stoch.org")
+         :publishing-directory "./"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+	 :section-numbers nil
+         )
+        ("td-html"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ;; pdf
+        ("td-pdf"
+         :base-directory "./td/"
+         :base-extension "org"
+         :publishing-directory "./td"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         )
+
+	 ("td-attach"
+	 :base-directory "./td/"
+	 :base-extension "xdsl\\|txt\\|csv\\|py\\|png"
+         :publishing-directory "./td"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("cours-attach"
+	 :base-directory "./cours/"
+	 :base-extension "pdf\\|xdsl\\|txt\\|csv\\|py"
+         :publishing-directory "./cours"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+        ("projet-html"
+         :base-directory "./projet/"
+         :base-extension "org"
+         :publishing-directory "./projet"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :preparation-function (lambda () (setq org-export-filter-options-functions '(my-html-export-options)))
+         :auto-preamble t
+         :html-head  "<link rel='stylesheet' type='text/css' href='edgemind.css' />"
+         :htmlized-source 
+         )
+
+	 ("projet-attach"
+	 :base-directory "./projet/"
+	 :base-extension "xdsl\\|txt\\|csv"
+         :publishing-directory "./projet"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+
+	 ("css"
+         :base-directory "./css/"
+         :base-extension "css"
+         :publishing-directory "./www/css"
+         :publishing-function org-publish-attachment)
+	 
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "td-attach" "cours-attach" "projet-html" "projet-attach" "css"))
+	 ;("rb_mod_stoch" :components ("main" "td-pdf" "td-html" "projet-html"))
+	 ("rb_mod_stoch" :components ("main"))
+
+      ))
+#+END_SRC
+:END:
+
+# ==============================================
+# Document starts here
+# ====================
+
+#+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
+(setq td_corrige nil)
+#+END_SRC
+
+#+ATTR_HTML: :width 50%
+#+CAPTION: /A woman datascientist performing machine learning to bet on soccer teams, manga style/ (source: générée par [[https://openai.com/dall-e-2/][DALL-E]])
+[[./woman_soccer_bet.png]]
+
+* Notes perso                                                      :noexport:
+
+* Introduction
+
+Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
+(CAH) sur différents jeux de données afin d'en évaluer les propriétés.
+
+Ce TD aura également pour objectif de comparer les approches de classification non supervisées vues
+en cours dans le cadre d'applications pratiques.
+
+Enfin, une activité de programmation de distances entre classes est proposée afin de monter en
+compétence sur le langage =Python=.
+
+* Modules =Python= utilisés dans ce TD
+
+Dans ce TD, nous utiliserons les modules =Python= suivants :
+- =pandas=, pour la manipulation des données ;
+- =plotly=, pour les représentations graphiques ;
+- =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
+  nombres aléatoires ;
+- =scipy=, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
+  distances ;
+- =sklearn=, pour les algorithmes de /machine learning/ (k-/Means/, mélange gaussien, ou autres).
+
+Ces modules ne sont pas forcément installés dans votre environnement local ou distant. Vous pouvez
+donc utiliser la commande =!pip install <nom_module>= pour les installer : 
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :results silent :exports code
+#!pip install pandas
+#!pip install plotly
+#!pip install scipy
+#!pip install scikit-learn
+#+END_SRC
+ 
+
+Rappel : code d'import des modules :
+#+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+import pandas as pd                   # Manipulation des données
+import numpy as np                    # Calcul numérique
+import plotly as pl                   # Librairie principale pour avoir le n° de version
+import plotly.express as px           # Package plotly pour utiliser les visualisations de haut niveau
+import plotly.figure_factory as pff   # Package plotly pour utiliser d'autres visualisations de haut niveau plus exotiques (e.g. dendrogramme)
+import sklearn as sk                  # Librairie principale pour avoir le n° de version
+import sklearn.cluster as skc         # Package sklearn dédié au clustering
+import sklearn.mixture as skm         # Package sklearn dédié aux modèles de mélange
+import sklearn.decomposition as skd   # Package sklearn dédié aux méthodes factorielles
+import scipy as sc                    # Librairie principale de calcul numérique avancée
+import scipy.cluster.hierarchy as sch # Package scipy dédié au clustering hiérarchique
+import scipy.spatial.distance as scd  # Package scipy dédié au clacul de distance
+
+# Vérification des versions des librairies utilisées
+{"plotly": pl.__version__, 
+ "pandas": pd.__version__, 
+ "numpy": np.__version__,
+ "sklearn": sk.__version__,
+ "scipy": sc.__version__}
+#+END_SRC
+
+
+* Exercice 1 : CAH et données =wine=
+
+Dans cet exercice, nous reprenons les données =wine= afin d'y appliquer différentes CAH dans le but
+d'identifier des profils de vignobles.
+
+** Chargement des données
+
+1. Chargez les données =Wine= dans un =DataFrame= nommé =wine_ori_df= (=ori= pour originales).
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+wine_path = "https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv"
+wine_ori_df = pd.read_csv(wine_path, sep=",")
+   #+END_SRC
+
+1. Centrer et réduire les données afin d'obtenir un nouveau DataFrame =wine_cr_df= (=cr= pour
+   centré-réduit).
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+wine_cr_df = (wine_ori_df - wine_ori_df.mean())/wine_ori_df.std()
+   #+END_SRC
+
+** CAH avec paramètres par défaut
+
+Nous allons utiliser l'algorithme CAH afin de construire une hiérarchie sur nos vins à
+partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package =sklearn.cluster= (ou
+=skc= pour nous) de la librairie =sklearn= propose une implémentation de l'algorithme CAH dans
+la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=skc.AgglomerativeClustering=]].
+
+1. Construire un modèle CAH avec la classe
+   [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=skc.AgglomerativeClustering=]] en utilisant les
+   paramètres par défaut.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def = skc.AgglomerativeClustering()
+   #+END_SRC
+
+2. Utiliser ensuite la méthode =fit= pour construire la hiérarchie sur les données =wine_cr_df= :
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.fit(wine_cr_df)
+   #+END_SRC
+   
+2. Explorer l'objet =cah_cr_def= et déterminer la signification des attributs suivants :
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.n_clusters_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.labels_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.n_leaves_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.n_connected_components_
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_def.children_
+   #+END_SRC
+   
+1. Représenter graphiquement la partition obtenue avec le modèle =cah_cr_def= à l'aide d'un diagramme
+   en paires et analyser le résultat.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+px.scatter_matrix(wine_cr_df,
+                  color=cah_cr_def.labels_.astype(str), 
+                  title="Partition cah_cr_def")
+   #+END_SRC
+
+1. Que peut-on dire du comportement par défaut de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=skc.AgglomerativeClustering=]] en termes,
+   de partitionnement réalisé, de distance entre individus et entre groupes utilisée ?
+   
+3. Calculer l'inertie expliquée par la partition =cah_cr_def=. *Aide :* Utiliser la fonction
+   =eval_partition= du [[file:../td2/td2.org][TD2]].
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+def eval_partition(data_df, partition):
+    """
+    Entrées :
+    - data_df (pandas.DataFrame) : Données quantitatives
+    - partition (list, numpy.array ou pandas.Series) : partition des données
+    Sortie :
+    - inertie_intra : inertie intra-classe de la partition
+    - inertie_score : Inertie expliquée par la partition entre 0 et 1
+    """
+
+    # Calcul de l'inertie totale des données (cf. TD1)
+    mu_data = data_df.mean()
+    d2_data_mu = ((data_df - mu_data)**2).sum(axis=1)
+    inertie_totale = d2_data_mu.sum()
+
+    # Calcul de l'inertie interne aux classes (cf. TD1)
+    inertie_intra = 0
+    for cls, data_cls_df in data_df.groupby(partition):
+        # Centre de gravité de la classe cls
+        mu_cls = data_cls_df.mean()
+        # Distances au carré entre les données de la classe et le centre de la classe
+        d2_data_cls = ((data_cls_df - mu_cls)**2).sum(axis=1)
+        # Sommation pour obtenir l'inertie interne à la classe
+        inertie_intra += d2_data_cls.sum()
+  
+    # Inertie expliquée par la partition
+    inertie_score = 1 - inertie_intra/inertie_totale
+
+    return inertie_intra, inertie_score
+
+cah_cr_def_iw, cah_cr_def_ie = eval_partition(wine_cr_df, cah_cr_def.labels_)
+   #+END_SRC
+
+4. Étudier l'aide de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=AgglomerativeClustering=]] afin de comprendre le rôle des
+   principaux paramètres de la classe, à savoir =n_clusters=, =metric= et =lingkage=.
+
+5. Construire une nouvelle hiérarchie =cah_cr_ward= sur les données =wine_cr= afin de produire une partition en 3
+   groupes en utilisant la distance de Ward.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_cr_ward = skc.AgglomerativeClustering(
+    n_clusters=3,
+    linkage="ward").fit(wine_cr_df)
+   #+END_SRC
+
+1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.box(wine_cr_df, color=cah_cr_ward.labels_.astype(str),
+       title="Profils de la partition cah_cr_ward")
+   #+END_SRC
+
+
+6. Construire le dendrogramme de la CAH sur les données =wine_cr_df= réalisée en utilisant la
+   distance de Ward. Pour ce faire, utiliser la fonction =create_dendrogram= du package
+   =plotly.figure_factory= (ou =plf= pour nous).
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_ward_dendro_fig = \
+    pff.create_dendrogram(wine_cr_df,
+                          labels=wine_cr_df.index,
+                          color_threshold=15,
+                          linkagefun=lambda x: sch.linkage(x, "ward"))
+
+cah_cr_ward_dendro_fig.update_layout(
+    title_text=f"CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
+    width=1600, height=900)
+   #+END_SRC
+
+
+** Influence de la distance entre groupe
+
+Dans cette section, nous allons observer l'influence de la distance entre groupe dans le processus
+de construction de la CAH.
+
+1. Construire une CAH =cah_cr_single= sur les données =wine_cr= afin de produire une partition en 3
+   groupes en utilisant la distance du lien minimum (/single link/).
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+cah_cr_single = skc.AgglomerativeClustering(
+    n_clusters=3,
+    linkage="single").fit(wine_cr_df)
+   #+END_SRC
+
+2. Calculer l'inertie expliquée par la partition =cah_cr_single=.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_cr_single_iw, cah_cr_single_ie = eval_partition(wine_cr_df, cah_cr_single.labels_)
+   #+END_SRC
+   
+3. Représenter graphiquement la partition obtenue avec le modèle =cah_cr_1= à l'aide d'un diagramme
+   en paires et analyser le résultat.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.scatter_matrix(wine_cr_df,
+                  color=cah_cr_single.labels_.astype(str), 
+                  title="Partition cah_cr_single")
+   #+END_SRC
+
+1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+px.box(wine_cr_df, color=cah_cr_single.labels_.astype(str),
+       title="Profils de la partition cah_cr_single")
+   #+END_SRC
+
+4. Construire le dendrogramme de la CAH sur les données =wine_cr_df= réalisée en utilisant la
+   distance du lien minimum.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_cr_single_dendro_fig = \
+    pff.create_dendrogram(wine_cr_df,
+                          labels=wine_cr_df.index,
+                          color_threshold=15,
+                          linkagefun=lambda x: sch.linkage(x, "single"))
+
+cah_cr_single_dendro_fig.update_layout(
+    title_text=f"CAH avec distance d'aggrégation du lien minimum",
+    width=1600, height=900)
+   #+END_SRC
+
+4. Interpréter les résultats obtenus.
+
+1. Faire une CAH sur les données =wine_cr_df= en réalisant les mêmes analyses que précédemment mais
+   en utilisant la distance du lien maximum (/complete link/). Le modèle CAH sera nommé
+   =cah_cr_complete=. Comparer les résultats obtenus avec les CAH précédentes.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_cr_complete = skc.AgglomerativeClustering(
+    n_clusters=3,
+    linkage="complete").fit(wine_cr_df)
+cah_cr_complete_iw, cah_cr_complete_ie = eval_partition(wine_cr_df, cah_cr_complete.labels_)
+px.scatter_matrix(wine_cr_df,
+                  color=cah_cr_complete.labels_.astype(str), 
+                  title="Partition cah_cr_complete")
+
+px.box(wine_cr_df, color=cah_cr_complete.labels_.astype(str),
+       title="Profils de la partition cah_cr_complete")
+
+cah_cr_complete_dendro_fig = \
+    pff.create_dendrogram(wine_cr_df,
+                          labels=wine_cr_df.index,
+                          color_threshold=15,
+                          linkagefun=lambda x: sch.linkage(x, "complete"))
+
+cah_cr_complete_dendro_fig.update_layout(
+    title_text=f"CAH avec distance d'aggrégation du lien maximum",
+    width=1600, height=900)
+   #+END_SRC
+
+1. Faire une CAH sur les données =wine_cr_df= en réalisant les mêmes analyses que précédemment mais
+   en utilisant la distance du lien moyen (/average link/). Le modèle CAH sera nommé
+   =cah_cr_average=. Comparer les résultats obtenus avec les CAH précédentes.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_cr_average = skc.AgglomerativeClustering(
+    n_clusters=3,
+    linkage="average").fit(wine_cr_df)
+cah_cr_average_iw, cah_cr_average_ie = eval_partition(wine_cr_df, cah_cr_average.labels_)
+px.scatter_matrix(wine_cr_df,
+                  color=cah_cr_average.labels_.astype(str), 
+                  title="Partition cah_cr_average")
+
+px.box(wine_cr_df, color=cah_cr_average.labels_.astype(str),
+       title="Profils de la partition cah_cr_average")
+
+
+cah_cr_average_dendro_fig = \
+    pff.create_dendrogram(wine_cr_df,
+                          labels=wine_cr_df.index,
+                          color_threshold=15,
+                          linkagefun=lambda x: sch.linkage(x, "average"))
+
+cah_cr_average_dendro_fig.update_layout(
+    title_text=f"CAH avec distance d'aggrégation du lien moyen",
+    width=1600, height=900)
+   #+END_SRC
+
+* Exercice 2 : Analyse de profils d'équipes de football
+
+Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
+données couvrent les deux premières divisions de différents championnats européens.
+
+Le Tableau ref:tab:data_soccer_fixtures_columns donne une description des variables du jeu de
+données. 
+
+#+CAPTION: Définition des variables des du jeu de données. 
+#+NAME: tab:data_soccer_fixtures_columns
+| Colonne   | Description                                                            |
+|-----------+------------------------------------------------------------------------|
+| league_id | Identifiant du championnat                                             |
+| season_id | Identifiant de la saison                                               |
+| Date      | Date du match au format %Y-%m-%d                                       |
+| HomeTeam  | Équipe à domicile (ED)                                                 |
+| AwayTeam  | Équipe à l'exterieur (EE)                                              |
+| FTHG      | Nombre de buts de l'ED à la fin du match                               |
+| FTAG      | Nombre de buts de l'EE à la fin du match                               |
+| FTR       | Résultat à la fin du match (H = ED gagne, D = match nul, A = EE gagne) |
+| HTHG      | Nombre de buts de l'ED à la mi-temps                                   |
+| HTAG      | Nombre de buts de l'EE à la mi-temps                                   |
+| HTR       | Résultat à la mi-temps (H = ED gagne, D = match nul, A = EE gagne)     |
+| HS        | Nombre de tirs tentés par l'ED                                         |
+| AS        | Nombre de tirs tentés par l'EE                                         |
+| HST       | Nombre de tirs cadrés par l'ED                                         |
+| AST       | Nombre de tirs cadrés par l'EE                                         |
+| HC        | Nombre de corners pour l'ED                                            |
+| AC        | Nombre de corners pour l'EE                                            |
+| HF        | Nombre de fautes commises par l'ED                                     |
+| AF        | Nombre de fautes commises par l'EE                                     |
+| HY        | Nombre de cartons jaunes reçus par l'ED                                |
+| AY        | Nombre de cartons jaunes reçus par l'EE                                |
+| HR        | Nombre de cartons rouges reçus par l'ED                                |
+| AR        | Nombre de cartons rouges reçus par l'EE                                |
+
+L'objectif est d'identifier des profils d'équipes à partir des méthodes de classification non
+supervisées vues en cours.
+
+** Préparation des données
+
+1. Charger les données à partir de l'adresse suivante :
+   [[https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv]]. Le séparateur
+   est ";".
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+soccer_path = "https://roland-donat.github.io/cours-class-non-sup/td/td3/data_soccer_fixtures.csv"
+soccer_df = pd.read_csv(soccer_path, sep=";")
+soccer_df.head()
+   #+END_SRC
+
+2. Faire une extraction des données de la division 1 française (=league_id = fra_l1=) sur la saison
+   2018-2019.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+idx_selection = (soccer_df["league_id"] == "fra_l1") & (soccer_df["season_id"] == "2018-2019")
+soccer_sel_df = soccer_df.loc[idx_selection]
+soccer_sel_df.head()
+   #+END_SRC
+
+3. Sélectionner les données des équipes à domicile, i.e. =['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST',
+   'HC', 'HF', 'HY', 'HR']=.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+col_selection = ['HomeTeam', 'FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']
+soccer_sel_df = soccer_sel_df[col_selection]
+soccer_sel_df.head()
+   #+END_SRC
+
+4. Regrouper les données par équipe et calculer la moyenne des faits de jeu par équipe.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+soccer_mean_df = soccer_sel_df.groupby("HomeTeam").mean()
+soccer_mean_df
+   #+END_SRC
+
+** Détection de profils
+
+1. Réaliser une CAH sur les données =soccer_mean_df= avec la distance de Ward afin de partitionner
+   les équipes en 4 groupes. Essayer d'interpréter les groupes obtenus.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_soccer_ward = skc.AgglomerativeClustering(
+    n_clusters=4,
+    linkage="ward").fit(soccer_mean_df)
+cah_soccer_ward_iw, cah_soccer_ward_ie = eval_partition(soccer_mean_df, cah_soccer_ward.labels_)
+px.scatter_matrix(soccer_mean_df,
+                  dimensions=['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR'],
+                  hover_name=soccer_mean_df.index,
+                  color=cah_soccer_ward.labels_.astype(str), 
+                  title="Partition en 4 groupes des équipes de football obtenue par CAH.")
+cah_soccer_ward_dendro_fig = \
+    pff.create_dendrogram(soccer_mean_df,
+                          labels=soccer_mean_df.index,
+                          color_threshold=6,
+                          linkagefun=lambda x: sch.linkage(x, "ward"))
+
+cah_soccer_ward_dendro_fig.update_layout(
+    title_text=f"Dendrogramme de la CAH sur les équipes de football avec la distance de Ward",
+    width=1600, height=900)
+   #+END_SRC
+
+1. Appliquer la
+   méthode du coude afin d'évaluer un compromis entre nombre de classes et inertie expliquée.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+cah_soccer_ie = []
+
+link_dist = "ward"
+
+K_list = range(2, 10)
+for k in K_list:
+
+    cah_soccer_k = skc.AgglomerativeClustering(
+        n_clusters=k,
+        linkage=link_dist).fit(soccer_mean_df)
+    iintra, iscore = eval_partition(soccer_mean_df, cah_soccer_k.labels_)
+    cah_soccer_ie.append(iscore)
+
+px.line(x=K_list, y=cah_soccer_ie,
+        title="CAH : Inertie expliquée vs nb de classes",
+        markers=True)
+   #+END_SRC
+
+2. Refaire les traitements précédents en utilisant la méthode des moyennes mobiles. Comparer les
+   résultats obtenus.
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_soccer = skc.KMeans(
+    n_clusters=4,
+    n_init="auto").fit(soccer_mean_df)
+km_soccer_iw, km_soccer_ie = eval_partition(soccer_mean_df, km_soccer.labels_)
+px.scatter_matrix(soccer_mean_df,
+                  dimensions=['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR'],
+                  hover_name=soccer_mean_df.index,
+                  color=cah_soccer_ward.labels_.astype(str),
+                  title="Partition en 4 groupes des équipes de football obtenue par moyenne mobile.")
+   #+END_SRC
+
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_soccer_ie = []
+
+K_list = range(2, 10)
+for k in K_list:
+
+    km_soccer_k = skc.KMeans(
+        n_clusters=k,
+        n_init="auto").fit(soccer_mean_df)
+    iintra, iscore = eval_partition(soccer_mean_df, km_soccer_k.labels_)
+    km_soccer_ie.append(iscore)
+
+px.line(x=K_list, y=km_soccer_ie,
+        title="KM : Inertie expliquée vs nb de classes",
+        markers=True)
+   #+END_SRC
+
+
+* Exercice 3 : Programmation des distances entre classes
+
+Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
+en cours. Vous développerez ainsi des fonctions ayant la forme suivante :
+#+BEGIN_SRC python :results silent :exports code
+def calcul_<nom distance>(data_df1, data_df2):
+    
+    # Votre code à mettre ici
+
+    return dist
+#+END_SRC
+Remarques :
+- =<nom_distance>= est à remplacer par le nom de la distance programmée.
+- =data_df1= et =data_df2= sont deux =DataFrame= contenant les individus de deux classes disjointes.
+- La fonction retourne la valeur de la distance calculée.
+- Vous supposerez que la distance entre individus est la distance euclidienne.
+
+Le travail consiste alors à créer les quatre fonctions suivantes :
+1. =calcul_single= qui calcule la distance du lien minimum.
+2. =calcul_complete= qui calcule la distance du lien maximum.
+3. =calcul_average= qui calcule la distance moyenne.
+4. =calcul_ward= qui calcule la distance de Ward.
+
+*Aide :* vous pouvez utiliser la fonction [[https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html][=cdist=]] du package =scipy.spatial.distance=.
+
+
+* Analyse de la méthode CAH sur des données synthétiques :noexport:
+
+Ce premier exercice consiste à utiliser des données générées comportant des distributions
+d'individus remarquables permettant d'illustrer les propriétés des différents algorithmes de
+partitionnement vu en cours.
+
+** Chargement des données
+
+Nous travaillerons sur les quatre jeux de données suivants :
+- Patches circulaires : [[https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv]] ;
+- Patches elliptiques : https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv;
+- Cercles : https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv
+- Croissants de lune : https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv
+
+Notes : ces exemples synthétiques ont été inspirés par ceux du [[https://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html][manuel en ligne de =Scikit-learn=]].
+
+1. Chargez tous ces jeux de données avec =Pandas=.
+   #+BEGIN_SRC python :results silent :exports code
+data_patches_circ_path = "https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_circ.csv"
+data_patches_ellip_path = "https://roland-donat.github.io/cours-class-non-sup/td/td3/data_patches_ellip.csv"
+data_circles_path = "https://roland-donat.github.io/cours-class-non-sup/td/td3/data_circles.csv"
+data_moons_path = "https://roland-donat.github.io/cours-class-non-sup/td/td3/data_moons.csv"
+
+data_patches_circ_df = pd.read_csv(data_patches_circ_path, sep=";")
+data_patches_ellip_df = pd.read_csv(data_patches_ellip_path, sep=";")
+data_circles_df = pd.read_csv(data_circles_path, sep=";")
+data_moons_df = pd.read_csv(data_moons_path, sep=";")
+   #+END_SRC
+
+
+2. Visualisez les nuages de points correspondant. 
+   #+BEGIN_SRC python :results silent :exports code
+px.scatter(data_patches_circ_df, x="X1", y="X2",
+           title="Données patches circulaires", 
+           width=750, height=750)
+
+<à compléter pour les autres données>
+   #+END_SRC
+
+** CAH
+
+1. Construisez un modèle de classification ascendante hiérarchique (CAH) avec la classe
+   [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=AgglomerativeClustering=]] du package =sklearn.cluster= (ou =skc= pour nous) en utilisant les
+   paramètres par défaut et ajustez le sur les données de patches circulaires. Aide : utilisez .  
+   #+BEGIN_SRC python :results silent :exports code
+cah_patches_circ = skc.AgglomerativeClustering()
+cah_patches_circ.fit(data_patches_circ_df)
+   #+END_SRC
+
+2. Explorez les attributs de l'objet =cah_patches_circ= afin de trouver la partition produite et
+   représentez sur le nuage de points. 
+
+3. Évaluez la partition avec la fonction =eval_partition= (cf. TD2).
+
+4. Étudiez l'aide de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=AgglomerativeClustering=]] afin de comprendre le rôle des
+   principaux paramètres et attributs de la classe.
+
+5. Construisez une hiérarchie sur les données de patches circulaires en utilisant la distance de
+   Ward.
+   #+BEGIN_SRC python :results silent :exports code
+cah_patches_circ_2 = skc.AgglomerativeClustering(
+    n_clusters=4,
+    compute_full_tree=True,
+    compute_distances=True, 
+    affinity="euclidean", 
+    linkage="ward").fit(data_patches_circ_df)
+   #+END_SRC
+
+6. Visualisez le dendrogramme associé. Aide : étudiez la fonction =create_dendrogram= du package
+   =plotly.figure_factory= (ou =plf= pour nous).
+   #+BEGIN_SRC python :results silent :exports code
+data_patches_circ_dendro_fig = \
+    pff.create_dendrogram(data_patches_circ_df,
+                          labels=data_patches_circ_df.index,
+                          color_threshold=50,
+                          distfun=lambda x: scd.pdist(x, metric="euclidean"),
+                          linkagefun=lambda x: sch.linkage(x, "ward", metric="euclidean"))
+
+data_patches_circ_dendro_fig.update_layout(
+    title_text=f"CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
+    width=1000, height=600)
+   #+END_SRC
+
+7. Construisez différentes hiérarchies sur les données de patches circulaires en modifiant la
+   distance entre classes (distance d'agrégation) et visualisez les dendrogrammes associés.
+
+8. Appliquez la méthodes CAH sur les autres jeux de données synthétiques et analysez l'influence de
+   la distance d'agrégation choisie.
+
+** Autres modèles
+
+1. Appliquez la méthode des moyennes mobiles et le modèle du mélange gaussien sur les données
+   circulaires et en croissant de lune. 
+   #+BEGIN_SRC python :results silent :exports code
+km_circles = skc.KMeans(n_clusters=2, 
+                        n_init=1, 
+                        init='random', 
+                        random_state=20000).fit(data_circles_df)
+px.scatter(data_circles_df, x="X1", y="X2", color=km_circles.labels_, 
+           width=750, height=750)
+   #+END_SRC
+   #+BEGIN_SRC python :results silent :exports code
+gmm_circles = skm.GaussianMixture(n_components=2).fit(data_circles_df)
+gmm_circles_cls = gmm_circles.predict(data_circles_df)
+px.scatter(data_circles_df, x="X1", y="X2", 
+           color=gmm_circles_cls, 
+           width=750, 
+           height=750)
+   #+END_SRC
+
+2. Expliquez les résultats.
+

@@ -239,7 +239,6 @@
 #+CAPTION: Image générée par [[https://openai.com/dall-e-2/][DALL-E]]
 [[./vigneronnes.png]]
 
-
 * À faire                                                          :noexport:
 ** Ajouter plus d'exemple de code python pour se lancer
 - group_by

@@ -364,7 +364,7 @@ km_ori_1.cluster_centers_
 km_ori_1.inertia_
    #+END_SRC
 
-1. Calculer l'initie expliquée par la partition obtenue avec le modèle =km_ori_1=.
+1. Calculer l'inertie expliquée par la partition obtenue avec le modèle =km_ori_1=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
@@ -419,8 +419,8 @@ km_ori_2 = skc.KMeans(
 km_ori_2.fit(wine_ori_df)
    #+END_SRC
 
-1. Calculer l'initie expliquée par la partition obtenue avec le modèle =km_ori_2=. Comparer ce
-   résultat avec l'initie expliquée par le modèle =km_ori_1=.
+1. Calculer l'inertie expliquée par la partition obtenue avec le modèle =km_ori_2=. Comparer ce
+   résultat avec l'inertie expliquée par le modèle =km_ori_1=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
@@ -472,7 +472,7 @@ km_cr_1 = skc.KMeans(n_clusters=3)
 km_cr_1.fit(wine_cr_df)
    #+END_SRC
 
-4. Calculer l'initie expliquée par la parition obtenue avec le modèle =km_cr_1=.
+4. Calculer l'inertie expliquée par la parition obtenue avec le modèle =km_cr_1=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------

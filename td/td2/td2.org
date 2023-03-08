@@ -378,7 +378,7 @@ km_ori_1_ie = 1 - km_ori_1.inertia_/wine_ori_it
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
 px.scatter_matrix(wine_ori_df,
                   color=km_ori_1.labels_.astype(str), 
-                  title="Partition km_ori_1")
+                  title="Partition km_ori_1").show()
    #+END_SRC
 
 1. Analyser le profil des groupes obtenus avec la partition =km_ori_1=.
@@ -391,7 +391,8 @@ km_ori_1_prof
 
 1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-px.box(wine_ori_df, color=km_ori_1.labels_.astype(str))
+px.box(wine_ori_df, color=km_ori_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_ori_1").show()
    #+END_SRC
 
 1. Étudier les paramètres de la classe =skc.kMeans=. Donner en particulier la signification des
@@ -414,7 +415,7 @@ km_ori_2 = skc.KMeans(
     n_clusters=3,
     init="random",
     n_init=1,
-    random_state=12345,
+    random_state=2,
     )
 km_ori_2.fit(wine_ori_df)
    #+END_SRC
@@ -434,7 +435,7 @@ km_ori_2_ie = 1 - km_ori_2.inertia_/wine_ori_it
 # --------
 px.scatter_matrix(wine_ori_df,
                   color=km_ori_2.labels_.astype(str), 
-                  title="Partition km_ori_2")
+                  title="Partition km_ori_2").show()
    #+END_SRC
 
 
@@ -488,7 +489,7 @@ km_cr_1_ie = 1 - km_cr_1.inertia_/wine_cr_it
 # --------
 px.scatter_matrix(wine_cr_df,
                   color=km_cr_1.labels_.astype(str), 
-                  title="Partition km_cr_1")
+                  title="Partition km_cr_1").show()
    #+END_SRC
 
 1. Mettre sous la forme d'un DataFrame le profil moyen des groupes obtenus avec la partition =km_cr_1=.
@@ -501,11 +502,18 @@ km_cr_1_prof = \
 km_cr_1_prof
    #+END_SRC
 
-1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot.
+1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
+   quel espace l'interprétation des profils est-elle la plus aisée ? L'espace centré-réduit ou
+   l'espace original ?
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-px.box(wine_cr_df, color=km_cr_1.labels_.astype(str))
+# Espace centré-réduit -> profils interprétables mais ne pas oublier de tenir compte du centrage/réduction
+px.box(wine_cr_df, color=km_cr_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_cr_1 (espace centré-réduit)").show()
+# Espace original -> profils interprétables directement du point de vu métier
+px.box(wine_ori_df, color=km_cr_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_cr_1 (espace original)").show()
    #+END_SRC
 
 
@@ -537,7 +545,7 @@ wine_acp_2d_df = wine_acp_df[[0, 1]]
 px.scatter(wine_acp_2d_df,
            x=0, y=1,
            labels={"0":"Axe ACP 1", "1":"Axe ACP 2"},
-           title="Projection des données sur les deux premiers axes de l'ACP")
+           title="Projection des données sur les deux premiers axes de l'ACP").show()
    #+END_SRC
 
 2. Réaliser un modèle k-Means, nommé =km_acp_1=, permettant de partitionner les données =wine_acp_2d_df=
@@ -548,9 +556,9 @@ px.scatter(wine_acp_2d_df,
 km_acp_1 = skc.KMeans(n_clusters=3).fit(wine_acp_2d_df)
 px.scatter(wine_acp_2d_df,
            x=0, y=1,
-           color=km_acp_1.labels_,
+           color=km_acp_1.labels_.astype(str),
            labels={"0":"Axe ACP 1", "1":"Axe ACP 2"},
-           title="Partition km_acp_1")
+           title="Partition km_acp_1").show()
    #+END_SRC
 
 2. En déduire le profil moyen des groupes obtenus dans l'espace centré-réduit.
@@ -560,11 +568,22 @@ px.scatter(wine_acp_2d_df,
 km_acp_1_prof = wine_cr_df.groupby(km_acp_1.labels_).mean()
    #+END_SRC
 
-1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot.
+1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
+   quel espace est-il le plus pertinent d'analyser les groupes obtenus ? L'espace de l'ACP, l'espace
+   centré-réduit, l'espace original ? 
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-px.box(wine_cr_df, color=km_acp_1.labels_.astype(str))
+# Espace ACP -> profils impossibles à interpréter
+px.box(wine_acp_2d_df, color=km_acp_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp_1 (espace ACP)").show()
+# Espace centré-réduit -> profils interprétables mais ne pas oublier de tenir compte du centrage/réduction
+px.box(wine_cr_df, color=km_acp_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp_1 (espace centré-réduit)").show()
+# Espace original -> profils interprétables directement du point de vu métier
+px.box(wine_ori_df, color=km_acp_1.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp_1 (espace original)").show()
+
    #+END_SRC
 
 2. Calculer l'inertie expliquée par la partition =km_acp_1=.

@@ -277,6 +277,8 @@ import pandas as pd  # Manipulation des données
 import numpy as np # Calcul numérique
 import plotly as pl # Librairie principale pour avoir le n° de version
 import plotly.express as px # Package plotly pour utiliser les visualisations de haut niveau
+import plotly.io as pio           # Nécessaire avec Spyder
+pio.renderers.default = 'browser' # Nécessaire avec Spyder
 import sklearn as sk # Librairie principale pour avoir le n° de version
 import sklearn.cluster as skc # Package sklearn dédié au clustering
 import sklearn.decomposition as skd   # Package sklearn dédié aux méthodes factorielles
@@ -666,7 +668,6 @@ km_acp_iw, km_acp_ie = eval_partition(wine_acp_2d_df, km_acp.labels_)
 km_acp_cr_iw, km_acp_cr_ie = eval_partition(wine_cr_df, km_acp.labels_)
 km_acp_ori_iw, km_acp_ori_cr_ie = eval_partition(wine_ori_df, km_acp.labels_)
    #+END_SRC
-
 
 
 * Exercice 2 : Compression d'images

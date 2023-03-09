@@ -326,20 +326,20 @@ Dans la suite, nous déclinerons la démarche précédente dans le cas particuli
 k-Means :
 1. Initialiser l'algorithme des moyennes mobiles sur les données =wine_ori_df= :
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1 = skc.KMeans(n_clusters=3)
+km_ori = skc.KMeans(n_clusters=3)
    #+END_SRC
-   - L'objet =km_ori_1= représente l'algorithme des moyennes mobiles. 
+   - L'objet =km_ori= représente l'algorithme des moyennes mobiles. 
    - Le paramètre =n_clusters= permet
      de configurer le nombre de groupes recherché. Dans cet exemple, l'algorithme est prêt pour
      partitionner en 3 groupes. 
    - Notons que pour l'instant, aucun traitement n'a été réalisé puisqu'aucune données n'a été mise
-     en relation avec notre objet =km_ori_1=.
+     en relation avec notre objet =km_ori=.
    - *Question :* D'après le cours, ne faut-il pas fournir un élément supplémentaire pour
      initialiser l'algorithme ?  
 
 2. Utiliser ensuite la méthode =fit= pour lancer le partitionnement sur les données =wine_ori_df= :
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1.fit(wine_ori_df)
+km_ori.fit(wine_ori_df)
    #+END_SRC
    - La méthode =fit= exécute l'algorithme des k-Means tel que vu en cours. Des partitionnements
      alternés avec le calcul des centres associés sont effectués successivement jusqu'à la convergence de
@@ -347,55 +347,62 @@ km_ori_1.fit(wine_ori_df)
    - Selon votre version de =sklearn=, un message =Warning= concernant l'initialisation de
      l'algorithme peut apparaître. Ce message est à ignorer pour l'instant, nous reviendrons sur ce
      sujet ultérieurement.
-   - *Note :* On pourra également désigner l'objet =km_ori_1= comme le *modèle* =km_ori_1=. En effet, on
+   - *Note :* On pourra également désigner l'objet =km_ori= comme le *modèle* =km_ori=. En effet, on
      rappelle que la méthode k-Means (et plus largement les méthodes de classification non
      supervisée) servent à modéliser un ensemble d'individus à partir d'un ensemble restreint de
      groupes d'individus.
 
-1. Après partitionnement, l'objet =km_ori_1= possède de nouveaux attributs. Déduire (si besoin avec
-   l'aide de la documentation) la signification des attributs suivants :
+1. Après partitionnement, l'objet =km_ori= possède de nouveaux attributs. Utiliser la
+   [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html][documentation de la classe KMeans]]  pour comprendre la signification des attributs suivants :
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1.labels_
+km_ori.labels_
    #+END_SRC
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1.cluster_centers_
+km_ori.cluster_centers_
    #+END_SRC
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1.inertia_
+km_ori.inertia_
    #+END_SRC
 
-1. Calculer l'inertie expliquée par la partition obtenue avec le modèle =km_ori_1=.
+1. Calculer l'inertie expliquée par la partition obtenue avec le modèle =km_ori=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
 # Calcul de l'inertie totale des données
 wine_ori_it = ((wine_ori_df - wine_ori_df.mean())**2).sum(axis=1).sum()
-km_ori_1_ie = 1 - km_ori_1.inertia_/wine_ori_it
+km_ori_ie = 1 - km_ori.inertia_/wine_ori_it
    #+END_SRC
 
-1. Représenter graphiquement la partition obtenue avec le modèle =km_ori_1= à l'aide d'un diagramme
+1. Représenter graphiquement la partition obtenue avec le modèle =km_ori= à l'aide d'un diagramme
    en paires et analyser le résultat.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
 px.scatter_matrix(wine_ori_df,
-                  color=km_ori_1.labels_.astype(str), 
-                  title="Partition km_ori_1").show()
+                  color=km_ori.labels_.astype(str), 
+                  title="Partition km_ori").show()
    #+END_SRC
 
-1. Analyser le profil des groupes obtenus avec la partition =km_ori_1=.
+1. Analyser le profil moyen des groupes obtenus avec la partition =km_ori=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_ori_1_prof = \
-    pd.DataFrame(km_ori_1.cluster_centers_,
+km_ori_mean = \
+    pd.DataFrame(km_ori.cluster_centers_,
                  columns=wine_ori_df.columns)
-km_ori_1_prof
+km_ori_mean
+   #+END_SRC
+
+1. Analyser à présent le profil statistique détaillé des groupes obtenus avec la partition =km_ori=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
+km_ori_prof = \
+    wine_ori_df.groupby(km_ori.labels_).describe()
+km_ori_prof
    #+END_SRC
 
 1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-px.box(wine_ori_df, color=km_ori_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_ori_1").show()
+px.box(wine_ori_df, color=km_ori.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_ori").show()
    #+END_SRC
 
-1. Étudier les paramètres de la classe =skc.kMeans=. Donner en particulier la signification des
+1. Étudier le paramétrage de la classe =skc.kMeans=. Donner en particulier la signification des
    paramètres :
    - =init= ;
    - =n_init= ;
@@ -421,7 +428,7 @@ km_ori_2.fit(wine_ori_df)
    #+END_SRC
 
 1. Calculer l'inertie expliquée par la partition obtenue avec le modèle =km_ori_2=. Comparer ce
-   résultat avec l'inertie expliquée par le modèle =km_ori_1=.
+   résultat avec l'inertie expliquée par le modèle =km_ori=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
@@ -460,48 +467,74 @@ dans la suite sur des données centrées et réduites.à
 wine_cr_df = (wine_ori_df - wine_ori_df.mean())/wine_ori_df.std()
    #+END_SRC
 
-2. Créer un modèle k-Means, nommé =km_cr_1=, permettant de partitionner les données en 3 groupes en
+2. Créer un modèle k-Means, nommé =km_cr=, permettant de partitionner les données en 3 groupes en
    utilisant le paramétrage par défaut de la classe =skc.kMeans=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-km_cr_1 = skc.KMeans(n_clusters=3)
+km_cr = skc.KMeans(n_clusters=3)
    #+END_SRC
 
 3. Utiliser ensuite la méthode =fit= pour lancer le partitionnement sur les données =wine_cr_df= :
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-km_cr_1.fit(wine_cr_df)
+km_cr.fit(wine_cr_df)
    #+END_SRC
 
-4. Calculer l'inertie expliquée par la parition obtenue avec le modèle =km_cr_1=.
+4. Calculer l'inertie expliquée par la parition obtenue avec le modèle =km_cr=.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
 # Calcul de l'inertie totale des données
 wine_cr_it = ((wine_cr_df - wine_cr_df.mean())**2).sum(axis=1).sum()
-km_cr_1_ie = 1 - km_cr_1.inertia_/wine_cr_it
+km_cr_ie = 1 - km_cr.inertia_/wine_cr_it
    #+END_SRC
 
-5. Représenter graphiquement la partition obtenue avec le modèle =km_cr_1= à l'aide d'un diagramme
+5. Représenter graphiquement la partition obtenue avec le modèle =km_cr= à l'aide d'un diagramme
    en paires, analyser le résultat obtenu et comparer avec les partitions précédentes.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
 px.scatter_matrix(wine_cr_df,
-                  color=km_cr_1.labels_.astype(str), 
-                  title="Partition km_cr_1").show()
+                  color=km_cr.labels_.astype(str), 
+                  title="Partition km_cr").show()
    #+END_SRC
 
-1. Mettre sous la forme d'un DataFrame le profil moyen des groupes obtenus avec la partition =km_cr_1=.
+1. En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
+   =km_cr= dans l'espace centré-réduit.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-km_cr_1_prof = \
-    pd.DataFrame(km_cr_1.cluster_centers_,
+km_cr_mean = \
+    pd.DataFrame(km_cr.cluster_centers_,
                  columns=wine_cr_df.columns)
-km_cr_1_prof
+km_cr_mean
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_cr_prof = \
+    wine_cr_df.groupby(km_cr.labels_).describe()
+km_cr_prof
    #+END_SRC
 
+1. En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
+   =km_cr= dans l'espace original (c'est à dire des données initiales sans transformation).
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_cr_ori_mean = \
+    wine_ori_df.groupby(km_cr.labels_).mean()
+km_cr_ori_mean
+   #+END_SRC
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+km_cr_ori_prof = \
+    wine_ori_df.groupby(km_cr.labels_).describe()
+km_cr_ori_prof
+   #+END_SRC
+
+   
 1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
    quel espace l'interprétation des profils est-elle la plus aisée ? L'espace centré-réduit ou
    l'espace original ?
@@ -509,11 +542,11 @@ km_cr_1_prof
 # SOLUTION
 # --------
 # Espace centré-réduit -> profils interprétables mais ne pas oublier de tenir compte du centrage/réduction
-px.box(wine_cr_df, color=km_cr_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_cr_1 (espace centré-réduit)").show()
+px.box(wine_cr_df, color=km_cr.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_cr (espace centré-réduit)").show()
 # Espace original -> profils interprétables directement du point de vu métier
-px.box(wine_ori_df, color=km_cr_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_cr_1 (espace original)").show()
+px.box(wine_ori_df, color=km_cr.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_cr (espace original)").show()
    #+END_SRC
 
 
@@ -548,24 +581,29 @@ px.scatter(wine_acp_2d_df,
            title="Projection des données sur les deux premiers axes de l'ACP").show()
    #+END_SRC
 
-2. Réaliser un modèle k-Means, nommé =km_acp_1=, permettant de partitionner les données =wine_acp_2d_df=
+2. Réaliser un modèle k-Means, nommé =km_acp=, permettant de partitionner les données =wine_acp_2d_df=
    en 3 groupes. Visualiser la partition obtenue.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-km_acp_1 = skc.KMeans(n_clusters=3).fit(wine_acp_2d_df)
+km_acp = skc.KMeans(n_clusters=3).fit(wine_acp_2d_df)
 px.scatter(wine_acp_2d_df,
            x=0, y=1,
-           color=km_acp_1.labels_.astype(str),
+           color=km_acp.labels_.astype(str),
            labels={"0":"Axe ACP 1", "1":"Axe ACP 2"},
-           title="Partition km_acp_1").show()
+           title="Partition km_acp").show()
    #+END_SRC
 
-2. En déduire le profil moyen des groupes obtenus dans l'espace centré-réduit.
+2. En déduire les profils moyens et statistiques complets des groupes obtenus dans l'espace
+   centré-réduit et l'espace original.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-km_acp_1_prof = wine_cr_df.groupby(km_acp_1.labels_).mean()
+km_acp_cr_mean = wine_cr_df.groupby(km_acp.labels_).mean()
+km_acp_cr_prof = wine_cr_df.groupby(km_acp.labels_).describe()
+
+km_acp_ori_mean = wine_ori_df.groupby(km_acp.labels_).mean()
+km_acp_ori_prof = wine_ori_df.groupby(km_acp.labels_).describe()
    #+END_SRC
 
 1. Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
@@ -575,18 +613,19 @@ km_acp_1_prof = wine_cr_df.groupby(km_acp_1.labels_).mean()
 # SOLUTION
 # --------
 # Espace ACP -> profils impossibles à interpréter
-px.box(wine_acp_2d_df, color=km_acp_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_acp_1 (espace ACP)").show()
+px.box(wine_acp_2d_df, color=km_acp.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp (espace ACP)").show()
 # Espace centré-réduit -> profils interprétables mais ne pas oublier de tenir compte du centrage/réduction
-px.box(wine_cr_df, color=km_acp_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_acp_1 (espace centré-réduit)").show()
+px.box(wine_cr_df, color=km_acp.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp (espace centré-réduit)").show()
 # Espace original -> profils interprétables directement du point de vu métier
-px.box(wine_ori_df, color=km_acp_1.labels_.astype(str),
-       title="Profils des groupes obtenus par la classification km_acp_1 (espace original)").show()
+px.box(wine_ori_df, color=km_acp.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_acp (espace original)").show()
 
    #+END_SRC
 
-2. Calculer l'inertie expliquée par la partition =km_acp_1=.
+2. Calculer l'inertie expliquée par la partition =km_acp= dans l'espace de l'ACP, dans l'espace
+   centré-réduit et dans l'espace original.
    #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
@@ -622,8 +661,10 @@ def eval_partition(data_df, partition):
     return inertie_intra, inertie_score
 
 
-# Utilisation de la fonction pour calculer l'inertie expliquée de la partition km_acp_1
-km_acp_1_iw, km_acp_1_ie = eval_partition(wine_cr_df, km_acp_1.labels_)
+# Utilisation de la fonction pour calculer l'inertie expliquée de la partition km_acp
+km_acp_iw, km_acp_ie = eval_partition(wine_acp_2d_df, km_acp.labels_)
+km_acp_cr_iw, km_acp_cr_ie = eval_partition(wine_cr_df, km_acp.labels_)
+km_acp_ori_iw, km_acp_ori_cr_ie = eval_partition(wine_ori_df, km_acp.labels_)
    #+END_SRC
 
 

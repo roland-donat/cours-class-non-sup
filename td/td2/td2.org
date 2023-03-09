@@ -230,7 +230,7 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige nil)
+(setq td_corrige t)
 #+END_SRC
 
 #+ATTR_HTML: :width 50%

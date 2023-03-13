@@ -23,35 +23,35 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orga782ebf">Introduction</a></li>
-<li><a href="#org277e6d7">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org5e56b24">Exercice 1 : CAH et données <code>wine</code></a>
+<li><a href="#org8966fee">Introduction</a></li>
+<li><a href="#orga4ab512">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#orgbced70b">Exercice 1 : CAH et données <code>wine</code></a>
 <ul>
-<li><a href="#org5fd5eb0">Chargement des données</a></li>
-<li><a href="#org8c4ece2">CAH avec paramètres par défaut</a></li>
-<li><a href="#org418eb49">Influence de la distance entre groupe</a></li>
+<li><a href="#org5e0609b">Chargement des données</a></li>
+<li><a href="#orgae5a033">CAH avec paramètres par défaut</a></li>
+<li><a href="#org4eb02d0">Influence de la distance entre groupe</a></li>
 </ul>
 </li>
-<li><a href="#orga7d6595">Exercice 2 : Analyse de profils d'équipes de football</a>
+<li><a href="#orgfee31c1">Exercice 2 : Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#orge9aec25">Préparation des données</a></li>
-<li><a href="#orgf0c0805">Détection de profils</a></li>
+<li><a href="#org76ae450">Préparation des données</a></li>
+<li><a href="#org0e548fa">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#orgbe1b804">Exercice 3 : Programmation des distances entre classes</a></li>
+<li><a href="#org7ad0058">Exercice 3 : Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orgfb869c2" class="figure">
+<div id="org92cbbf4" class="figure">
 <p><img src="./woman_soccer_bet.png" alt="woman_soccer_bet.png" width="50%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;1&nbsp;: </span><i>A woman datascientist performing machine learning to bet on soccer teams, manga style</i> (source: générée par <a href="https://openai.com/dall-e-2/">DALL-E</a>)</p>
 </div>
 
-<div id="outline-container-orga782ebf" class="outline-2">
-<h2 id="orga782ebf">Introduction</h2>
-<div class="outline-text-2" id="text-orga782ebf">
+<div id="outline-container-org8966fee" class="outline-2">
+<h2 id="org8966fee">Introduction</h2>
+<div class="outline-text-2" id="text-org8966fee">
 <p>
 Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
 (CAH) sur différents jeux de données afin d'en évaluer les propriétés.
@@ -69,9 +69,9 @@ compétence sur le langage <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-org277e6d7" class="outline-2">
-<h2 id="org277e6d7">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org277e6d7">
+<div id="outline-container-orga4ab512" class="outline-2">
+<h2 id="orga4ab512">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orga4ab512">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -127,18 +127,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org5e56b24" class="outline-2">
-<h2 id="org5e56b24">Exercice 1 : CAH et données <code>wine</code></h2>
-<div class="outline-text-2" id="text-org5e56b24">
+<div id="outline-container-orgbced70b" class="outline-2">
+<h2 id="orgbced70b">Exercice 1 : CAH et données <code>wine</code></h2>
+<div class="outline-text-2" id="text-orgbced70b">
 <p>
 Dans cet exercice, nous reprenons les données <code>wine</code> afin d'y appliquer différentes CAH dans le but
 d'identifier des profils de vignobles.
 </p>
 </div>
 
-<div id="outline-container-org5fd5eb0" class="outline-3">
-<h3 id="org5fd5eb0">Chargement des données</h3>
-<div class="outline-text-3" id="text-org5fd5eb0">
+<div id="outline-container-org5e0609b" class="outline-3">
+<h3 id="org5e0609b">Chargement des données</h3>
+<div class="outline-text-3" id="text-org5e0609b">
 <ol class="org-ol">
 <li><p>
 Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
@@ -161,9 +161,9 @@ centré-réduit).
 </div>
 </div>
 
-<div id="outline-container-org8c4ece2" class="outline-3">
-<h3 id="org8c4ece2">CAH avec paramètres par défaut</h3>
-<div class="outline-text-3" id="text-org8c4ece2">
+<div id="outline-container-orgae5a033" class="outline-3">
+<h3 id="orgae5a033">CAH avec paramètres par défaut</h3>
+<div class="outline-text-3" id="text-orgae5a033">
 <p>
 Nous allons utiliser l'algorithme CAH afin de construire une hiérarchie sur nos vins à
 partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
@@ -204,24 +204,20 @@ Explorer l'objet <code>cah_cr_def</code> et déterminer la signification des att
 <div class="org-src-container">
 <pre class="src src-python">cah_cr_def.n_leaves_
 </pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python">cah_cr_def.n_connected_components_
-</pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python">cah_cr_def.children_
-</pre>
 </div></li>
 
 <li><p>
-Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_def</code> à l'aide d'un diagramme
-en paires et analyser le résultat.
+Décrire les profils obtenus avec la partition du modèle <code>cah_cr_def</code> (diagramme en paires,
+boxplot, profils statistiques détaillés).
 </p>
 <div class="org-src-container">
-<pre class="src src-python">px.scatter_matrix(wine_cr_df,
+<pre class="src src-python">px.scatter_matrix(wine_ori_df,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=cah_cr_def.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition cah_cr_def"</span>)
+px.box(wine_ori_df, color=cah_cr_def.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification cah_cr_def"</span>).show()
+<span style="color: #DFAF8F;">cah_def_ori_prof</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   wine_ori_df.groupby(cah_cr_def.labels_).describe()
 </pre>
 </div></li>
 
@@ -272,18 +268,8 @@ principaux paramètres de la classe, à savoir <code>n_clusters</code>, <code>me
 
 <li>Construire une nouvelle hiérarchie <code>cah_cr_ward</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
 groupes en utilisant la distance de Ward.</li>
-<li><p>
-Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
-</p>
-<div class="org-src-container">
-<pre class="src src-python">px.box(wine_cr_df, color=cah_cr_ward.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils de la partition cah_cr_ward"</span>)
-</pre>
-</div></li>
-</ol>
-
-
-<ol class="org-ol">
+<li>Décrire les profils obtenus avec la partition du modèle <code>cah_cr_ward</code> (diagramme en paires,
+boxplot, profils statistiques détaillés).</li>
 <li><p>
 Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
 distance de Ward. Pour ce faire, utiliser la fonction <code>create_dendrogram</code> du package
@@ -306,9 +292,9 @@ cah_cr_ward_dendro_fig.update_layout(
 </div>
 
 
-<div id="outline-container-org418eb49" class="outline-3">
-<h3 id="org418eb49">Influence de la distance entre groupe</h3>
-<div class="outline-text-3" id="text-org418eb49">
+<div id="outline-container-org4eb02d0" class="outline-3">
+<h3 id="org4eb02d0">Influence de la distance entre groupe</h3>
+<div class="outline-text-3" id="text-org4eb02d0">
 <p>
 Dans cette section, nous allons observer l'influence de la distance entre groupe dans le processus
 de construction de la CAH.
@@ -327,17 +313,8 @@ groupes en utilisant la distance du lien minimum (<i>single link</i>).
 </div></li>
 
 <li>Calculer l'inertie expliquée par la partition <code>cah_cr_single</code>.</li>
-<li>Représenter graphiquement la partition obtenue avec le modèle <code>cah_cr_1</code> à l'aide d'un diagramme
-en paires et analyser le résultat.</li>
-<li><p>
-Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
-</p>
-<div class="org-src-container">
-<pre class="src src-python">px.box(wine_cr_df, color=cah_cr_single.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils de la partition cah_cr_single"</span>)
-</pre>
-</div></li>
-
+<li>Décrire les profils obtenus avec la partition du modèle <code>cah_cr_single</code> (diagramme en paires,
+boxplot, profils statistiques détaillés).</li>
 <li>Construire le dendrogramme de la CAH sur les données <code>wine_cr_df</code> réalisée en utilisant la
 distance du lien minimum.</li>
 <li>Interpréter les résultats obtenus.</li>
@@ -352,20 +329,20 @@ en utilisant la distance du lien moyen (<i>average link</i>). Le modèle CAH ser
 </div>
 </div>
 </div>
-<div id="outline-container-orga7d6595" class="outline-2">
-<h2 id="orga7d6595">Exercice 2 : Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-orga7d6595">
+<div id="outline-container-orgfee31c1" class="outline-2">
+<h2 id="orgfee31c1">Exercice 2 : Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-orgfee31c1">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent les deux premières divisions de différents championnats européens.
 </p>
 
 <p>
-Le Tableau <a href="#org986baf4">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org54ad884">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="org986baf4" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org54ad884" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables des du jeu de données.</caption>
 
 <colgroup>
@@ -503,9 +480,9 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-orge9aec25" class="outline-3">
-<h3 id="orge9aec25">Préparation des données</h3>
-<div class="outline-text-3" id="text-orge9aec25">
+<div id="outline-container-org76ae450" class="outline-3">
+<h3 id="org76ae450">Préparation des données</h3>
+<div class="outline-text-3" id="text-org76ae450">
 <ol class="org-ol">
 <li><p>
 Charger les données à partir de l'adresse suivante :
@@ -553,9 +530,9 @@ soccer_mean_df
 </div>
 </div>
 
-<div id="outline-container-orgf0c0805" class="outline-3">
-<h3 id="orgf0c0805">Détection de profils</h3>
-<div class="outline-text-3" id="text-orgf0c0805">
+<div id="outline-container-org0e548fa" class="outline-3">
+<h3 id="org0e548fa">Détection de profils</h3>
+<div class="outline-text-3" id="text-org0e548fa">
 <ol class="org-ol">
 <li>Réaliser une CAH sur les données <code>soccer_mean_df</code> avec la distance de Ward afin de partitionner
 les équipes en 4 groupes. Essayer d'interpréter les groupes obtenus.</li>
@@ -567,9 +544,9 @@ résultats obtenus.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-orgbe1b804" class="outline-2">
-<h2 id="orgbe1b804">Exercice 3 : Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-orgbe1b804">
+<div id="outline-container-org7ad0058" class="outline-2">
+<h2 id="org7ad0058">Exercice 3 : Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-org7ad0058">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :

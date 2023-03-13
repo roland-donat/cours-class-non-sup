@@ -344,19 +344,17 @@ cah_cr_def.labels_
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
 cah_cr_def.n_leaves_
    #+END_SRC
-   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
-cah_cr_def.n_connected_components_
-   #+END_SRC
-   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
-cah_cr_def.children_
-   #+END_SRC
    
-1. Représenter graphiquement la partition obtenue avec le modèle =cah_cr_def= à l'aide d'un diagramme
-   en paires et analyser le résultat.
+1. Décrire les profils obtenus avec la partition du modèle =cah_cr_def= (diagramme en paires,
+   boxplot, profils statistiques détaillés).
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
-px.scatter_matrix(wine_cr_df,
+px.scatter_matrix(wine_ori_df,
                   color=cah_cr_def.labels_.astype(str), 
                   title="Partition cah_cr_def")
+px.box(wine_ori_df, color=cah_cr_def.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification cah_cr_def").show()
+cah_def_ori_prof = \
+    wine_ori_df.groupby(cah_cr_def.labels_).describe()
    #+END_SRC
 
 1. Que peut-on dire du comportement par défaut de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=skc.AgglomerativeClustering=]] en termes,
@@ -411,12 +409,19 @@ cah_cr_ward = skc.AgglomerativeClustering(
     linkage="ward").fit(wine_cr_df)
    #+END_SRC
 
-1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
-   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-px.box(wine_cr_df, color=cah_cr_ward.labels_.astype(str),
-       title="Profils de la partition cah_cr_ward")
+1. Décrire les profils obtenus avec la partition du modèle =cah_cr_ward= (diagramme en paires,
+   boxplot, profils statistiques détaillés).
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+px.scatter_matrix(wine_ori_df,
+                  color=cah_cr_ward.labels_.astype(str), 
+                  title="Partition cah_cr_ward")
+px.box(wine_ori_df, color=cah_cr_ward.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification cah_cr_ward").show()
+cah_ward_ori_prof = \
+    wine_ori_df.groupby(cah_cr_ward.labels_).describe()
    #+END_SRC
-
 
 6. Construire le dendrogramme de la CAH sur les données =wine_cr_df= réalisée en utilisant la
    distance de Ward. Pour ce faire, utiliser la fonction =create_dendrogram= du package
@@ -453,21 +458,19 @@ cah_cr_single = skc.AgglomerativeClustering(
 # --------
 cah_cr_single_iw, cah_cr_single_ie = eval_partition(wine_cr_df, cah_cr_single.labels_)
    #+END_SRC
-   
-3. Représenter graphiquement la partition obtenue avec le modèle =cah_cr_1= à l'aide d'un diagramme
-   en paires et analyser le résultat.
+
+1. Décrire les profils obtenus avec la partition du modèle =cah_cr_single= (diagramme en paires,
+   boxplot, profils statistiques détaillés).
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION
 # --------
-px.scatter_matrix(wine_cr_df,
+px.scatter_matrix(wine_ori_df,
                   color=cah_cr_single.labels_.astype(str), 
                   title="Partition cah_cr_single")
-   #+END_SRC
-
-1. Représenter graphiquement les profils des groupes sous la forme d'un boxplot.
-   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports code
-px.box(wine_cr_df, color=cah_cr_single.labels_.astype(str),
-       title="Profils de la partition cah_cr_single")
+px.box(wine_ori_df, color=cah_cr_single.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification cah_cr_single").show()
+cah_single_ori_prof = \
+    wine_ori_df.groupby(cah_cr_single.labels_).describe()
    #+END_SRC
 
 4. Construire le dendrogramme de la CAH sur les données =wine_cr_df= réalisée en utilisant la
@@ -498,12 +501,14 @@ cah_cr_complete = skc.AgglomerativeClustering(
     n_clusters=3,
     linkage="complete").fit(wine_cr_df)
 cah_cr_complete_iw, cah_cr_complete_ie = eval_partition(wine_cr_df, cah_cr_complete.labels_)
-px.scatter_matrix(wine_cr_df,
+
+px.scatter_matrix(wine_ori_df,
                   color=cah_cr_complete.labels_.astype(str), 
                   title="Partition cah_cr_complete")
-
-px.box(wine_cr_df, color=cah_cr_complete.labels_.astype(str),
-       title="Profils de la partition cah_cr_complete")
+px.box(wine_ori_df, color=cah_cr_complete.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification cah_cr_complete").show()
+cah_complete_ori_prof = \
+    wine_ori_df.groupby(cah_cr_complete.labels_).describe()
 
 cah_cr_complete_dendro_fig = \
     pff.create_dendrogram(wine_cr_df,
@@ -628,11 +633,18 @@ cah_soccer_ward = skc.AgglomerativeClustering(
     n_clusters=4,
     linkage="ward").fit(soccer_mean_df)
 cah_soccer_ward_iw, cah_soccer_ward_ie = eval_partition(soccer_mean_df, cah_soccer_ward.labels_)
+
+var_num = ['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']
 px.scatter_matrix(soccer_mean_df,
-                  dimensions=['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR'],
+                  dimensions=var_num,
                   hover_name=soccer_mean_df.index,
                   color=cah_soccer_ward.labels_.astype(str), 
                   title="Partition en 4 groupes des équipes de football obtenue par CAH.")
+px.box(soccer_mean_df[var_num], color=cah_soccer_ward.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification cah_soccer_ward").show()
+cah_soccer_ward_prof = \
+    soccer_mean_df.groupby(cah_soccer_ward.labels_)[var_num].describe()
+
 cah_soccer_ward_dendro_fig = \
     pff.create_dendrogram(soccer_mean_df,
                           labels=soccer_mean_df.index,
@@ -676,11 +688,18 @@ km_soccer = skc.KMeans(
     n_clusters=4,
     n_init="auto").fit(soccer_mean_df)
 km_soccer_iw, km_soccer_ie = eval_partition(soccer_mean_df, km_soccer.labels_)
+
+var_num = ['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR']
 px.scatter_matrix(soccer_mean_df,
-                  dimensions=['FTHG', 'HTHG', 'HS', 'HST', 'HC', 'HF', 'HY', 'HR'],
+                  dimensions=var_num,
                   hover_name=soccer_mean_df.index,
                   color=cah_soccer_ward.labels_.astype(str),
                   title="Partition en 4 groupes des équipes de football obtenue par moyenne mobile.")
+
+px.box(soccer_mean_df[var_num], color=km_soccer.labels_.astype(str),
+       title="Profils des groupes obtenus par la classification km_soccer").show()
+km_soccer_ward_prof = \
+    soccer_mean_df.groupby(km_soccer.labels_)[var_num].describe()
    #+END_SRC
 
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")

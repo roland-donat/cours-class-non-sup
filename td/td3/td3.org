@@ -434,7 +434,7 @@ cah_cr_ward_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "ward"))
 
 cah_cr_ward_dendro_fig.update_layout(
-    title_text=f"CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
+    title_text="CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
     width=1600, height=900)
 
 cah_cr_ward_dendro_fig.show()
@@ -487,7 +487,7 @@ cah_cr_single_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "single"))
 
 cah_cr_single_dendro_fig.update_layout(
-    title_text=f"CAH avec distance d'aggrégation du lien minimum",
+    title_text="CAH avec distance d'aggrégation du lien minimum",
     width=1600, height=900)
 cah_cr_single_dendro_fig.show()
    #+END_SRC
@@ -520,7 +520,7 @@ cah_cr_complete_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "complete"))
 
 cah_cr_complete_dendro_fig.update_layout(
-    title_text=f"CAH avec distance d'aggrégation du lien maximum",
+    title_text="CAH avec distance d'aggrégation du lien maximum",
     width=1600, height=900)
    #+END_SRC
 
@@ -549,7 +549,7 @@ cah_cr_average_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "average"))
 
 cah_cr_average_dendro_fig.update_layout(
-    title_text=f"CAH avec distance d'aggrégation du lien moyen",
+    title_text="CAH avec distance d'aggrégation du lien moyen",
     width=1600, height=900)
    #+END_SRC
 
@@ -655,7 +655,7 @@ cah_soccer_ward_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "ward"))
 
 cah_soccer_ward_dendro_fig.update_layout(
-    title_text=f"Dendrogramme de la CAH sur les équipes de football avec la distance de Ward",
+    title_text="Dendrogramme de la CAH sur les équipes de football avec la distance de Ward",
     width=1600, height=900)
    #+END_SRC
 
@@ -830,7 +830,7 @@ data_patches_circ_dendro_fig = \
                           linkagefun=lambda x: sch.linkage(x, "ward", metric="euclidean"))
 
 data_patches_circ_dendro_fig.update_layout(
-    title_text=f"CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
+    title_text="CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
     width=1000, height=600)
    #+END_SRC
 

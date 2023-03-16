@@ -283,8 +283,6 @@ import plotly.io as pio               # Nécessaire avec Spyder
 pio.renderers.default = 'browser'     # Nécessaire avec Spyder
 import sklearn as sk                  # Librairie principale pour avoir le n° de version
 import sklearn.cluster as skc         # Package sklearn dédié au clustering
-import sklearn.mixture as skm         # Package sklearn dédié aux modèles de mélange
-import sklearn.decomposition as skd   # Package sklearn dédié aux méthodes factorielles
 import scipy as sc                    # Librairie principale de calcul numérique avancée
 import scipy.cluster.hierarchy as sch # Package scipy dédié au clustering hiérarchique
 import scipy.spatial.distance as scd  # Package scipy dédié au clacul de distance
@@ -352,7 +350,7 @@ cah_cr_def.n_leaves_
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
 px.scatter_matrix(wine_ori_df,
                   color=cah_cr_def.labels_.astype(str), 
-                  title="Partition cah_cr_def")
+                  title="Partition cah_cr_def").show()
 px.box(wine_ori_df, color=cah_cr_def.labels_.astype(str),
        title="Profils des groupes obtenus par la classification cah_cr_def").show()
 cah_def_ori_prof = \
@@ -418,7 +416,7 @@ cah_cr_ward = skc.AgglomerativeClustering(
 # --------
 px.scatter_matrix(wine_ori_df,
                   color=cah_cr_ward.labels_.astype(str), 
-                  title="Partition cah_cr_ward")
+                  title="Partition cah_cr_ward").show()
 px.box(wine_ori_df, color=cah_cr_ward.labels_.astype(str),
        title="Profils des groupes obtenus par la classification cah_cr_ward").show()
 cah_ward_ori_prof = \
@@ -438,6 +436,8 @@ cah_cr_ward_dendro_fig = \
 cah_cr_ward_dendro_fig.update_layout(
     title_text=f"CAH avec distance d'aggrégation Ward et distance entre individus euclidienne",
     width=1600, height=900)
+
+cah_cr_ward_dendro_fig.show()
    #+END_SRC
 
 
@@ -468,7 +468,7 @@ cah_cr_single_iw, cah_cr_single_ie = eval_partition(wine_cr_df, cah_cr_single.la
 # --------
 px.scatter_matrix(wine_ori_df,
                   color=cah_cr_single.labels_.astype(str), 
-                  title="Partition cah_cr_single")
+                  title="Partition cah_cr_single").show()
 px.box(wine_ori_df, color=cah_cr_single.labels_.astype(str),
        title="Profils des groupes obtenus par la classification cah_cr_single").show()
 cah_single_ori_prof = \
@@ -483,12 +483,13 @@ cah_single_ori_prof = \
 cah_cr_single_dendro_fig = \
     pff.create_dendrogram(wine_cr_df,
                           labels=wine_cr_df.index,
-                          color_threshold=15,
+                          color_threshold=3,
                           linkagefun=lambda x: sch.linkage(x, "single"))
 
 cah_cr_single_dendro_fig.update_layout(
     title_text=f"CAH avec distance d'aggrégation du lien minimum",
     width=1600, height=900)
+cah_cr_single_dendro_fig.show()
    #+END_SRC
 
 4. Interpréter les résultats obtenus.

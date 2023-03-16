@@ -279,6 +279,8 @@ import numpy as np                    # Calcul numérique
 import plotly as pl                   # Librairie principale pour avoir le n° de version
 import plotly.express as px           # Package plotly pour utiliser les visualisations de haut niveau
 import plotly.figure_factory as pff   # Package plotly pour utiliser d'autres visualisations de haut niveau plus exotiques (e.g. dendrogramme)
+import plotly.io as pio               # Nécessaire avec Spyder
+pio.renderers.default = 'browser'     # Nécessaire avec Spyder
 import sklearn as sk                  # Librairie principale pour avoir le n° de version
 import sklearn.cluster as skc         # Package sklearn dédié au clustering
 import sklearn.mixture as skm         # Package sklearn dédié aux modèles de mélange

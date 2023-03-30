@@ -430,7 +430,7 @@ cah_ward_ori_prof = \
 cah_cr_ward_dendro_fig = \
     pff.create_dendrogram(wine_cr_df,
                           labels=wine_cr_df.index,
-                          color_threshold=15,
+                          color_threshold=10,
                           linkagefun=lambda x: sch.linkage(x, "ward"))
 
 cah_cr_ward_dendro_fig.update_layout(
@@ -642,7 +642,7 @@ px.scatter_matrix(soccer_mean_df,
                   dimensions=var_num,
                   hover_name=soccer_mean_df.index,
                   color=cah_soccer_ward.labels_.astype(str), 
-                  title="Partition en 4 groupes des équipes de football obtenue par CAH.")
+                  title="Partition en 4 groupes des équipes de football obtenue par CAH.").show()
 px.box(soccer_mean_df[var_num], color=cah_soccer_ward.labels_.astype(str),
        title="Profils des groupes obtenus par la classification cah_soccer_ward").show()
 cah_soccer_ward_prof = \
@@ -657,6 +657,7 @@ cah_soccer_ward_dendro_fig = \
 cah_soccer_ward_dendro_fig.update_layout(
     title_text="Dendrogramme de la CAH sur les équipes de football avec la distance de Ward",
     width=1600, height=900)
+cah_soccer_ward_dendro_fig.show()
    #+END_SRC
 
 1. Appliquer la

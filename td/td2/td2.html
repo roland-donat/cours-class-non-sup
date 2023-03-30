@@ -23,38 +23,38 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9ed872e">Introduction</a></li>
-<li><a href="#org49c8b17">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#orgde089b6">Exercice 1 : Données <code>Wine</code></a>
+<li><a href="#orgc0ed468">Introduction</a></li>
+<li><a href="#orgf9d2e5a">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org778d6ba">Exercice 1 : Données <code>Wine</code></a>
 <ul>
-<li><a href="#org4c76b84">Chargement des données</a></li>
-<li><a href="#orge408917">Moyennes mobiles</a></li>
-<li><a href="#org2c422d6">Partitionnement sur données centrées-réduites</a></li>
-<li><a href="#org0fc7478">Partitionnement dans l'espace de l'ACP</a></li>
+<li><a href="#org3c76d02">Chargement des données</a></li>
+<li><a href="#orgec4ad35">Moyennes mobiles</a></li>
+<li><a href="#org97a8dfe">Partitionnement sur données centrées-réduites</a></li>
+<li><a href="#org5029a24">Partitionnement dans l'espace de l'ACP</a></li>
 </ul>
 </li>
-<li><a href="#orgfab2a08">Exercice 2 : Compression d'images</a>
+<li><a href="#org6003ed7">Exercice 2 : Compression d'images</a>
 <ul>
-<li><a href="#org6d6c71d">Chargement d'une image</a></li>
-<li><a href="#org0c537de">Application des moyennes mobiles</a></li>
-<li><a href="#org3774a35">Méthode du coude</a></li>
+<li><a href="#org47dd94d">Chargement d'une image</a></li>
+<li><a href="#orge752fdd">Application des moyennes mobiles</a></li>
+<li><a href="#org1d746a6">Méthode du coude</a></li>
 </ul>
 </li>
-<li><a href="#orgd31b1d5">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#orga147cab">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="org5f5a71c" class="figure">
+<div id="orgee6b38d" class="figure">
 <p><img src="./kmeans.png" alt="kmeans.png" width="50%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;1&nbsp;: </span><i>An abstract painting of k Means algorithm</i> (source: générée par <a href="https://openai.com/dall-e-2/">DALL-E</a>)</p>
 </div>
 
 
-<div id="outline-container-org9ed872e" class="outline-2">
-<h2 id="org9ed872e">Introduction</h2>
-<div class="outline-text-2" id="text-org9ed872e">
+<div id="outline-container-orgc0ed468" class="outline-2">
+<h2 id="orgc0ed468">Introduction</h2>
+<div class="outline-text-2" id="text-orgc0ed468">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement en utilisant en particulier
 l'algorithme des moyennes mobiles (k-<i>Means</i>).
@@ -71,9 +71,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-org49c8b17" class="outline-2">
-<h2 id="org49c8b17">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-org49c8b17">
+<div id="outline-container-orgf9d2e5a" class="outline-2">
+<h2 id="orgf9d2e5a">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orgf9d2e5a">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -122,18 +122,18 @@ Rappel : code d'import des modules :
 </div>
 </div>
 
-<div id="outline-container-orgde089b6" class="outline-2">
-<h2 id="orgde089b6">Exercice 1 : Données <code>Wine</code></h2>
-<div class="outline-text-2" id="text-orgde089b6">
+<div id="outline-container-org778d6ba" class="outline-2">
+<h2 id="org778d6ba">Exercice 1 : Données <code>Wine</code></h2>
+<div class="outline-text-2" id="text-org778d6ba">
 <p>
 Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-org4c76b84" class="outline-3">
-<h3 id="org4c76b84">Chargement des données</h3>
-<div class="outline-text-3" id="text-org4c76b84">
+<div id="outline-container-org3c76d02" class="outline-3">
+<h3 id="org3c76d02">Chargement des données</h3>
+<div class="outline-text-3" id="text-org3c76d02">
 <ol class="org-ol">
 <li><p>
 Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
@@ -148,9 +148,9 @@ Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <co
 </div>
 
 
-<div id="outline-container-orge408917" class="outline-3">
-<h3 id="orge408917">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-orge408917">
+<div id="outline-container-orgec4ad35" class="outline-3">
+<h3 id="orgec4ad35">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orgec4ad35">
 <p>
 Nous allons utiliser l'algorithme des moyennes mobiles (k-Means) afin de partitionner automatiquement nos vins à
 partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
@@ -308,7 +308,7 @@ Réalisez un second modèle <code>km_ori_2</code> paramétré comme suit :
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   init=<span style="color: #CC9393;">"random"</span>,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_init=1,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   random_state=2,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   random_state=12345,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   )
 km_ori_2.fit(wine_ori_df)
 </pre>
@@ -342,9 +342,9 @@ px.scatter_matrix(wine_ori_df,
 </div>
 
 
-<div id="outline-container-org2c422d6" class="outline-3">
-<h3 id="org2c422d6">Partitionnement sur données centrées-réduites</h3>
-<div class="outline-text-3" id="text-org2c422d6">
+<div id="outline-container-org97a8dfe" class="outline-3">
+<h3 id="org97a8dfe">Partitionnement sur données centrées-réduites</h3>
+<div class="outline-text-3" id="text-org97a8dfe">
 <p>
 Dans la section précédente, nous avons constaté que les partitions obtenues avec k-Means ne
 reposaient uniquement que sur les valeurs de la variable <code>Proline</code>. L'échelle de cette variable
@@ -483,9 +483,9 @@ px.box(wine_ori_df, color=km_cr.labels_.astype(<span style="color: #DCDCCC; font
 </div>
 
 
-<div id="outline-container-org0fc7478" class="outline-3">
-<h3 id="org0fc7478">Partitionnement dans l'espace de l'ACP</h3>
-<div class="outline-text-3" id="text-org0fc7478">
+<div id="outline-container-org5029a24" class="outline-3">
+<h3 id="org5029a24">Partitionnement dans l'espace de l'ACP</h3>
+<div class="outline-text-3" id="text-org5029a24">
 <ol class="org-ol">
 <li><p>
 Réaliser une Analyse en Composantes Principales (ACP) sur les données centrées-réduites <code>wine_cr_df</code> en utilisant
@@ -631,9 +631,9 @@ centré-réduit et dans l'espace original.
 </div>
 
 
-<div id="outline-container-orgfab2a08" class="outline-2">
-<h2 id="orgfab2a08">Exercice 2 : Compression d'images</h2>
-<div class="outline-text-2" id="text-orgfab2a08">
+<div id="outline-container-org6003ed7" class="outline-2">
+<h2 id="org6003ed7">Exercice 2 : Compression d'images</h2>
+<div class="outline-text-2" id="text-org6003ed7">
 <p>
 Cet exercice propose d'explorer la façon dont les méthodes de classification non supervisée
 peuvent être 
@@ -649,9 +649,9 @@ de données quantitatives à trois dimensions.
 </p>
 </div>
 
-<div id="outline-container-org6d6c71d" class="outline-3">
-<h3 id="org6d6c71d">Chargement d'une image</h3>
-<div class="outline-text-3" id="text-org6d6c71d">
+<div id="outline-container-org47dd94d" class="outline-3">
+<h3 id="org47dd94d">Chargement d'une image</h3>
+<div class="outline-text-3" id="text-org47dd94d">
 <ol class="org-ol">
 <li><p>
 Installer et importer la <a href="https://scikit-image.org/docs/dev/user_guide/getting_started.html">librairie <code>skimage</code> </a> permettant de faire du traitement d'image : <code>import
@@ -691,9 +691,9 @@ des <code>numpy.array</code>.
 </div>
 </div>
 
-<div id="outline-container-org0c537de" class="outline-3">
-<h3 id="org0c537de">Application des moyennes mobiles</h3>
-<div class="outline-text-3" id="text-org0c537de">
+<div id="outline-container-orge752fdd" class="outline-3">
+<h3 id="orge752fdd">Application des moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orge752fdd">
 <ol class="org-ol">
 <li><p>
 Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en 4
@@ -729,9 +729,9 @@ d'interpréter les résultats.</li>
 </div>
 </div>
 
-<div id="outline-container-org3774a35" class="outline-3">
-<h3 id="org3774a35">Méthode du coude</h3>
-<div class="outline-text-3" id="text-org3774a35">
+<div id="outline-container-org1d746a6" class="outline-3">
+<h3 id="org1d746a6">Méthode du coude</h3>
+<div class="outline-text-3" id="text-org1d746a6">
 <ol class="org-ol">
 <li><p>
 Partitionner l'image en faisant varier le nombre de classes et en calculant
@@ -770,9 +770,9 @@ px.line(x=K_list, y=inertie_ie,
 </div>
 
 
-<div id="outline-container-orgd31b1d5" class="outline-2">
-<h2 id="orgd31b1d5">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orgd31b1d5">
+<div id="outline-container-orga147cab" class="outline-2">
+<h2 id="orga147cab">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-orga147cab">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

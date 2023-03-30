@@ -424,7 +424,7 @@ km_ori_2 = skc.KMeans(
     n_clusters=3,
     init="random",
     n_init=1,
-    random_state=2,
+    random_state=12345,
     )
 km_ori_2.fit(wine_ori_df)
    #+END_SRC

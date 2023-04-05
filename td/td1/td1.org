@@ -230,14 +230,14 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige t)
+(setq td_corrige nil)
 #+END_SRC
 
 #+LATEX: \clearpage
 
 #+ATTR_HTML: :width 50%
-#+CAPTION: Image générée par [[https://openai.com/dall-e-2/][DALL-E]]
-[[./vigneronnes.png]]
+#+CAPTION: Image générée par Midjourney
+[[./vigneronnes.png]]v
 
 * À faire                                                          :noexport:
 ** Ajouter plus d'exemple de code python pour se lancer
@@ -508,7 +508,7 @@ N_cls_A
 px.box(data_scaled_df.select_dtypes(include=np.number),
        color=data_scaled_df["cls_A"],
        title="Visualisation de la partition A sur les données",
-       labels={"cls_A": "Partition"})
+       labels={"cls_A": "Partition"}).show()
    #+END_SRC
 
 ** Inertie intra-classe

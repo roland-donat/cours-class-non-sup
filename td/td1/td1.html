@@ -44,37 +44,40 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8d95a1e">1. Préambule</a>
+<li><a href="#org45d1b61">1. Préambule</a>
 <ul>
-<li><a href="#org4f83675">1.1. Crédit</a></li>
-<li><a href="#orgf83c0c3">1.2. Environnement logiciel</a></li>
+<li><a href="#org88d8813">1.1. Crédit</a></li>
+<li><a href="#org3c940c4">1.2. Environnement logiciel</a></li>
 </ul>
 </li>
-<li><a href="#orgc5a6c20">2. Introduction</a></li>
-<li><a href="#org2f12b5c">3. Chargement des données et premières analyses</a></li>
-<li><a href="#org3edd18d">4. Distance euclidienne</a></li>
-<li><a href="#org23001b8">5. Inertie totale</a></li>
-<li><a href="#org429c403">6. Première partition \(C_{\text{A}}\)</a>
+<li><a href="#org5f4c1e9">2. Introduction</a></li>
+<li><a href="#org318ce34">3. Chargement des données et premières analyses</a></li>
+<li><a href="#orged21795">4. Distance euclidienne</a></li>
+<li><a href="#org8160382">5. Inertie totale</a></li>
+<li><a href="#orgcdfd8e1">6. Première partition \(C_{\text{A}}\)</a>
 <ul>
-<li><a href="#org723f710">6.1. Construction des classes</a></li>
-<li><a href="#org507235e">6.2. Inertie intra-classe</a></li>
-<li><a href="#orgea2cda2">6.3. Inertie inter-classe</a></li>
+<li><a href="#orgdac037b">6.1. Construction des classes</a></li>
+<li><a href="#orgffc455c">6.2. Inertie intra-classe</a></li>
+<li><a href="#org47f4d45">6.3. Inertie inter-classe</a></li>
 </ul>
 </li>
-<li><a href="#org1d107b5">7. Seconde partition \(C_{\text{B}}\)</a></li>
+<li><a href="#org5576935">7. Seconde partition \(C_{\text{B}}\)</a></li>
 </ul>
 </div>
 </div>
-<p width="50%">
-<img src="./vigneronnes.png" alt="vigneronnes.png" width="50%" />v
-</p>
 
-<div id="outline-container-org8d95a1e" class="outline-2">
-<h2 id="org8d95a1e"><span class="section-number-2">1.</span> Préambule</h2>
+<div id="org38048f2" class="figure">
+<p><img src="./vigneronnes.png" alt="vigneronnes.png" width="50%" />
+</p>
+<p><span class="figure-number">Figure&nbsp;1&nbsp;: </span>Image générée par Midjourney</p>
+</div>
+
+<div id="outline-container-org45d1b61" class="outline-2">
+<h2 id="org45d1b61"><span class="section-number-2">1.</span> Préambule</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org4f83675" class="outline-3">
-<h3 id="org4f83675"><span class="section-number-3">1.1.</span> Crédit</h3>
+<div id="outline-container-org88d8813" class="outline-3">
+<h3 id="org88d8813"><span class="section-number-3">1.1.</span> Crédit</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
@@ -84,8 +87,8 @@ logiciel <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-orgf83c0c3" class="outline-3">
-<h3 id="orgf83c0c3"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
+<div id="outline-container-org3c940c4" class="outline-3">
+<h3 id="org3c940c4"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Les travaux se dérouleront sous <code>Python</code>. Dans ce TD, nous utiliserons en particulier les modules suivants :
@@ -135,8 +138,8 @@ Rappel : code d'import des modules :
 </div>
 </div>
 
-<div id="outline-container-orgc5a6c20" class="outline-2">
-<h2 id="orgc5a6c20"><span class="section-number-2">2.</span> Introduction</h2>
+<div id="outline-container-org5f4c1e9" class="outline-2">
+<h2 id="org5f4c1e9"><span class="section-number-2">2.</span> Introduction</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 L'objectif de ce TD est de mettre en pratique les principales notions vues en cours en les
@@ -175,8 +178,8 @@ d'Italie mais produits par trois vignerons différents. L'analyse quantifie la p
 </div>
 </div>
 
-<div id="outline-container-org2f12b5c" class="outline-2">
-<h2 id="org2f12b5c"><span class="section-number-2">3.</span> Chargement des données et premières analyses</h2>
+<div id="outline-container-org318ce34" class="outline-2">
+<h2 id="org318ce34"><span class="section-number-2">3.</span> Chargement des données et premières analyses</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li><p>
@@ -238,8 +241,8 @@ px.imshow(data_df.corr(),
 </div>
 
 
-<div id="outline-container-org3edd18d" class="outline-2">
-<h2 id="org3edd18d"><span class="section-number-2">4.</span> Distance euclidienne</h2>
+<div id="outline-container-orged21795" class="outline-2">
+<h2 id="orged21795"><span class="section-number-2">4.</span> Distance euclidienne</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <b>Dans la suite du TD, nous allons travailler avec les données centrées réduites calculées
@@ -276,8 +279,8 @@ point 3.</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org23001b8" class="outline-2">
-<h2 id="org23001b8"><span class="section-number-2">5.</span> Inertie totale</h2>
+<div id="outline-container-org8160382" class="outline-2">
+<h2 id="org8160382"><span class="section-number-2">5.</span> Inertie totale</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
@@ -308,12 +311,12 @@ variable. Expliquer le résultat.</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org429c403" class="outline-2">
-<h2 id="org429c403"><span class="section-number-2">6.</span> Première partition \(C_{\text{A}}\)</h2>
+<div id="outline-container-orgcdfd8e1" class="outline-2">
+<h2 id="orgcdfd8e1"><span class="section-number-2">6.</span> Première partition \(C_{\text{A}}\)</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org723f710" class="outline-3">
-<h3 id="org723f710"><span class="section-number-3">6.1.</span> Construction des classes</h3>
+<div id="outline-container-orgdac037b" class="outline-3">
+<h3 id="orgdac037b"><span class="section-number-3">6.1.</span> Construction des classes</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Nous allons nous donner une première partition arbitraire, notée \(C_{\text{A}}\), consistant à affecter :
@@ -374,8 +377,8 @@ Réaliser les boxplot de chaque variable en fonction de leur classe.
 </div>
 </div>
 
-<div id="outline-container-org507235e" class="outline-3">
-<h3 id="org507235e"><span class="section-number-3">6.2.</span> Inertie intra-classe</h3>
+<div id="outline-container-orgffc455c" class="outline-3">
+<h3 id="orgffc455c"><span class="section-number-3">6.2.</span> Inertie intra-classe</h3>
 <div class="outline-text-3" id="text-6-2">
 <ol class="org-ol">
 <li><p>
@@ -438,8 +441,8 @@ variables au sein de chaque classe et l'effectif de chaque classe ?</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgea2cda2" class="outline-3">
-<h3 id="orgea2cda2"><span class="section-number-3">6.3.</span> Inertie inter-classe</h3>
+<div id="outline-container-org47f4d45" class="outline-3">
+<h3 id="org47f4d45"><span class="section-number-3">6.3.</span> Inertie inter-classe</h3>
 <div class="outline-text-3" id="text-6-3">
 <ol class="org-ol">
 <li>Calculer le carré des distances entre le centre de gravité des classes et le centre de gravité
@@ -449,8 +452,8 @@ des données.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-org1d107b5" class="outline-2">
-<h2 id="org1d107b5"><span class="section-number-2">7.</span> Seconde partition \(C_{\text{B}}\)</h2>
+<div id="outline-container-org5576935" class="outline-2">
+<h2 id="org5576935"><span class="section-number-2">7.</span> Seconde partition \(C_{\text{B}}\)</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Reprendre les questions de la partie précédente en construisant une partition \(C_{\text{B}}\) au

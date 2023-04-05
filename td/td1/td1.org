@@ -260,11 +260,42 @@ logiciel =Python=.
 
 ** Environnement logiciel
 
-Les travaux se dérouleront sous =Python=. Si vous disposez d'une connexion internet, je vous
-recommande d'utiliser une plateforme de /Notebooks/ en ligne telle que
-[[https://deepnote.com][=DeepNote=]] sinon vous pouvez
-toujours utiliser =Python= en local en installant la distribution [[https://www.anaconda.com/products/individual][=Anaconda=]]. L'important est de vous
-assurer que vous utilisez bien la version =3.8= ou plus de =Python=.
+Les travaux se dérouleront sous =Python=. Dans ce TD, nous utiliserons en particulier les modules suivants :
+- =pandas=, pour la manipulation des données ;
+- =plotly=, pour les représentations graphiques ;
+- =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
+  nombres aléatoires ;
+- =scipy=, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
+  distances.
+
+Ces modules ne sont pas forcément installés dans votre environnement. Vous pouvez
+donc utiliser la commande =!pip install <nom_module>= pour les installer : 
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :eval no :tangle td1.py :exports code 
+!pip install pandas
+!pip install plotly
+!pip install scipy
+#+END_SRC
+ 
+Rappel : code d'import des modules :
+#+attr_latex: :options bgcolor=almostwhite, frame=lines
+#+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
+import pandas as pd
+import numpy as np
+import plotly as pl
+import plotly.io as pio           # Nécessaire avec Spyder
+pio.renderers.default = 'browser' # Nécessaire avec Spyder
+import plotly.express as px
+import scipy as sc
+import scipy.spatial.distance as scd
+import sklearn as sk
+
+# Vérification des versions des librairies utilisées
+{"plotly": pl.__version__, 
+ "pandas": pd.__version__, 
+ "numpy": np.__version__, 
+ "scipy": sc.__version__}
+#+END_SRC
 
 * Introduction
 
@@ -292,47 +323,6 @@ d'Italie mais produits par trois vignerons différents. L'analyse quantifie la p
 - Proline
 
 *Les données retravaillées à utiliser dans ce TD sont [[https://roland-donat.github.io/cours-class-non-sup/td/td1/wine.csv][disponibles à ici]].*
-
-* Modules =Python= utilisés dans ce TD
-
-Dans ce TD, nous utiliserons les modules =Python= suivants :
-- =pandas=, pour la manipulation des données ;
-- =plotly=, pour les représentations graphiques ;
-- =numpy=, pour utiliser des fonctions de calculs numériques "bas niveau", e.g. génération de
-  nombres aléatoires ;
-- =scipy=, pour utiliser d'autres fonctions de calculs numériques plus "haut niveau", e.g. calcul de
-  distances.
-
-Ces modules ne sont pas forcément installés dans votre environnement local ou en ligne. Vous pouvez
-donc utiliser la commande =!pip install <nom_module>= pour les installer : 
-#+attr_latex: :options bgcolor=almostwhite, frame=lines
-#+BEGIN_SRC python :eval no :tangle td1.py :exports code 
-!pip install pandas
-!pip install plotly
-!pip install scipy
-#+END_SRC
- 
-
-Rappel : code d'import des modules :
-#+attr_latex: :options bgcolor=almostwhite, frame=lines
-#+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
-import pandas as pd
-import numpy as np
-import plotly as pl
-import plotly.io as pio           # Nécessaire avec Spyder
-pio.renderers.default = 'browser' # Nécessaire avec Spyder
-import plotly.express as px
-import scipy as sc
-import scipy.spatial.distance as scd
-import sklearn as sk
-
-# Vérification des versions des librairies utilisées
-{"plotly": pl.__version__, 
- "pandas": pd.__version__, 
- "numpy": np.__version__, 
- "scipy": sc.__version__}
-#+END_SRC
-
 
 * Chargement des données et premières analyses
 

@@ -230,7 +230,7 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige nil)
+(setq td_corrige t)
 #+END_SRC
 
 #+LATEX: \clearpage
@@ -339,7 +339,7 @@ data_df = pd.read_csv(data_path, sep=",")
       #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
 data_df.describe()
 data_df.info()
-px.box(data_df, title="Boxplot de chaque variable (donnée originale)")
+px.box(data_df, title="Boxplot de chaque variable (donnée originale)").show()
       #+END_SRC
 3. Centrez les données. 
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
@@ -362,11 +362,11 @@ data_corr_df = data_df.corr()
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code
 # Diagramme en paires
 px.scatter_matrix(data_df, 
-                 title="Diagramme en paires des données origiales")
+                 title="Diagramme en paires des données origiales").show()
 # Carte de chaleur
 px.imshow(data_df.corr(), 
           color_continuous_midpoint=0, 
-          title="Corrélations linéaires des données sous forme de carte de chaleur (heatmap)")
+          title="Corrélations linéaires des données sous forme de carte de chaleur (heatmap)").show()
    #+END_SRC
 
 
@@ -486,7 +486,7 @@ px.scatter(data_scaled_df,
            x="OD280", y="Alcohol",
            color="cls_A",
            title="Visualisation de la partition A sur les données",
-           labels={"cls_A": "Partition"})
+           labels={"cls_A": "Partition"}).show()
    #+END_SRC
 1. Calculer l'effectif de chaque classe avec la méthode =.value_counts=.
    #+BEGIN_SRC python :session :results silent :tangle td1.py :exports code

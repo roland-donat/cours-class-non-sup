@@ -44,40 +44,40 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org45d1b61">1. Préambule</a>
+<li><a href="#org956d192">1. Préambule</a>
 <ul>
-<li><a href="#org88d8813">1.1. Crédit</a></li>
-<li><a href="#org3c940c4">1.2. Environnement logiciel</a></li>
+<li><a href="#orgc3fa97a">1.1. Crédit</a></li>
+<li><a href="#org7971da7">1.2. Environnement logiciel</a></li>
 </ul>
 </li>
-<li><a href="#org5f4c1e9">2. Introduction</a></li>
-<li><a href="#org318ce34">3. Chargement des données et premières analyses</a></li>
-<li><a href="#orged21795">4. Distance euclidienne</a></li>
-<li><a href="#org8160382">5. Inertie totale</a></li>
-<li><a href="#orgcdfd8e1">6. Première partition \(C_{\text{A}}\)</a>
+<li><a href="#orgd3c0346">2. Introduction</a></li>
+<li><a href="#orgd07a915">3. Chargement des données et premières analyses</a></li>
+<li><a href="#org9ebbd46">4. Distance euclidienne</a></li>
+<li><a href="#orgf22f4df">5. Inertie totale</a></li>
+<li><a href="#org80a56f8">6. Première partition \(C_{\text{A}}\)</a>
 <ul>
-<li><a href="#orgdac037b">6.1. Construction des classes</a></li>
-<li><a href="#orgffc455c">6.2. Inertie intra-classe</a></li>
-<li><a href="#org47f4d45">6.3. Inertie inter-classe</a></li>
+<li><a href="#org97162d9">6.1. Construction des classes</a></li>
+<li><a href="#org320a7c5">6.2. Inertie intra-classe</a></li>
+<li><a href="#org217f26c">6.3. Inertie inter-classe</a></li>
 </ul>
 </li>
-<li><a href="#org5576935">7. Seconde partition \(C_{\text{B}}\)</a></li>
+<li><a href="#orga48a518">7. Seconde partition \(C_{\text{B}}\)</a></li>
 </ul>
 </div>
 </div>
 
-<div id="org38048f2" class="figure">
+<div id="org833aff5" class="figure">
 <p><img src="./vigneronnes.png" alt="vigneronnes.png" width="50%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;1&nbsp;: </span>Image générée par Midjourney</p>
 </div>
 
-<div id="outline-container-org45d1b61" class="outline-2">
-<h2 id="org45d1b61"><span class="section-number-2">1.</span> Préambule</h2>
+<div id="outline-container-org956d192" class="outline-2">
+<h2 id="org956d192"><span class="section-number-2">1.</span> Préambule</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org88d8813" class="outline-3">
-<h3 id="org88d8813"><span class="section-number-3">1.1.</span> Crédit</h3>
+<div id="outline-container-orgc3fa97a" class="outline-3">
+<h3 id="orgc3fa97a"><span class="section-number-3">1.1.</span> Crédit</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Ce TD reprend la trame du <a href="https://moodle.univ-ubs.fr/pluginfile.php/360513/mod_resource/content/2/TDR1.pdf">TD de classification non supervisée</a> proposé par Mme. Arlette Antoni en
@@ -87,8 +87,8 @@ logiciel <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-org3c940c4" class="outline-3">
-<h3 id="org3c940c4"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
+<div id="outline-container-org7971da7" class="outline-3">
+<h3 id="org7971da7"><span class="section-number-3">1.2.</span> Environnement logiciel</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Les travaux se dérouleront sous <code>Python</code>. Dans ce TD, nous utiliserons en particulier les modules suivants :
@@ -138,8 +138,8 @@ Rappel : code d'import des modules :
 </div>
 </div>
 
-<div id="outline-container-org5f4c1e9" class="outline-2">
-<h2 id="org5f4c1e9"><span class="section-number-2">2.</span> Introduction</h2>
+<div id="outline-container-orgd3c0346" class="outline-2">
+<h2 id="orgd3c0346"><span class="section-number-2">2.</span> Introduction</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 L'objectif de ce TD est de mettre en pratique les principales notions vues en cours en les
@@ -178,8 +178,8 @@ d'Italie mais produits par trois vignerons différents. L'analyse quantifie la p
 </div>
 </div>
 
-<div id="outline-container-org318ce34" class="outline-2">
-<h2 id="org318ce34"><span class="section-number-2">3.</span> Chargement des données et premières analyses</h2>
+<div id="outline-container-orgd07a915" class="outline-2">
+<h2 id="orgd07a915"><span class="section-number-2">3.</span> Chargement des données et premières analyses</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li><p>
@@ -201,7 +201,7 @@ Que constatez-vous ?
 <div class="org-src-container">
 <pre class="src src-python">data_df.describe()
 data_df.info()
-px.box(data_df, title=<span style="color: #CC9393;">"Boxplot de chaque variable (donn&#233;e originale)"</span>)
+px.box(data_df, title=<span style="color: #CC9393;">"Boxplot de chaque variable (donn&#233;e originale)"</span>).show()
 </pre>
 </div></li>
 </ul></li>
@@ -212,8 +212,16 @@ Centrez les données.
 <pre class="src src-python"><span style="color: #DFAF8F;">data_ctr_df</span> = data_df - data_df.mean()
 </pre>
 </div></li>
-<li>Réduisez les données centrées précédemment et stocker le résultat dans un nouveau <code>DataFrame</code>
-nommé <code>data_scaled_df</code>. Aide : utilisez la méthode <code>.std</code> des <code>DataFrame</code>.</li>
+<li><p>
+Réduisez les données centrées précédemment et stocker le résultat dans un nouveau <code>DataFrame</code>
+nommé <code>data_scaled_df</code>. Aide : utilisez la méthode <code>.std</code> des <code>DataFrame</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">data_scaled_df</span> = data_ctr_df/data_df.std()
+</pre>
+</div></li>
 <li><p>
 Calculer la matrice des corrélations linéaires avec la méthode <code>.corr</code> des <code>DataFrame</code>. Quelles
 sont les caractéristiques remarquables de cette matrice ?
@@ -229,11 +237,11 @@ Afficher un diagramme en paires et une carte de chaleur des corrélations linéa
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Diagramme en paires</span>
 px.scatter_matrix(data_df, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>title=<span style="color: #CC9393;">"Diagramme en paires des donn&#233;es origiales"</span>)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>title=<span style="color: #CC9393;">"Diagramme en paires des donn&#233;es origiales"</span>).show()
 <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Carte de chaleur</span>
 px.imshow(data_df.corr(), 
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color_continuous_midpoint=0, 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Corr&#233;lations lin&#233;aires des donn&#233;es sous forme de carte de chaleur (heatmap)"</span>)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Corr&#233;lations lin&#233;aires des donn&#233;es sous forme de carte de chaleur (heatmap)"</span>).show()
 </pre>
 </div></li>
 </ol>
@@ -241,8 +249,8 @@ px.imshow(data_df.corr(),
 </div>
 
 
-<div id="outline-container-orged21795" class="outline-2">
-<h2 id="orged21795"><span class="section-number-2">4.</span> Distance euclidienne</h2>
+<div id="outline-container-org9ebbd46" class="outline-2">
+<h2 id="org9ebbd46"><span class="section-number-2">4.</span> Distance euclidienne</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <b>Dans la suite du TD, nous allons travailler avec les données centrées réduites calculées
@@ -260,8 +268,19 @@ des <code>DataFrame</code>.
 d_ind_01
 </pre>
 </div></li>
-<li>Calculer la distance euclidienne entre le premier individu et le troisième, puis entre le
-deuxième et le troisième.</li>
+<li><p>
+Calculer la distance euclidienne entre le premier individu et le troisième, puis entre le
+deuxième et le troisième.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">d2_ind_02</span> = ((data_scaled_df.loc[0] - data_scaled_df.loc[2])**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+<span style="color: #DFAF8F;">d_ind_02</span> = d2_ind_02**(0.5)
+d_ind_02
+</pre>
+</div></li>
+
 <li><p>
 Calculer la matrice des distances euclidiennes. Aide : utilisez les fonctions <code>pdist</code> et
 <code>squareform</code> du package <code>scipy.spatial.distance</code>. Quelles sont les dimensions de cette matrice, quelles
@@ -273,14 +292,27 @@ sont ses propriétés remarquables ?
 dist_mat
 </pre>
 </div></li>
-<li>Transformer la matrice de distances précédente sous la forme d'un <code>DataFrame</code> pour en améliorer
+<li><p>
+Transformer la matrice de distances précédente sous la forme d'un <code>DataFrame</code> pour en améliorer
 la lisibilité. Vérifier que les distances calculées aux points 1 et 2 grâce à la matrice des distances calculée au
-point 3.</li>
+point 3.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">dist_mat_df</span> = \
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pd.DataFrame(dist_mat,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>index=data_scaled_df.index,
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>columns=data_scaled_df.index)
+dist_mat_df
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org8160382" class="outline-2">
-<h2 id="org8160382"><span class="section-number-2">5.</span> Inertie totale</h2>
+
+<div id="outline-container-orgf22f4df" class="outline-2">
+<h2 id="orgf22f4df"><span class="section-number-2">5.</span> Inertie totale</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>Dans la suite du TD, les données seront considérées comme étant équipondérées avec un poids de 1
@@ -301,22 +333,61 @@ mu_data
 </pre>
 </div></li>
 
-<li>Calculer les distances au carré entre les observations et le centre de gravité du nuage.</li>
-<li>En déduire l'inertie totale des données.</li>
-<li>Calculer la somme des variances empiriques de chaque variable. Aide : utilisez la méthode <code>.var</code> des
+<li><p>
+Calculer les distances au carré entre les observations et le centre de gravité du nuage.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">d2_data_mu</span> = ((data_scaled_df - mu_data)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+d2_data_mu
+</pre>
+</div></li>
+
+<li><p>
+En déduire l'inertie totale des données.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">I_T</span> = d2_data_mu.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+I_T
+</pre>
+</div></li>
+
+<li><p>
+Calculer la somme des variances empiriques de chaque variable. Aide : utilisez la méthode <code>.var</code> des
 <code>DataFrame</code> ? Quels calculs fait exactement la méthode <code>.var</code> ? Aurait-on pu prévoir le résultat
-dans ce cas ?</li>
-<li>Calculer le rapport entre l'inertie totale et la somme des variances de chaque
-variable. Expliquer le résultat.</li>
+dans ce cas ?
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">S2_var</span> = data_scaled_df.var().<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+S2_var
+</pre>
+</div></li>
+
+<li><p>
+Calculer le rapport entre l'inertie totale et la somme des variances de chaque
+variable. Expliquer le résultat.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+I_T/S2_var
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgcdfd8e1" class="outline-2">
-<h2 id="orgcdfd8e1"><span class="section-number-2">6.</span> Première partition \(C_{\text{A}}\)</h2>
+
+<div id="outline-container-org80a56f8" class="outline-2">
+<h2 id="org80a56f8"><span class="section-number-2">6.</span> Première partition \(C_{\text{A}}\)</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orgdac037b" class="outline-3">
-<h3 id="orgdac037b"><span class="section-number-3">6.1.</span> Construction des classes</h3>
+<div id="outline-container-org97162d9" class="outline-3">
+<h3 id="org97162d9"><span class="section-number-3">6.1.</span> Construction des classes</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Nous allons nous donner une première partition arbitraire, notée \(C_{\text{A}}\), consistant à affecter :
@@ -352,7 +423,7 @@ colorer les individus en fonction de leur classe.
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  x=<span style="color: #CC9393;">"OD280"</span>, y=<span style="color: #CC9393;">"Alcohol"</span>,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  color=<span style="color: #CC9393;">"cls_A"</span>,
 <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Visualisation de la partition A sur les donn&#233;es"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  labels={<span style="color: #CC9393;">"cls_A"</span>: <span style="color: #CC9393;">"Partition"</span>})
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  labels={<span style="color: #CC9393;">"cls_A"</span>: <span style="color: #CC9393;">"Partition"</span>}).show()
 </pre>
 </div></li>
 <li><p>
@@ -377,8 +448,8 @@ Réaliser les boxplot de chaque variable en fonction de leur classe.
 </div>
 </div>
 
-<div id="outline-container-orgffc455c" class="outline-3">
-<h3 id="orgffc455c"><span class="section-number-3">6.2.</span> Inertie intra-classe</h3>
+<div id="outline-container-org320a7c5" class="outline-3">
+<h3 id="org320a7c5"><span class="section-number-3">6.2.</span> Inertie intra-classe</h3>
 <div class="outline-text-3" id="text-6-2">
 <ol class="org-ol">
 <li><p>
@@ -429,31 +500,126 @@ générique et réutilisable, utiliser une boucle <code>for</code>. Pour vous ai
 
 I_W_cls_A
 </pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">I_W_cls_A</span> = pd.Series(0, index=mu_cls_A.index)
+<span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_cls_A_grp:
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">d2_data_cls</span> = ((data_cls_df - mu_cls_A.loc[cls])**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> <span style="color: #DFAF8F;">I_W_cls_A.loc</span>[cls] = d2_data_cls.<span style="color: #DCDCCC; font-weight: bold;">sum</span>() 
+
+I_W_cls_A
+</pre>
 </div></li>
-<li>En déduire l'inertie intra-classe de la partition.</li>
-<li>En déduire l'inertie inter-classe de la partition.</li>
-<li>Calculer le pourcentage d'inertie expliquée par la partition.</li>
-<li>Calculer la somme des variances empiriques corrigées des variables au sein de chaque classe.</li>
-<li>Calculer le rapport des inerties internes et la somme des variances empiriques corrigées des
-variables au sein de chaque classe (résultat de la question précdente).</li>
-<li>Comment calculer l'inertie intra-classe en utilisant la somme des variances empiriques corrigées des
-variables au sein de chaque classe et l'effectif de chaque classe ?</li>
+
+<li><p>
+En déduire l'inertie intra-classe de la partition.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">I_W_A</span> = I_W_cls_A.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+I_W_A
+</pre>
+</div></li>
+
+<li><p>
+En déduire l'inertie inter-classe de la partition.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">I_B_A</span> = I_T - I_W_A
+I_B_A
+</pre>
+</div></li>
+
+<li><p>
+Calculer le pourcentage d'inertie expliquée par la partition.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">PIE_A</span> = 100*(1 - I_W_A/I_T)
+<span style="color: #DFAF8F;">PIE_A_bis</span> = 100*I_B_A/I_T
+(PIE_A, PIE_A_bis)
+</pre>
+</div></li>
+
+<li><p>
+Calculer la somme des variances empiriques corrigées des variables au sein de chaque classe.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">S2d_cls_A</span> = data_cls_A_grp.var()
+<span style="color: #DFAF8F;">S2d_cls_A_sum</span> = S2d_cls_A.<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+S2d_cls_A_sum
+</pre>
+</div></li>
+
+<li><p>
+Calculer le rapport des inerties internes et la somme des variances empiriques corrigées des
+variables au sein de chaque classe (résultat de la question précdente).
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+I_W_cls_A/S2d_cls_A_sum
+</pre>
+</div></li>
+
+<li><p>
+Comment calculer l'inertie intra-classe en utilisant la somme des variances empiriques corrigées des
+variables au sein de chaque classe et l'effectif de chaque classe ?
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+(S2d_cls_A_sum*(N_cls_A - 1)).<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org47f4d45" class="outline-3">
-<h3 id="org47f4d45"><span class="section-number-3">6.3.</span> Inertie inter-classe</h3>
+
+
+<div id="outline-container-org217f26c" class="outline-3">
+<h3 id="org217f26c"><span class="section-number-3">6.3.</span> Inertie inter-classe</h3>
 <div class="outline-text-3" id="text-6-3">
 <ol class="org-ol">
-<li>Calculer le carré des distances entre le centre de gravité des classes et le centre de gravité
-des données.</li>
-<li>En déduire l'inertie inter-classe de la partition.</li>
+<li><p>
+Calculer le carré des distances entre le centre de gravité des classes et le centre de gravité
+des données.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #DFAF8F;">d2_mu_cls_A</span> = ((mu_cls_A - mu_data)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
+d2_mu_cls_A
+</pre>
+</div></li>
+
+<li><p>
+En déduire l'inertie inter-classe de la partition.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">- On oublie pas de pond&#233;rer le calcul par le poids de chaque classe</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">- Ici omega = 1 pour tous les individus, donc poids de la classe k = effectif de la classe k</span>
+<span style="color: #DFAF8F;">I_B_A</span> = (N_cls_A*d2_mu_cls_A).<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
+I_B_A
+</pre>
+</div></li>
 </ol>
 </div>
 </div>
 </div>
-<div id="outline-container-org5576935" class="outline-2">
-<h2 id="org5576935"><span class="section-number-2">7.</span> Seconde partition \(C_{\text{B}}\)</h2>
+
+<div id="outline-container-orga48a518" class="outline-2">
+<h2 id="orga48a518"><span class="section-number-2">7.</span> Seconde partition \(C_{\text{B}}\)</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Reprendre les questions de la partie précédente en construisant une partition \(C_{\text{B}}\) au
@@ -473,6 +639,13 @@ np.random.seed(56)
 
 <span style="color: #DFAF8F;">N_cls_B</span> = data_scaled_df[<span style="color: #CC9393;">"cls_B"</span>].value_counts()
 N_cls_B
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">D&#233;rouler tous les traitements de la partie pr&#233;c&#233;dente en changeant "cls_A" par "cls_B" ;)</span>
 </pre>
 </div>
 </div>

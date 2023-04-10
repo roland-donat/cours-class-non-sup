@@ -230,11 +230,11 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige t)
+(setq td_corrige nil)
 #+END_SRC
 
-#+ATTR_HTML: :width 50%
-#+CAPTION: /An abstract painting of k Means algorithm/ (source: générée par [[https://openai.com/dall-e-2/][DALL-E]])
+#+ATTR_HTML: :width 75%
+#+CAPTION: /kmeans clustering spectacular application hyperrealistic white background/ (image générée par Midjourney)
 [[./kmeans.png]]
 
 

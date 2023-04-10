@@ -23,38 +23,38 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc0ed468">Introduction</a></li>
-<li><a href="#orgf9d2e5a">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org778d6ba">Exercice 1 : Données <code>Wine</code></a>
+<li><a href="#org9caaab5">Introduction</a></li>
+<li><a href="#orgf252260">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org19ef4d9">Exercice 1 : Données <code>Wine</code></a>
 <ul>
-<li><a href="#org3c76d02">Chargement des données</a></li>
-<li><a href="#orgec4ad35">Moyennes mobiles</a></li>
-<li><a href="#org97a8dfe">Partitionnement sur données centrées-réduites</a></li>
-<li><a href="#org5029a24">Partitionnement dans l'espace de l'ACP</a></li>
+<li><a href="#org342045a">Chargement des données</a></li>
+<li><a href="#orge268d34">Moyennes mobiles</a></li>
+<li><a href="#orgfc69b13">Partitionnement sur données centrées-réduites</a></li>
+<li><a href="#orgf752a6a">Partitionnement dans l'espace de l'ACP</a></li>
 </ul>
 </li>
-<li><a href="#org6003ed7">Exercice 2 : Compression d'images</a>
+<li><a href="#org1902479">Exercice 2 : Compression d'images</a>
 <ul>
-<li><a href="#org47dd94d">Chargement d'une image</a></li>
-<li><a href="#orge752fdd">Application des moyennes mobiles</a></li>
-<li><a href="#org1d746a6">Méthode du coude</a></li>
+<li><a href="#org58a66b2">Chargement d'une image</a></li>
+<li><a href="#org71acc5f">Application des moyennes mobiles</a></li>
+<li><a href="#orgfa42566">Méthode du coude</a></li>
 </ul>
 </li>
-<li><a href="#orga147cab">Exercice 3 : Implémentation des moyennes mobiles</a></li>
+<li><a href="#org49b7c8f">Exercice 3 : Implémentation des moyennes mobiles</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orgee6b38d" class="figure">
-<p><img src="./kmeans.png" alt="kmeans.png" width="50%" />
+<div id="org9a9db7a" class="figure">
+<p><img src="./kmeans.png" alt="kmeans.png" width="75%" />
 </p>
-<p><span class="figure-number">Figure&nbsp;1&nbsp;: </span><i>An abstract painting of k Means algorithm</i> (source: générée par <a href="https://openai.com/dall-e-2/">DALL-E</a>)</p>
+<p><span class="figure-number">Figure&nbsp;1&nbsp;: </span><i>kmeans clustering spectacular application hyperrealistic white background</i> (image générée par Midjourney)</p>
 </div>
 
 
-<div id="outline-container-orgc0ed468" class="outline-2">
-<h2 id="orgc0ed468">Introduction</h2>
-<div class="outline-text-2" id="text-orgc0ed468">
+<div id="outline-container-org9caaab5" class="outline-2">
+<h2 id="org9caaab5">Introduction</h2>
+<div class="outline-text-2" id="text-org9caaab5">
 <p>
 L'objectif de ce TD est d'expérimenter les méthodes de partitionnement en utilisant en particulier
 l'algorithme des moyennes mobiles (k-<i>Means</i>).
@@ -71,9 +71,9 @@ Enfin, nous tenterons d'implémenter notre propre version de l'algorithme k-<i>M
 </div>
 </div>
 
-<div id="outline-container-orgf9d2e5a" class="outline-2">
-<h2 id="orgf9d2e5a">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-orgf9d2e5a">
+<div id="outline-container-orgf252260" class="outline-2">
+<h2 id="orgf252260">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-orgf252260">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -122,18 +122,18 @@ Rappel : code d'import des modules :
 </div>
 </div>
 
-<div id="outline-container-org778d6ba" class="outline-2">
-<h2 id="org778d6ba">Exercice 1 : Données <code>Wine</code></h2>
-<div class="outline-text-2" id="text-org778d6ba">
+<div id="outline-container-org19ef4d9" class="outline-2">
+<h2 id="org19ef4d9">Exercice 1 : Données <code>Wine</code></h2>
+<div class="outline-text-2" id="text-org19ef4d9">
 <p>
 Nous allons reprendre les données des analyses chimiques sur le vin. Les données sont
 <a href="https://roland-donat.github.io/cours-class-non-sup/td/td2/wine.csv">disponibles à ici</a>.
 </p>
 </div>
 
-<div id="outline-container-org3c76d02" class="outline-3">
-<h3 id="org3c76d02">Chargement des données</h3>
-<div class="outline-text-3" id="text-org3c76d02">
+<div id="outline-container-org342045a" class="outline-3">
+<h3 id="org342045a">Chargement des données</h3>
+<div class="outline-text-3" id="text-org342045a">
 <ol class="org-ol">
 <li><p>
 Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
@@ -148,9 +148,9 @@ Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <co
 </div>
 
 
-<div id="outline-container-orgec4ad35" class="outline-3">
-<h3 id="orgec4ad35">Moyennes mobiles</h3>
-<div class="outline-text-3" id="text-orgec4ad35">
+<div id="outline-container-orge268d34" class="outline-3">
+<h3 id="orge268d34">Moyennes mobiles</h3>
+<div class="outline-text-3" id="text-orge268d34">
 <p>
 Nous allons utiliser l'algorithme des moyennes mobiles (k-Means) afin de partitionner automatiquement nos vins à
 partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
@@ -229,18 +229,7 @@ Après partitionnement, l'objet <code>km_ori</code> possède de nouveaux attribu
 </pre>
 </div></li>
 
-<li><p>
-Calculer l'inertie expliquée par la partition obtenue avec le modèle <code>km_ori</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es</span>
-<span style="color: #DFAF8F;">wine_ori_it</span> = ((wine_ori_df - wine_ori_df.mean())**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1).<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
-<span style="color: #DFAF8F;">km_ori_ie</span> = 1 - km_ori.inertia_/wine_ori_it
-</pre>
-</div></li>
-
+<li>Calculer l'inertie expliquée par la partition obtenue avec le modèle <code>km_ori</code>.</li>
 <li><p>
 Représenter graphiquement la partition obtenue avec le modèle <code>km_ori</code> à l'aide d'un diagramme
 en paires et analyser le résultat.
@@ -292,59 +281,23 @@ paramètres :
 <li><code>random_state</code>.</li>
 </ul></li>
 
-<li><p>
-Réalisez un second modèle <code>km_ori_2</code> paramétré comme suit :
-</p>
+<li>Réalisez un second modèle <code>km_ori_2</code> paramétré comme suit :
 <ul class="org-ul">
 <li>recherche de 3 groupes ;</li>
 <li>initialisation aléatoire (cf. paramètre <code>init</code>) contrôlée en fixant le paramètre <code>random_state</code> à la valeur
 <code>12345</code> ;</li>
 <li>initialisation unique, cf. paramètre <code>n_init</code>.</li>
-</ul>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_ori_2</span> = skc.KMeans(
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_clusters=3,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   init=<span style="color: #CC9393;">"random"</span>,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   n_init=1,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   random_state=12345,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   )
-km_ori_2.fit(wine_ori_df)
-</pre>
-</div></li>
-
-<li><p>
-Calculer l'inertie expliquée par la partition obtenue avec le modèle <code>km_ori_2</code>. Comparer ce
-résultat avec l'inertie expliquée par le modèle <code>km_ori</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_ori_2_ie</span> = 1 - km_ori_2.inertia_/wine_ori_it
-</pre>
-</div></li>
-
-<li><p>
-Représenter graphiquement la partition obtenue avec le modèle <code>km_ori_2</code> à l'aide d'un diagramme
-en paires et comparer le résultat obtenu.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-px.scatter_matrix(wine_ori_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=km_ori_2.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition km_ori_2"</span>).show()
-</pre>
-</div></li>
+</ul></li>
+<li>Calculer l'inertie expliquée par la partition obtenue avec le modèle <code>km_ori_2</code>. Comparer ce
+résultat avec l'inertie expliquée par le modèle <code>km_ori</code>.</li>
+<li>Représenter graphiquement la partition obtenue avec le modèle <code>km_ori_2</code> à l'aide d'un diagramme
+en paires et comparer le résultat obtenu.</li>
 </ol>
 </div>
 </div>
-
-
-<div id="outline-container-org97a8dfe" class="outline-3">
-<h3 id="org97a8dfe">Partitionnement sur données centrées-réduites</h3>
-<div class="outline-text-3" id="text-org97a8dfe">
+<div id="outline-container-orgfc69b13" class="outline-3">
+<h3 id="orgfc69b13">Partitionnement sur données centrées-réduites</h3>
+<div class="outline-text-3" id="text-orgfc69b13">
 <p>
 Dans la section précédente, nous avons constaté que les partitions obtenues avec k-Means ne
 reposaient uniquement que sur les valeurs de la variable <code>Proline</code>. L'échelle de cette variable
@@ -361,28 +314,10 @@ dans la suite sur des données centrées et réduites.à
 </p>
 
 <ol class="org-ol">
-<li><p>
-Centrer et réduire les données afin d'obtenir un nouveau DataFrame <code>wine_cr_df</code> (<code>cr</code> pour
-centré-réduit).
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">wine_cr_df</span> = (wine_ori_df - wine_ori_df.mean())/wine_ori_df.std()
-</pre>
-</div></li>
-
-<li><p>
-Créer un modèle k-Means, nommé <code>km_cr</code>, permettant de partitionner les données en 3 groupes en
-utilisant le paramétrage par défaut de la classe <code>skc.kMeans</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_cr</span> = skc.KMeans(n_clusters=3)
-</pre>
-</div></li>
-
+<li>Centrer et réduire les données afin d'obtenir un nouveau DataFrame <code>wine_cr_df</code> (<code>cr</code> pour
+centré-réduit).</li>
+<li>Créer un modèle k-Means, nommé <code>km_cr</code>, permettant de partitionner les données en 3 groupes en
+utilisant le paramétrage par défaut de la classe <code>skc.kMeans</code>.</li>
 <li><p>
 Utiliser ensuite la méthode <code>fit</code> pour lancer le partitionnement sur les données <code>wine_cr_df</code> :
 </p>
@@ -391,101 +326,22 @@ Utiliser ensuite la méthode <code>fit</code> pour lancer le partitionnement sur
 </pre>
 </div></li>
 
-<li><p>
-Calculer l'inertie expliquée par la parition obtenue avec le modèle <code>km_cr</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es</span>
-<span style="color: #DFAF8F;">wine_cr_it</span> = ((wine_cr_df - wine_cr_df.mean())**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1).<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
-<span style="color: #DFAF8F;">km_cr_ie</span> = 1 - km_cr.inertia_/wine_cr_it
-</pre>
-</div></li>
-
-<li><p>
-Représenter graphiquement la partition obtenue avec le modèle <code>km_cr</code> à l'aide d'un diagramme
-en paires, analyser le résultat obtenu et comparer avec les partitions précédentes.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-px.scatter_matrix(wine_cr_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> color=km_cr.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>), 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> title=<span style="color: #CC9393;">"Partition km_cr"</span>).show()
-</pre>
-</div></li>
-
-<li><p>
-En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
-<code>km_cr</code> dans l'espace centré-réduit.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_cr_mean</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   pd.DataFrame(km_cr.cluster_centers_,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>columns=wine_cr_df.columns)
-km_cr_mean
-</pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_cr_prof</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   wine_cr_df.groupby(km_cr.labels_).describe()
-km_cr_prof
-</pre>
-</div></li>
-
-<li><p>
-En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
-<code>km_cr</code> dans l'espace original (c'est à dire des données initiales sans transformation).
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_cr_ori_mean</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   wine_ori_df.groupby(km_cr.labels_).mean()
-km_cr_ori_mean
-</pre>
-</div>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_cr_ori_prof</span> = \
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   wine_ori_df.groupby(km_cr.labels_).describe()
-km_cr_ori_prof
-</pre>
-</div></li>
-</ol>
-
-
-<ol class="org-ol">
-<li><p>
-Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
+<li>Calculer l'inertie expliquée par la parition obtenue avec le modèle <code>km_cr</code>.</li>
+<li>Représenter graphiquement la partition obtenue avec le modèle <code>km_cr</code> à l'aide d'un diagramme
+en paires, analyser le résultat obtenu et comparer avec les partitions précédentes.</li>
+<li>En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
+<code>km_cr</code> dans l'espace centré-réduit.</li>
+<li>En déduire le profil moyen et le profil statistique complet des groupes obtenus avec la partition
+<code>km_cr</code> dans l'espace original (c'est à dire des données initiales sans transformation).</li>
+<li>Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
 quel espace l'interprétation des profils est-elle la plus aisée ? L'espace centré-réduit ou
-l'espace original ?
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Espace centr&#233;-r&#233;duit -&gt; profils interpr&#233;tables mais ne pas oublier de tenir compte du centrage/r&#233;duction</span>
-px.box(wine_cr_df, color=km_cr.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification km_cr (espace centr&#233;-r&#233;duit)"</span>).show()
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Espace original -&gt; profils interpr&#233;tables directement du point de vu m&#233;tier</span>
-px.box(wine_ori_df, color=km_cr.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification km_cr (espace original)"</span>).show()
-</pre>
-</div></li>
+l'espace original ?</li>
 </ol>
 </div>
 </div>
-
-
-<div id="outline-container-org5029a24" class="outline-3">
-<h3 id="org5029a24">Partitionnement dans l'espace de l'ACP</h3>
-<div class="outline-text-3" id="text-org5029a24">
+<div id="outline-container-orgf752a6a" class="outline-3">
+<h3 id="orgf752a6a">Partitionnement dans l'espace de l'ACP</h3>
+<div class="outline-text-3" id="text-orgf752a6a">
 <ol class="org-ol">
 <li><p>
 Réaliser une Analyse en Composantes Principales (ACP) sur les données centrées-réduites <code>wine_cr_df</code> en utilisant
@@ -506,17 +362,8 @@ wine_acp_df
 </pre>
 </div></li>
 
-<li><p>
-Créer un DataFrame <code>wine_acp_2d_df</code> correspondant aux données centrées-réduites
-projetées sur les deux premiers axes de l'ACP.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">wine_acp_2d_df</span> = wine_acp_df[[0, 1]]
-</pre>
-</div></li>
-
+<li>Créer un DataFrame <code>wine_acp_2d_df</code> correspondant aux données centrées-réduites
+projetées sur les deux premiers axes de l'ACP.</li>
 <li><p>
 Représenter graphiquement le nuage de points des données <code>wine_acp_2d_df</code>.
 </p>
@@ -528,112 +375,22 @@ Représenter graphiquement le nuage de points des données <code>wine_acp_2d_df<
 </pre>
 </div></li>
 
-<li><p>
-Réaliser un modèle k-Means, nommé <code>km_acp</code>, permettant de partitionner les données <code>wine_acp_2d_df</code>
-en 3 groupes. Visualiser la partition obtenue.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_acp</span> = skc.KMeans(n_clusters=3).fit(wine_acp_2d_df)
-px.scatter(wine_acp_2d_df,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  x=0, y=1,
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  color=km_acp.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  labels={<span style="color: #CC9393;">"0"</span>:<span style="color: #CC9393;">"Axe ACP 1"</span>, <span style="color: #CC9393;">"1"</span>:<span style="color: #CC9393;">"Axe ACP 2"</span>},
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Partition km_acp"</span>).show()
-</pre>
-</div></li>
-
-<li><p>
-En déduire les profils moyens et statistiques complets des groupes obtenus dans l'espace
-centré-réduit et l'espace original.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_acp_cr_mean</span> = wine_cr_df.groupby(km_acp.labels_).mean()
-<span style="color: #DFAF8F;">km_acp_cr_prof</span> = wine_cr_df.groupby(km_acp.labels_).describe()
-
-<span style="color: #DFAF8F;">km_acp_ori_mean</span> = wine_ori_df.groupby(km_acp.labels_).mean()
-<span style="color: #DFAF8F;">km_acp_ori_prof</span> = wine_ori_df.groupby(km_acp.labels_).describe()
-</pre>
-</div></li>
-
-<li><p>
-Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
+<li>Réaliser un modèle k-Means, nommé <code>km_acp</code>, permettant de partitionner les données <code>wine_acp_2d_df</code>
+en 3 groupes. Visualiser la partition obtenue.</li>
+<li>En déduire les profils moyens et statistiques complets des groupes obtenus dans l'espace
+centré-réduit et l'espace original.</li>
+<li>Représenter et analyser graphiquement les profils des groupes sous la forme d'un boxplot. Dans
 quel espace est-il le plus pertinent d'analyser les groupes obtenus ? L'espace de l'ACP, l'espace
-centré-réduit, l'espace original ? 
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Espace ACP -&gt; profils impossibles &#224; interpr&#233;ter</span>
-px.box(wine_acp_2d_df, color=km_acp.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification km_acp (espace ACP)"</span>).show()
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Espace centr&#233;-r&#233;duit -&gt; profils interpr&#233;tables mais ne pas oublier de tenir compte du centrage/r&#233;duction</span>
-px.box(wine_cr_df, color=km_acp.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification km_acp (espace centr&#233;-r&#233;duit)"</span>).show()
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Espace original -&gt; profils interpr&#233;tables directement du point de vu m&#233;tier</span>
-px.box(wine_ori_df, color=km_acp.labels_.astype(<span style="color: #DCDCCC; font-weight: bold;">str</span>),
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>  title=<span style="color: #CC9393;">"Profils des groupes obtenus par la classification km_acp (espace original)"</span>).show()
-
-</pre>
-</div></li>
-
-<li><p>
-Calculer l'inertie expliquée par la partition <code>km_acp</code> dans l'espace de l'ACP, dans l'espace
-centré-réduit et dans l'espace original.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Cr&#233;ation d'une fonction permettant d'&#233;valuer une partition</span>
-<span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">eval_partition</span>(data_df, partition):
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #9FC59F;">"""</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   Entr&#233;es :</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - data_df (pandas.DataFrame) : Donn&#233;es quantitatives</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - partition (list, numpy.array ou pandas.Series) : partition des donn&#233;es</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   Sortie :</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - inertie_intra : inertie intra-classe de la partition</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   - inertie_score : Inertie expliqu&#233;e par la partition entre 0 et 1</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span><span style="color: #9FC59F;">   """</span>
-
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie totale des donn&#233;es (cf. TD1)</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">mu_data</span> = data_df.mean()
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">d2_data_mu</span> = ((data_df - mu_data)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_totale</span> = d2_data_mu.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
-
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul de l'inertie interne aux classes (cf. TD1)</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_intra</span> = 0
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">for</span> cls, data_cls_df <span style="color: #F0DFAF; font-weight: bold;">in</span> data_df.groupby(partition):
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Centre de gravit&#233; de la classe cls</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">mu_cls</span> = data_cls_df.mean()
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Distances au carr&#233; entre les donn&#233;es de la classe et le centre de la classe</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">d2_data_cls</span> = ((data_cls_df - mu_cls)**2).<span style="color: #DCDCCC; font-weight: bold;">sum</span>(axis=1)
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Sommation pour obtenir l'inertie interne &#224; la classe</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_intra</span> += d2_data_cls.<span style="color: #DCDCCC; font-weight: bold;">sum</span>()
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span> 
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Inertie expliqu&#233;e par la partition</span>
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">inertie_score</span> = 1 - inertie_intra/inertie_totale
-
-<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">return</span> inertie_intra, inertie_score
-
-
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Utilisation de la fonction pour calculer l'inertie expliqu&#233;e de la partition km_acp</span>
-<span style="color: #DFAF8F;">km_acp_iw</span>, <span style="color: #DFAF8F;">km_acp_ie</span> = eval_partition(wine_acp_2d_df, km_acp.labels_)
-<span style="color: #DFAF8F;">km_acp_cr_iw</span>, <span style="color: #DFAF8F;">km_acp_cr_ie</span> = eval_partition(wine_cr_df, km_acp.labels_)
-<span style="color: #DFAF8F;">km_acp_ori_iw</span>, <span style="color: #DFAF8F;">km_acp_ori_cr_ie</span> = eval_partition(wine_ori_df, km_acp.labels_)
-</pre>
-</div></li>
+centré-réduit, l'espace original ?</li>
+<li>Calculer l'inertie expliquée par la partition <code>km_acp</code> dans l'espace de l'ACP, dans l'espace
+centré-réduit et dans l'espace original.</li>
 </ol>
 </div>
 </div>
 </div>
-
-
-<div id="outline-container-org6003ed7" class="outline-2">
-<h2 id="org6003ed7">Exercice 2 : Compression d'images</h2>
-<div class="outline-text-2" id="text-org6003ed7">
+<div id="outline-container-org1902479" class="outline-2">
+<h2 id="org1902479">Exercice 2 : Compression d'images</h2>
+<div class="outline-text-2" id="text-org1902479">
 <p>
 Cet exercice propose d'explorer la façon dont les méthodes de classification non supervisée
 peuvent être 
@@ -649,9 +406,9 @@ de données quantitatives à trois dimensions.
 </p>
 </div>
 
-<div id="outline-container-org47dd94d" class="outline-3">
-<h3 id="org47dd94d">Chargement d'une image</h3>
-<div class="outline-text-3" id="text-org47dd94d">
+<div id="outline-container-org58a66b2" class="outline-3">
+<h3 id="org58a66b2">Chargement d'une image</h3>
+<div class="outline-text-3" id="text-org58a66b2">
 <ol class="org-ol">
 <li><p>
 Installer et importer la <a href="https://scikit-image.org/docs/dev/user_guide/getting_started.html">librairie <code>skimage</code> </a> permettant de faire du traitement d'image : <code>import
@@ -691,21 +448,12 @@ des <code>numpy.array</code>.
 </div>
 </div>
 
-<div id="outline-container-orge752fdd" class="outline-3">
-<h3 id="orge752fdd">Application des moyennes mobiles</h3>
-<div class="outline-text-3" id="text-orge752fdd">
+<div id="outline-container-org71acc5f" class="outline-3">
+<h3 id="org71acc5f">Application des moyennes mobiles</h3>
+<div class="outline-text-3" id="text-org71acc5f">
 <ol class="org-ol">
-<li><p>
-Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en 4
-classes. Le modèle k-Means utilisé sera appelé <code>km_image</code>.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">SOLUTION</span>
-<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">--------</span>
-<span style="color: #DFAF8F;">km_image</span> = skc.KMeans(n_clusters=4).fit(image_data_df)
-</pre>
-</div></li>
-
+<li>Appliquez la méthode des moyennes mobiles afin de partitionner les données de pixels en 4
+classes. Le modèle k-Means utilisé sera appelé <code>km_image</code>.</li>
 <li><p>
 Reconstruire une image en remplaçant chaque pixel par le centre de sa classe.
 </p>
@@ -729,9 +477,9 @@ d'interpréter les résultats.</li>
 </div>
 </div>
 
-<div id="outline-container-org1d746a6" class="outline-3">
-<h3 id="org1d746a6">Méthode du coude</h3>
-<div class="outline-text-3" id="text-org1d746a6">
+<div id="outline-container-orgfa42566" class="outline-3">
+<h3 id="orgfa42566">Méthode du coude</h3>
+<div class="outline-text-3" id="text-orgfa42566">
 <ol class="org-ol">
 <li><p>
 Partitionner l'image en faisant varier le nombre de classes et en calculant
@@ -770,9 +518,9 @@ px.line(x=K_list, y=inertie_ie,
 </div>
 
 
-<div id="outline-container-orga147cab" class="outline-2">
-<h2 id="orga147cab">Exercice 3 : Implémentation des moyennes mobiles</h2>
-<div class="outline-text-2" id="text-orga147cab">
+<div id="outline-container-org49b7c8f" class="outline-2">
+<h2 id="org49b7c8f">Exercice 3 : Implémentation des moyennes mobiles</h2>
+<div class="outline-text-2" id="text-org49b7c8f">
 <p>
 Comme on ne maîtrise jamais vraiment un algorithme tant que l'on ne l'a pas programmé, cette
 dernière partie propose de créer votre propre version de la méthode des moyennes mobiles.

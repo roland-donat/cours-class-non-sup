@@ -233,9 +233,14 @@
 (setq td_corrige nil)
 #+END_SRC
 
-#+ATTR_HTML: :width 50%
-#+CAPTION: /A woman datascientist performing machine learning to bet on soccer teams, manga style/ (source: générée par [[https://openai.com/dall-e-2/][DALL-E]])
+#+ATTR_HTML: :width 30%
+#+CAPTION: /A woman datascientist performing machine learning to bet on soccer teams, manga style/ (générée par DALL-E)
 [[./woman_soccer_bet.png]]
+
+#+ATTR_HTML: :width 30%
+#+CAPTION: /A woman datascientist performing machine learning to bet on soccer teams, manga style/ (générée par MidJourney)
+[[./woman_soccer_bet_2.png]]
+
 
 * Notes perso                                                      :noexport:
 

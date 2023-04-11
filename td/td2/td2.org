@@ -230,7 +230,7 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige nil)
+(setq td_corrige t)
 #+END_SRC
 
 #+ATTR_HTML: :width 75%
@@ -239,7 +239,7 @@
 
 
 * Notes perso                                                      :noexport:
-** TODO Faire un autre exo en faisant une ACP dans l'exercice 1 
+** TODO Dans l'exo 1, faire la partie sur l'initialisation plutôt sur les données centrée-réduite
 
 * Introduction
 
@@ -771,26 +771,34 @@ Pour ce faire, il vous faudra créer les trois fonctions suivantes :
 
 1. La fonction =calcule_centres= qui calcule le centre de chaque classe à partir de données
    quantitative et d'une partition.
-   #+BEGIN_SRC python :results silent :exports code
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
 def calcule_centres(data, partition):
-  
-  <à compléter>
-
-  return centres
+  return data.groupby(partition).mean()
    #+END_SRC
 2. La fonction =affecte_classe= qui prend en entrée des données et les centres des classes et qui
-   affecte à chaque individu la classe ayant le centre le plus proche au sens de la distance euclidienne.
-   #+BEGIN_SRC python :results silent :exports code
+   affecte à chaque individu la classe ayant le centre le plus proche au sens de la distance
+   euclidienne. La fonction =cdist= de package =scipy.spatial.distance= peut être très utile...
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+# Pour faciliter le calcul des distances
+# avec la fonction scd.cdist
+import scipy.spatial.distance as scd 
+
 def affecte_classe(data, centres):
-
-  <à compléter>
-
-  return partition
+    dist_cls_centers = scd.cdist(data, centres, metric="euclidean")
+    return dist_cls_centers.argmin(axis=1)
   #+END_SRC
-3. La fonction =mon_kmeans= qui prend en entrée des données et un nombre de classes et qui applique
+  
+3. La fonction =my_kmeans= qui prend en entrée des données et un nombre de classes et qui applique
    la méthode des moyennes mobiles. L'initialisation est supposée aléatoire et on arrêtera
-   l'algorithme dès que la partition construite n'évolue plus entre deux itérations.
-   #+BEGIN_SRC python :results silent :exports code
+   l'algorithme dès que la partition construite n'évolue plus entre deux itérations. Cette fonction
+   doit utiliser vos fonctions =calcule_centres= et =affecte_classe=.
+   #+BEGIN_SRC python :session :results silent :tangle td2.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
 def my_kmeans(data, K):
   
   # Partition initiale
@@ -798,16 +806,19 @@ def my_kmeans(data, K):
   
   critere_arret = False
   
-  while critere_arret:
-    
-    # Affectation des classes
-    centres = <à compléter>
+  while not critere_arret:
 
+    # On enregistre la dernière partition
+    partition_old = partition
+    
     # Calcul des nouveaux centres
-    partition = <à compléter>
+    #centres = <à compléter>
+
+    # Affectation des classes
+    #partition = <à compléter>
     
     # Calcul du critère d'arrêt
-    critere_arret = <à compléter>
+    critere_arret = (partition == partition_old).all()
 
   return partition, centres
    #+END_SRC

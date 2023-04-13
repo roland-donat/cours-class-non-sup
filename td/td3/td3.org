@@ -410,7 +410,7 @@ cah_cr_def_iw, cah_cr_def_ie = eval_partition(wine_cr_df, cah_cr_def.labels_)
 4. Étudier l'aide de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=AgglomerativeClustering=]] afin de comprendre le rôle des
    principaux paramètres de la classe, à savoir =n_clusters=, =metric= et =linkage=.
 
-5. Construire une nouvelle hiérarchie =cah_cr_ward= sur les données =wine_cr= afin de produire une partition en 3
+5. Construire une nouvelle hiérarchie =cah_cr_ward= sur les données =wine_cr_df= afin de produire une partition en 3
    groupes en utilisant la distance de Ward.
    #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
 # SOLUTION

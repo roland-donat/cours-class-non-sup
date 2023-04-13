@@ -279,6 +279,12 @@ donc utiliser la commande =!pip install <nom_module>= pour les installer :
 
 Rappel : code d'import des modules :
 #+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+for k in range(2, 9):
+    km = skc.KMeans(n_init=1, random_state=56000, n_clusters=k)
+    km.fit(data_df)
+    IB = IT - km.inertia_
+    print(k, IB)
+
 import pandas as pd                   # Manipulation des données
 import numpy as np                    # Calcul numérique
 import plotly as pl                   # Librairie principale pour avoir le n° de version
@@ -402,7 +408,7 @@ cah_cr_def_iw, cah_cr_def_ie = eval_partition(wine_cr_df, cah_cr_def.labels_)
    #+END_SRC
 
 4. Étudier l'aide de la classe [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering][=AgglomerativeClustering=]] afin de comprendre le rôle des
-   principaux paramètres de la classe, à savoir =n_clusters=, =metric= et =lingkage=.
+   principaux paramètres de la classe, à savoir =n_clusters=, =metric= et =linkage=.
 
 5. Construire une nouvelle hiérarchie =cah_cr_ward= sur les données =wine_cr= afin de produire une partition en 3
    groupes en utilisant la distance de Ward.

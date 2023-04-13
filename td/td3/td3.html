@@ -23,43 +23,43 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7c8e4dc">Introduction</a></li>
-<li><a href="#orge171cf7">Modules <code>Python</code> utilisés dans ce TD</a></li>
-<li><a href="#org84902b7">Exercice 1 : CAH et données <code>wine</code></a>
+<li><a href="#org5e3b570">Introduction</a></li>
+<li><a href="#org643b42c">Modules <code>Python</code> utilisés dans ce TD</a></li>
+<li><a href="#org87b0d33">Exercice 1 : CAH et données <code>wine</code></a>
 <ul>
-<li><a href="#org7945a3c">Chargement des données</a></li>
-<li><a href="#org358e7d9">CAH avec paramètres par défaut</a></li>
-<li><a href="#orgff8e4bc">Influence de la distance entre groupe</a></li>
+<li><a href="#org0432ac2">Chargement des données</a></li>
+<li><a href="#orgfba5864">CAH avec paramètres par défaut</a></li>
+<li><a href="#orgbfd1bc9">Influence de la distance entre groupe</a></li>
 </ul>
 </li>
-<li><a href="#org7f5c643">Exercice 2 : Analyse de profils d'équipes de football</a>
+<li><a href="#org70c129e">Exercice 2 : Analyse de profils d'équipes de football</a>
 <ul>
-<li><a href="#orgfb87019">Préparation des données</a></li>
-<li><a href="#orgf9f30c6">Détection de profils</a></li>
+<li><a href="#org01de3fc">Préparation des données</a></li>
+<li><a href="#org8e783ae">Détection de profils</a></li>
 </ul>
 </li>
-<li><a href="#orgfefaf86">Exercice 3 : Programmation des distances entre classes</a></li>
+<li><a href="#orga104475">Exercice 3 : Programmation des distances entre classes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orge40e6c3" class="figure">
+<div id="org777543f" class="figure">
 <p><img src="./woman_soccer_bet.png" alt="woman_soccer_bet.png" width="30%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;1&nbsp;: </span><i>A woman datascientist performing machine learning to bet on soccer teams, manga style</i> (générée par DALL-E)</p>
 </div>
 
 
-<div id="org9446ba7" class="figure">
+<div id="org4aa1c84" class="figure">
 <p><img src="./woman_soccer_bet_2.png" alt="woman_soccer_bet_2.png" width="30%" />
 </p>
 <p><span class="figure-number">Figure&nbsp;2&nbsp;: </span><i>A woman datascientist performing machine learning to bet on soccer teams, manga style</i> (générée par MidJourney)</p>
 </div>
 
 
-<div id="outline-container-org7c8e4dc" class="outline-2">
-<h2 id="org7c8e4dc">Introduction</h2>
-<div class="outline-text-2" id="text-org7c8e4dc">
+<div id="outline-container-org5e3b570" class="outline-2">
+<h2 id="org5e3b570">Introduction</h2>
+<div class="outline-text-2" id="text-org5e3b570">
 <p>
 Dans ce dernier TD, nous mettrons en pratique la méthode de classification ascendante hiérarchique
 (CAH) sur différents jeux de données afin d'en évaluer les propriétés.
@@ -77,9 +77,9 @@ compétence sur le langage <code>Python</code>.
 </div>
 </div>
 
-<div id="outline-container-orge171cf7" class="outline-2">
-<h2 id="orge171cf7">Modules <code>Python</code> utilisés dans ce TD</h2>
-<div class="outline-text-2" id="text-orge171cf7">
+<div id="outline-container-org643b42c" class="outline-2">
+<h2 id="org643b42c">Modules <code>Python</code> utilisés dans ce TD</h2>
+<div class="outline-text-2" id="text-org643b42c">
 <p>
 Dans ce TD, nous utiliserons les modules <code>Python</code> suivants :
 </p>
@@ -110,7 +110,13 @@ donc utiliser la commande <code>!pip install &lt;nom_module&gt;</code> pour les 
 Rappel : code d'import des modules :
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd                   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Manipulation des donn&#233;es</span>
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">for</span> k <span style="color: #F0DFAF; font-weight: bold;">in</span> <span style="color: #DCDCCC; font-weight: bold;">range</span>(2, 9):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">km</span> = skc.KMeans(n_init=1, random_state=56000, n_clusters=k)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   km.fit(data_df)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #DFAF8F;">IB</span> = IT - km.inertia_
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">print</span>(k, IB)
+
+<span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd                   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Manipulation des donn&#233;es</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np                    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Calcul num&#233;rique</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly <span style="color: #F0DFAF; font-weight: bold;">as</span> pl                   <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Librairie principale pour avoir le n&#176; de version</span>
 <span style="color: #F0DFAF; font-weight: bold;">import</span> plotly.express <span style="color: #F0DFAF; font-weight: bold;">as</span> px           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Package plotly pour utiliser les visualisations de haut niveau</span>
@@ -135,18 +141,18 @@ Rappel : code d'import des modules :
 </div>
 
 
-<div id="outline-container-org84902b7" class="outline-2">
-<h2 id="org84902b7">Exercice 1 : CAH et données <code>wine</code></h2>
-<div class="outline-text-2" id="text-org84902b7">
+<div id="outline-container-org87b0d33" class="outline-2">
+<h2 id="org87b0d33">Exercice 1 : CAH et données <code>wine</code></h2>
+<div class="outline-text-2" id="text-org87b0d33">
 <p>
 Dans cet exercice, nous reprenons les données <code>wine</code> afin d'y appliquer différentes CAH dans le but
 d'identifier des profils de vignobles.
 </p>
 </div>
 
-<div id="outline-container-org7945a3c" class="outline-3">
-<h3 id="org7945a3c">Chargement des données</h3>
-<div class="outline-text-3" id="text-org7945a3c">
+<div id="outline-container-org0432ac2" class="outline-3">
+<h3 id="org0432ac2">Chargement des données</h3>
+<div class="outline-text-3" id="text-org0432ac2">
 <ol class="org-ol">
 <li><p>
 Chargez les données <code>Wine</code> dans un <code>DataFrame</code> nommé <code>wine_ori_df</code> (<code>ori</code> pour originales).
@@ -169,9 +175,9 @@ centré-réduit).
 </div>
 </div>
 
-<div id="outline-container-org358e7d9" class="outline-3">
-<h3 id="org358e7d9">CAH avec paramètres par défaut</h3>
-<div class="outline-text-3" id="text-org358e7d9">
+<div id="outline-container-orgfba5864" class="outline-3">
+<h3 id="orgfba5864">CAH avec paramètres par défaut</h3>
+<div class="outline-text-3" id="text-orgfba5864">
 <p>
 Nous allons utiliser l'algorithme CAH afin de construire une hiérarchie sur nos vins à
 partir de leurs caractéristiques physico-chimiques. Pour ce faire, le package <code>sklearn.cluster</code> (ou
@@ -272,7 +278,7 @@ Calculer l'inertie expliquée par la partition <code>cah_cr_def</code>. <b>Aide 
 </div></li>
 
 <li>Étudier l'aide de la classe <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering"><code>AgglomerativeClustering</code></a> afin de comprendre le rôle des
-principaux paramètres de la classe, à savoir <code>n_clusters</code>, <code>metric</code> et <code>lingkage</code>.</li>
+principaux paramètres de la classe, à savoir <code>n_clusters</code>, <code>metric</code> et <code>linkage</code>.</li>
 
 <li>Construire une nouvelle hiérarchie <code>cah_cr_ward</code> sur les données <code>wine_cr</code> afin de produire une partition en 3
 groupes en utilisant la distance de Ward.</li>
@@ -302,9 +308,9 @@ cah_cr_ward_dendro_fig.show()
 </div>
 
 
-<div id="outline-container-orgff8e4bc" class="outline-3">
-<h3 id="orgff8e4bc">Influence de la distance entre groupe</h3>
-<div class="outline-text-3" id="text-orgff8e4bc">
+<div id="outline-container-orgbfd1bc9" class="outline-3">
+<h3 id="orgbfd1bc9">Influence de la distance entre groupe</h3>
+<div class="outline-text-3" id="text-orgbfd1bc9">
 <p>
 Dans cette section, nous allons observer l'influence de la distance entre groupe dans le processus
 de construction de la CAH.
@@ -339,20 +345,20 @@ en utilisant la distance du lien moyen (<i>average link</i>). Le modèle CAH ser
 </div>
 </div>
 </div>
-<div id="outline-container-org7f5c643" class="outline-2">
-<h2 id="org7f5c643">Exercice 2 : Analyse de profils d'équipes de football</h2>
-<div class="outline-text-2" id="text-org7f5c643">
+<div id="outline-container-org70c129e" class="outline-2">
+<h2 id="org70c129e">Exercice 2 : Analyse de profils d'équipes de football</h2>
+<div class="outline-text-2" id="text-org70c129e">
 <p>
 Dans cet exercice, nous allons travailler sur des données historiques de matchs de football. Les
 données couvrent les deux premières divisions de différents championnats européens.
 </p>
 
 <p>
-Le Tableau <a href="#orgd3e899d">1</a> donne une description des variables du jeu de
+Le Tableau <a href="#org246729c">1</a> donne une description des variables du jeu de
 données. 
 </p>
 
-<table id="orgd3e899d" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org246729c" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Tableau 1 :</span> Définition des variables des du jeu de données.</caption>
 
 <colgroup>
@@ -490,9 +496,9 @@ supervisées vues en cours.
 </p>
 </div>
 
-<div id="outline-container-orgfb87019" class="outline-3">
-<h3 id="orgfb87019">Préparation des données</h3>
-<div class="outline-text-3" id="text-orgfb87019">
+<div id="outline-container-org01de3fc" class="outline-3">
+<h3 id="org01de3fc">Préparation des données</h3>
+<div class="outline-text-3" id="text-org01de3fc">
 <ol class="org-ol">
 <li><p>
 Charger les données à partir de l'adresse suivante :
@@ -540,9 +546,9 @@ soccer_mean_df
 </div>
 </div>
 
-<div id="outline-container-orgf9f30c6" class="outline-3">
-<h3 id="orgf9f30c6">Détection de profils</h3>
-<div class="outline-text-3" id="text-orgf9f30c6">
+<div id="outline-container-org8e783ae" class="outline-3">
+<h3 id="org8e783ae">Détection de profils</h3>
+<div class="outline-text-3" id="text-org8e783ae">
 <ol class="org-ol">
 <li>Réaliser une CAH sur les données <code>soccer_mean_df</code> avec la distance de Ward afin de partitionner
 les équipes en 4 groupes. Essayer d'interpréter les groupes obtenus.</li>
@@ -554,9 +560,9 @@ résultats obtenus.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-orgfefaf86" class="outline-2">
-<h2 id="orgfefaf86">Exercice 3 : Programmation des distances entre classes</h2>
-<div class="outline-text-2" id="text-orgfefaf86">
+<div id="outline-container-orga104475" class="outline-2">
+<h2 id="orga104475">Exercice 3 : Programmation des distances entre classes</h2>
+<div class="outline-text-2" id="text-orga104475">
 <p>
 Cet exercice a pour objectif de vous faire programmer les différentes distances entre classes vues
 en cours. Vous développerez ainsi des fonctions ayant la forme suivante :

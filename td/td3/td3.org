@@ -230,7 +230,7 @@
 # ====================
 
 #+BEGIN_SRC emacs-lisp :results silent :tangle td1.py :exports results
-(setq td_corrige nil)
+(setq td_corrige t)
 #+END_SRC
 
 #+ATTR_HTML: :width 30%
@@ -441,7 +441,7 @@ cah_ward_ori_prof = \
 cah_cr_ward_dendro_fig = \
     pff.create_dendrogram(wine_cr_df,
                           labels=wine_cr_df.index,
-                          color_threshold=10,
+                          color_threshold=26,
                           linkagefun=lambda x: sch.linkage(x, "ward"))
 
 cah_cr_ward_dendro_fig.update_layout(
@@ -761,6 +761,128 @@ Le travail consiste alors à créer les quatre fonctions suivantes :
 4. =calcul_ward= qui calcule la distance de Ward.
 
 *Aide :* vous pouvez utiliser la fonction [[https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html][=cdist=]] du package =scipy.spatial.distance=.
+
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports results
+import scipy.spatial.distance as scd  # Package scipy dédié au clacul de distance
+
+def calcul_average(data_df1, data_df2):
+
+    # import ipdb
+    data_dist = scd.cdist(data_df1, data_df2)
+    dist_mat_df = pd.DataFrame(data_dist,
+                               index=data_df1.index,
+                               columns=data_df2.index)
+    return data_dist.mean()
+
+def calcul_complete(data_df1, data_df2):
+    """Calcul du lien minimum (single in english)
+
+    data_df1 : DataFrame contenant les données du premier groupe
+    data_df2 : DataFrame contenant les données du second groupe
+
+    Résultat : Distance du lien minimum
+    """
+    # scd.cdist calcule les distances entre chaque pair d'individus des groupes 1 et 2
+    data_dist = scd.cdist(data_df1, data_df2)
+    # Transformation en DataFrame pour avoir une jolie matrice de distance entre individus
+    dist_mat_df = pd.DataFrame(data_dist,
+                               index=data_df1.index,
+                               columns=data_df2.index)
+
+    # Conversion en vecteur pour préparer le calcul de la valeur min
+    dist_s = dist_mat_df.stack()
+    # Recherche de l'indice (pair d'individus) qui correspond à la distance min 
+    # entre individus des deux groupes
+    idx_max = dist_s.idxmax()
+    # Retour de la distance min
+    return dist_s.loc[idx_max]
+
+   #+END_SRC
+
+   #+BEGIN_SRC python :session :results silent :tangle td3.py :exports (if (eq td_corrige t) "code" "none")
+# SOLUTION
+# --------
+import scipy.spatial.distance as scd  # Package scipy dédié au clacul de distance
+
+# Distance du lien minimum
+def calcul_single(data_df1, data_df2):
+    """Calcul du lien minimum (single in english)
+
+    data_df1 : DataFrame contenant les données du premier groupe
+    data_df2 : DataFrame contenant les données du second groupe
+
+    Résultat : Distance du lien minimum
+    """
+    # scd.cdist calcule les distances entre chaque pair d'individus des groupes 1 et 2
+    data_dist = scd.cdist(data_df1, data_df2)
+    # Transformation en DataFrame pour avoir une jolie matrice de distance entre individus
+    dist_mat_df = pd.DataFrame(data_dist,
+                               index=data_df1.index,
+                               columns=data_df2.index)
+
+    # Conversion en vecteur pour préparer le calcul de la valeur min
+    dist_s = dist_mat_df.stack()
+    # Recherche de l'indice (pair d'individus) qui correspond à la distance min 
+    # entre individus des deux groupes
+    idx_min = dist_s.idxmin()
+    # Retour de la distance min
+    return dist_s.loc[idx_min]
+
+# Distance de Ward
+def calcul_ward(data_df1, data_df2):
+    """Calcul de la distance de Ward
+
+    data_df1 : DataFrame contenant les données du premier groupe
+    data_df2 : DataFrame contenant les données du second groupe
+
+    Résultat : Distance de Ward
+    """
+
+    mu_df1 = data_df1.mean()    
+    mu_df2 = data_df2.mean()    
+    d2 = ((mu_df1 - mu_df2)**2).sum()
+    n1 = len(data_df1) 
+    n2 = len(data_df2) 
+    dist = (n1*n2/(n1 + n2))*d2
+    return dist
+   #+END_SRC
+
+Données de test :
+#+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+data_dict = {'life_expec': {'France': 81.4,
+  'Mozambique': 54.5,
+  'Guatemala': 71.3,
+  'Brazil': 74.2,
+  'Japan': 82.8,
+  'Argentina': 75.8,
+  'Senegal': 64.0},
+ 'total_fer': {'France': 2.03,
+  'Mozambique': 5.56,
+  'Guatemala': 3.38,
+  'Brazil': 1.8,
+  'Japan': 1.39,
+  'Argentina': 2.37,
+  'Senegal': 5.06}}
+data_df = pd.DataFrame(data_dict)
+data_df.head()
+
+
+ds = calcul_single(data_df.loc[["France", "Japan"]], data_df.loc[["Mozambique"]])
+print(f"distance single : {ds}") # => 27.130626605369812
+
+# On retrouve le résultat de la slide 25/39 du cours sur la CAH
+dw = calcul_ward(data_df.loc[["France", "Japan"]], data_df.loc[["Mozambique"]])
+print(f"distance ward : {dw}") # => 517.7216666666664
+
+#+END_SRC
+
+#+BEGIN_SRC python :session :results silent :tangle td3.py :exports code
+dc = calcul_complete(data_df.loc[["France", "Japan"]], data_df.loc[["Mozambique"]])
+print(f"distance complete : {dc}") # => 28.60557463152943
+
+da = calcul_average(data_df.loc[["France", "Japan"]], data_df.loc[["Mozambique"]])
+print(f"distance average : {da}") # => 27.86810061844962
+#+END_SRC
 
 
 * Analyse de la méthode CAH sur des données synthétiques :noexport:
